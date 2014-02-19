@@ -1,0 +1,22 @@
+{
+	"transports": {
+		"console": {
+			"enabled": true,
+
+			"colorize" : true,
+			"timestamp": true
+		},
+		"file"   : {
+			"enabled": true,
+
+			"colorize" : true,
+			"filename" : "/var/log/vifros.log",
+			"timestamp": true
+		},
+		"mongodb": {
+			"enabled": true,
+
+			"db": "vifros"
+		}
+	}
+}

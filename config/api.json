@@ -1,0 +1,7 @@
+{
+	"prefix": "/api",
+	"admin" : {
+		"name"    : "admin@root",
+		"password": "admin505"
+	}
+}
