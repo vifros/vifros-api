@@ -18,6 +18,14 @@ module.exports = function (app) {
 	app.get(config.api.prefix + '/system/logs/:log', require('./routes/system/logs/show'));
 
 	/*
+	 * System. Tunables.
+	 */
+	app.get(config.api.prefix + '/system/tunables', require('./routes/system/tunables/index'));
+	app.get(config.api.prefix + '/system/tunables/:tunable', require('./routes/system/tunables/show'));
+	app.patch(config.api.prefix + '/system/tunables/:tunable', require('./routes/system/tunables/patch'));
+	app.delete(config.api.prefix + '/system/tunables/:tunable', require('./routes/system/tunables/delete'));
+
+	/*
 	 * Interfaces.
 	 */
 	app.get(config.api.prefix + '/interfaces', require('./routes/interfaces/index'));

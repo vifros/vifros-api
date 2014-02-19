@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var statics = require('./tunable-statics');
+
 /*
  * Schema definition.
  */
@@ -11,12 +13,8 @@ var TunableSchema = new Schema({
 });
 
 /*
- * Methods definitions.
- *
- * Used to build the object dependant command line strings.
+ * Static definitions.
  */
-TunableSchema.methods.os_apply = function os_apply() {
-	return 'sysctl -w ' + this.path + '=' + this.value;
-};
+TunableSchema.statics.createFromObjectToOS = statics.createFromObjectToOS;
 
 exports.Tunable = mongoose.model('Tunable', TunableSchema);
