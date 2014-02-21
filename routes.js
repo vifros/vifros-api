@@ -12,6 +12,11 @@ module.exports = function (app) {
 	app.get(config.api.prefix + '/system', require('./routes/system/index'));
 
 	/*
+	 * System. Info.
+	 */
+	app.get(config.api.prefix + '/system/info', require('./routes/system/info/index'));
+
+	/*
 	 * System. Logging.
 	 */
 	app.get(config.api.prefix + '/system/logging', require('./routes/system/logging/index'));

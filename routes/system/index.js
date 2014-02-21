@@ -7,7 +7,8 @@ module.exports = function (req, res) {
 		links: {
 			logging : req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/logging',
 			tunables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/tunables',
-			settings: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/settings'
+			settings: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/settings',
+			info    : req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/info'
 		}
 	};
 
