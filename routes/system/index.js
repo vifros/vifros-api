@@ -5,7 +5,7 @@ module.exports = function (req, res) {
 
 	var json_api_body = {
 		links: {
-			logs    : req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/logs',
+			logging : req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/logging',
 			tunables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/tunables',
 			settings: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/settings'
 		}

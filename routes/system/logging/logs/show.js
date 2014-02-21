@@ -1,16 +1,16 @@
-var config = require('../../../config');
+var config = require('../../../../config');
 
-var logger = require('../../../common/logger').logger;
-var log_tags = require('../../../common/logger').tags;
+var logger = require('../../../../common/logger').logger;
+var log_tags = require('../../../../common/logger').tags;
 
-var Log = require('../../../models/system/log').Log;
+var Log = require('../../../../models/system/log').Log;
 
 module.exports = function (req, res) {
 	res.type('application/vnd.api+json');
 
 	var json_api_body = {
 		links: {
-			logs: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/logs' + '/' + '{logs.id}'
+			logs: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/logging/logs' + '/' + '{logs.id}'
 		},
 		logs : []
 	};
@@ -22,7 +22,7 @@ module.exports = function (req, res) {
 	Log.findById(req.params.log, function (error, doc) {
 		if (error) {
 			logger.error(error.message, {
-				module: 'system/logs',
+				module: 'system/logging/logs',
 				tags  : [
 					log_tags.api_request,
 					log_tags.db

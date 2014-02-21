@@ -12,10 +12,15 @@ module.exports = function (app) {
 	app.get(config.api.prefix + '/system', require('./routes/system/index'));
 
 	/*
-	 * System. Logs.
+	 * System. Logging.
 	 */
-	app.get(config.api.prefix + '/system/logs', require('./routes/system/logs/index'));
-	app.get(config.api.prefix + '/system/logs/:log', require('./routes/system/logs/show'));
+	app.get(config.api.prefix + '/system/logging', require('./routes/system/logging/index'));
+
+	/*
+	 * System. Logging. Logs.
+	 */
+	app.get(config.api.prefix + '/system/logging/logs', require('./routes/system/logging/logs/index'));
+	app.get(config.api.prefix + '/system/logging/logs/:log', require('./routes/system/logging/logs/show'));
 
 	/*
 	 * System. Tunables.
