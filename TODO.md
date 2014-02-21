@@ -6,9 +6,10 @@
 
 - Add header with link to API profile. Store the profile in the vifros instance to be accessible locally?
 
-- Define License for the app. Que no se pueda comercializar por otras personas! Ver Highcharts & Highstocks.
-
 ### Queue
+
+- Seguir pensando en si pasar settings y addresses para / y no como subresource. Desde punto de vista programacion es
+  mas limpio y tiene logica desde REST dado que seria el mismo resource setting. Se filtraria via module.
 
 - **interfaces:** Monitor to detect changes and propagate them to operational state.
 
