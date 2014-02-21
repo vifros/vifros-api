@@ -6,6 +6,9 @@ module.exports = function (cb_init) {
 	// System. Tunables.
 	init.push(require('./system/tunables/index'));
 
+	// System. Settings.
+	init.push(require('./system/settings/index'));
+
 	// Interfaces. Loopbacks.
 	init.push(require('./interfaces/loopbacks/index'));
 
@@ -16,7 +19,7 @@ module.exports = function (cb_init) {
 	init.push(require('./interfaces/vlans/index'));
 
 	// Routing.
-	init.push(require('./routing/index'));
+	init.push(require('./routing/settings/index'));
 
 	// Routing. Static. Tables.
 	init.push(require('./routing/static/tables/index'));

@@ -5,8 +5,7 @@ module.exports = function (req, res) {
 
 	var json_api_body = {
 		meta : {
-			name   : 'REST JSON API',
-			version: '0.0.0'
+			name: 'vifros REST JSON API'
 		},
 		links: {
 			system    : req.protocol + '://' + req.get('Host') + config.api.prefix + '/system',

@@ -26,6 +26,13 @@ module.exports = function (app) {
 	app.delete(config.api.prefix + '/system/tunables/:tunable', require('./routes/system/tunables/delete'));
 
 	/*
+	 * Routing. Settings.
+	 */
+	app.get(config.api.prefix + '/system/settings', require('./routes/system/settings/index'));
+	app.get(config.api.prefix + '/system/settings/:setting', require('./routes/system/settings/show'));
+	app.patch(config.api.prefix + '/system/settings/:setting', require('./routes/system/settings/patch'));
+
+	/*
 	 * Interfaces.
 	 */
 	app.get(config.api.prefix + '/interfaces', require('./routes/interfaces/index'));

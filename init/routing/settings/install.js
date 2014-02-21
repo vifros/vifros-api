@@ -2,13 +2,13 @@ var async = require('async');
 
 var ip_forward = require('iproute').utils.ip_forward;
 
-var logger = require('../../common/logger').logger;
-var log_tags = require('../../common/logger').tags;
+var logger = require('../../../common/logger').logger;
+var log_tags = require('../../../common/logger').tags;
 
 var package_defaults = require('./defaults');
 
-var Setting = require('../../models/common/setting').Setting;
-var setting_statuses = require('../../models/common/setting').statuses;
+var Setting = require('../../../models/common/setting').Setting;
+var setting_statuses = require('../../../models/common/setting').statuses;
 
 module.exports = function (cb_init) {
 	/*
@@ -76,7 +76,7 @@ module.exports = function (cb_init) {
 		function (error) {
 			if (error) {
 				logger.error(error, {
-					module: 'routing',
+					module: 'routing/settings',
 					tags  : [
 						log_tags.init
 					]
@@ -88,14 +88,14 @@ module.exports = function (cb_init) {
 				var settings = [];
 
 				var status = new Setting({
-					module: 'routing',
+					module: 'routing/settings',
 					name  : 'status',
 					value : setting_statuses.enabled
 				});
 				settings.push(status);
 
 				var ip_forward_v4 = new Setting({
-					module     : 'routing',
+					module     : 'routing/settings',
 					name       : 'ip_forward_v4',
 					value      : package_defaults.settings.ip_forward_v4.value,
 					description: package_defaults.settings.ip_forward_v4.description
@@ -103,7 +103,7 @@ module.exports = function (cb_init) {
 				settings.push(ip_forward_v4);
 
 				var ip_forward_v6 = new Setting({
-					module     : 'routing',
+					module     : 'routing/settings',
 					name       : 'ip_forward_v6',
 					value      : package_defaults.settings.ip_forward_v6.value,
 					description: package_defaults.settings.ip_forward_v6.description
@@ -122,7 +122,7 @@ module.exports = function (cb_init) {
 				}, function (error) {
 					if (error) {
 						logger.error(error, {
-							module: 'routing',
+							module: 'routing/settings',
 							tags  : [
 								log_tags.init
 							]
@@ -131,6 +131,13 @@ module.exports = function (cb_init) {
 						cb_init(error);
 					}
 					else {
+						logger.info('Module started.', {
+							module: 'routing/settings',
+							tags  : [
+								log_tags.init
+							]
+						});
+
 						cb_init(null);
 					}
 				});

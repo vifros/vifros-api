@@ -13,9 +13,9 @@ module.exports = function (req, res) {
 		 */
 		settings_index(req, res, {
 			filter  : {
-				module: 'routing/settings'
+				module: 'system/settings'
 			},
-			base_url: '/routing'
+			base_url: '/system'
 		});
 	}
 	catch (error) {

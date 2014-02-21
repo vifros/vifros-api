@@ -2,10 +2,10 @@ var async = require('async');
 
 var ip_forward = require('iproute').utils.ip_forward;
 
-var logger = require('../../common/logger').logger;
-var log_tags = require('../../common/logger').tags;
+var logger = require('../../../common/logger').logger;
+var log_tags = require('../../../common/logger').tags;
 
-var Setting = require('../../models/common/setting').Setting;
+var Setting = require('../../../models/common/setting').Setting;
 
 module.exports = function (cb_init) {
 	/*
@@ -15,7 +15,7 @@ module.exports = function (cb_init) {
 	async.parallel([
 		function (cb_parallel) {
 			Setting.findOne({
-				module: 'routing',
+				module: 'routing/settings',
 				name  : 'ip_forward_v4'
 			}, function (error, doc) {
 				if (error) {
@@ -48,7 +48,7 @@ module.exports = function (cb_init) {
 		},
 		function (cb_parallel) {
 			Setting.findOne({
-				module: 'routing',
+				module: 'routing/settings',
 				name  : 'ip_forward_v6'
 			}, function (error, doc) {
 				if (error) {
@@ -83,7 +83,7 @@ module.exports = function (cb_init) {
 		function (error) {
 			if (error) {
 				logger.error(error, {
-					module: 'routing',
+					module: 'routing/settings',
 					tags  : [
 						log_tags.init
 					]
@@ -93,7 +93,7 @@ module.exports = function (cb_init) {
 			}
 			else {
 				logger.info('Module started.', {
-					module: 'routing',
+					module: 'routing/settings',
 					tags  : [
 						log_tags.init
 					]
