@@ -2,4 +2,4 @@ Free for **non commercial** purposes under the [Creative Commons Attribution-Non
 
 ![Creative Commons Attribution-NonCommercial 3.0 License](http://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc.svg)
 
-For **commercial** purposes [contact](mailto:diosney.s@gmail.com) the developers.
+For **commercial** purposes [contact the developer](mailto:diosney.s@gmail.com).

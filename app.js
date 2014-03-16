@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var express = require('express');
 var http = require('http'); // TODO: At some point change the protocol to HTTPS.
 
@@ -10,6 +12,12 @@ var app = express();
 app.set('port', config.website.port
 	|| process.env.PORT
 	|| 3000);
+
+//// TODO: Log API requests.
+//app.use(function (req, res, next) {
+//	console.log(res.server_code)
+//	next()
+//});
 
 app.use(express.logger('dev'));
 app.use(express.bodyParser());

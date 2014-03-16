@@ -48,5 +48,6 @@ var VLANSchema = new Schema({
  * Static definitions.
  */
 VLANSchema.statics.purgeFromOSandDB = statics.purgeFromOSandDB;
+VLANSchema.statics.setMonitor = statics.setMonitor;
 
 exports.VLAN = mongoose.model('VLAN', VLANSchema);

@@ -6,8 +6,7 @@ module.exports = function (req, res) {
 	var json_api_body = {
 		links: {
 			rules : req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/rules',
-			tables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables',
-			routes: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/routes'
+			tables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables'
 		}
 	};
 

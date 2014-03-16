@@ -4,6 +4,8 @@ var log_tags = require('../../../common/logger').tags;
 var Setting = require('../../../models/common/setting').Setting;
 var setting_statuses = require('../../../models/common/setting').statuses;
 
+var VLAN = require('../../../models/interfaces/vlan').VLAN;
+
 var startup = require('./startup');
 
 module.exports = function (cb_init) {
@@ -16,7 +18,7 @@ module.exports = function (cb_init) {
 				module: 'interfaces/vlans',
 				tags  : [
 					log_tags.init,
-					log_tags.db,
+					log_tags.db
 				]
 			});
 
@@ -26,7 +28,24 @@ module.exports = function (cb_init) {
 			/*
 			 * Already initialized.
 			 */
-			startup(cb_init);
+			startup(function (error) {
+				if (error) {
+					cb_init(error);
+				}
+				else {
+					/*
+					 * Monitor changes on interface to update operational state.
+					 */
+					VLAN.setMonitor(function (error) {
+						if (error) {
+							cb_init(error);
+						}
+						else {
+							cb_init(null);
+						}
+					});
+				}
+			});
 		}
 		else {
 			/*
@@ -59,7 +78,17 @@ module.exports = function (cb_init) {
 						]
 					});
 
-					cb_init(null);
+					/*
+					 * Monitor changes on interface to update operational state.
+					 */
+					VLAN.setMonitor(function (error) {
+						if (error) {
+							cb_init(error);
+						}
+						else {
+							cb_init(null);
+						}
+					});
 				}
 			});
 		}

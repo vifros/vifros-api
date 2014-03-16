@@ -3,6 +3,8 @@ var link_statuses = require('iproute').link.utils.statuses;
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var statics = require('./ethernet-statics');
+
 /*
  * Schema definition.
  */
@@ -39,5 +41,10 @@ var EthernetSchema = new Schema({
 	mtu        : Number,
 	description: String
 });
+
+/*
+ * Static definitions.
+ */
+EthernetSchema.statics.setMonitor = statics.setMonitor;
 
 exports.Ethernet = mongoose.model('Ethernet', EthernetSchema);

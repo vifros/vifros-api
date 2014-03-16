@@ -87,7 +87,7 @@ module.exports = function (req, res, options) {
 				var related_table_ids = [];
 			}
 
-			async.each(docs, function (item, callback_each) {
+			async.each(docs, function (item, cb_each) {
 				var buffer = item.toObject();
 				buffer.id = item._id;
 
@@ -102,7 +102,7 @@ module.exports = function (req, res, options) {
 
 				json_api_body.routes.push(buffer);
 
-				callback_each(null);
+				cb_each(null);
 			}, function (error) {
 				if (error) {
 					logger.error(error.message, {

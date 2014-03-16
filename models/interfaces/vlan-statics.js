@@ -1,9 +1,16 @@
 var async = require('async');
 
-var ip_link = require('iproute').link;
-var link_statuses = require('iproute').link.utils.statuses;
+var iproute = require('iproute');
+var ip_link = iproute.link;
+var link_vl_types = ip_link.utils.vl_types;
+var link_statuses = ip_link.utils.statuses;
+
+var ip_monitor = iproute.monitor();
 
 var Address = require('./address').Address;
+
+var logger = require('../../common/logger').logger;
+var log_tags = require('../../common/logger').tags;
 
 /*
  * Removes all filtered VLANs from DB and OS.
@@ -159,4 +166,54 @@ exports.purgeFromOSandDB = function (options, cb) {
 			});
 		}
 	});
+};
+
+/*
+ * Adds a monitor to update the operational state of devices.
+ */
+exports.setMonitor = function (cb) {
+	var self = this;
+
+	ip_monitor.on('error', function (error) {
+		logger.error(error, {
+			module: 'interfaces/vlans',
+			tags  : [
+				log_tags.os
+			]
+		});
+	});
+
+	ip_monitor.on('link', function (data) {
+			var link = data.data[0];
+
+			if (link.hasOwnProperty('vl_type')
+				|| link.vl_type == link_vl_types.vlan) {
+
+				// Is a VLAN and has a valid state so update it.
+				self.findOne({
+						interface: link.name.split('.')[0],
+						tag      : link.name.split('.')[1]
+					},
+					function (error, doc) {
+						if (doc) {
+							doc.status.operational = link.state;
+
+							doc.save(function (error) {
+								if (error) {
+									logger.error(error, {
+										module: 'interfaces/vlans',
+										tags  : [
+											log_tags.os
+										]
+									});
+								}
+							});
+						}
+					}
+				);
+			}
+		}
+	);
+
+	cb(null);
 };

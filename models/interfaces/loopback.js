@@ -3,6 +3,8 @@ var link_statuses = require('iproute').link.utils.statuses;
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var statics = require('./loopback-statics');
+
 /*
  * Schema definition.
  */
@@ -39,5 +41,10 @@ var LoopbackSchema = new Schema({
 	mtu        : Number,
 	description: String
 });
+
+/*
+ * Static definitions.
+ */
+LoopbackSchema.statics.setMonitor = statics.setMonitor;
 
 exports.Loopback = mongoose.model('Loopback', LoopbackSchema);

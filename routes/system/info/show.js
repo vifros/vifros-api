@@ -1,7 +1,6 @@
 var os = require('os');
 var fs = require('fs');
 var exec = require('child_process').exec;
-var async = require('async');
 
 var config = require('../../../config');
 
@@ -15,46 +14,67 @@ module.exports = function (req, res) {
 		links: {
 			info: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/info/{info.name}'
 		},
-		info : [
-			{
-				name : 'time',
-				value: {
-					up     : os.uptime(),
-					current: (new Date()).getTime()
-				}
-			},
-			{
-				name : 'os',
-				value: {
-					type    : os.type(),
-					arch    : os.arch(),
-					release : os.release(),
-					platform: os.platform()
-				}
-			},
-			{
-				name : 'memory',
-				value: {
-					installed: os.totalmem(),
-					usage    : Math.floor(((os.totalmem() - os.freemem()) / os.totalmem()) * 100)
-				}
-			},
-			{
-				name : 'load',
-				value: os.loadavg()
-			}
-		]
+		info : []
 	};
 
 	var json_api_errors = {
 		errors: []
 	};
 
-	async.parallel([
-		function (cb_parallel) {
-			/*
-			 * CPUs.
-			 */
+	var buffer = {
+		name : req.params.info,
+		value: null
+	};
+
+	switch (req.params.info) {
+		case 'time':
+			buffer.value = {
+				up     : os.uptime(),
+				current: (new Date()).getTime()
+			};
+
+			json_api_body.info.push(buffer);
+
+			res.json(200, json_api_body); // OK.
+
+			break;
+
+		case 'os':
+			buffer.value = {
+				type    : os.type(),
+				arch    : os.arch(),
+				release : os.release(),
+				platform: os.platform()
+			};
+
+			json_api_body.info.push(buffer);
+
+			res.json(200, json_api_body); // OK.
+
+			break;
+
+		case 'memory':
+			buffer.value = {
+				installed: os.totalmem(),
+				usage    : Math.floor(((os.totalmem() - os.freemem()) / os.totalmem()) * 100)
+			};
+
+			json_api_body.info.push(buffer);
+
+			res.json(200, json_api_body); // OK.
+
+			break;
+
+		case 'load':
+			buffer.value = os.loadavg();
+
+			json_api_body.info.push(buffer);
+
+			res.json(200, json_api_body); // OK.
+
+			break;
+
+		case 'cpus':
 			var cpus = os.cpus();
 			var json_cpus = [];
 
@@ -91,45 +111,68 @@ module.exports = function (req, res) {
 				}
 			}
 
-			json_api_body.info.push({
-				name : 'cpus',
-				value: json_cpus
-			});
+			buffer.value = json_cpus;
 
-			cb_parallel(null);
-		},
-		function (cb_parallel) {
-			/*
-			 * SWAP.
-			 */
+			json_api_body.info.push(buffer);
+
+			res.json(200, json_api_body); // OK.
+
+
+			break;
+
+		case 'swap':
 			fs.readFile('/proc/swaps', {
 				encoding: 'utf8'
 			}, function (error, file_content) {
 				if (error) {
-					cb_parallel(error);
+					logger.error(error, {
+						module: 'system/info',
+						tags  : [
+							log_tags.api_request
+						]
+					});
+
+					json_api_errors.errors.push({
+						code   : '',
+						field  : '',
+						message: error
+					});
+
+					res.json(500, json_api_errors); // Internal Server Error.
 				}
 				else {
 					var proc_swap = file_content.split('\n')[1].split('\t');
 
-					json_api_body.info.push({
-						name : 'swap',
-						value: {
-							installed: proc_swap[1],
-							usage    : Math.floor((proc_swap[2] / proc_swap[1]) * 100)
-						}
-					});
+					buffer.value = {
+						installed: proc_swap[1],
+						usage    : Math.floor((proc_swap[2] / proc_swap[1]) * 100)
+					};
 
-					cb_parallel(null);
+					json_api_body.info.push(buffer);
+
+					res.json(200, json_api_body); // OK.
 				}
 			});
-		},
-		function (cb_parallel) {
-			/*
-			 * Disks.
-			 */
+
+			break;
+
+		case 'disks':
 			exec("df | awk '{print  $1\"\t\"$2\"\t\"$5\"\t\"$6}'", function (error, stdout, stderror) {
 				if (error) {
-					cb_parallel(stderror.replace(/\n/g, ''));
+					logger.error(error, {
+						module: 'system/info',
+						tags  : [
+							log_tags.api_request
+						]
+					});
+
+					json_api_errors.errors.push({
+						code   : '',
+						field  : '',
+						message: error
+					});
+
+					res.json(500, json_api_errors); // Internal Server Error.
 				}
 				else {
 					var disks = stdout.split('\n');
@@ -153,35 +196,19 @@ module.exports = function (req, res) {
 						}
 					}
 
-					json_api_body.info.push({
-						name : 'disks',
-						value: json_disks
-					});
+					buffer.value = json_disks;
 
-					cb_parallel(null);
+					json_api_body.info.push(buffer);
+
+					res.json(200, json_api_body); // OK.
 				}
 			});
-		}
-	], function (error) {
-			if (error) {
-				logger.error(error, {
-					module: 'system/info',
-					tags  : [
-						log_tags.api_request
-					]
-				});
 
-				json_api_errors.errors.push({
-					code   : '',
-					field  : '',
-					message: error
-				});
+			break;
 
-				res.json(500, json_api_errors); // Internal Server Error.
-			}
-			else {
-				res.json(200, json_api_body); // OK.
-			}
-		}
-	);
+		default:
+			res.json(404, json_api_body); // Not found.
+
+			break;
+	}
 };

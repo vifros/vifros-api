@@ -15,6 +15,7 @@ module.exports = function (app) {
 	 * System. Info.
 	 */
 	app.get(config.api.prefix + '/system/info', require('./routes/system/info/index'));
+	app.get(config.api.prefix + '/system/info/:info', require('./routes/system/info/show'));
 
 	/*
 	 * System. Logging.

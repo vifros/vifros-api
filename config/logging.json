@@ -4,7 +4,7 @@
 			"enabled": true,
 
 			"colorize" : true,
-			"timestamp": true
+			"timestamp": false
 		},
 		"file"   : {
 			"enabled": true,
