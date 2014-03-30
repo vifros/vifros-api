@@ -65,30 +65,11 @@ module.exports = function (req, res) {
 				var total_load = cpus[core].times.user + cpus[core].times.nice + cpus[core].times.sys + cpus[core].times.idle + cpus[core].times.irq;
 				var cpu_usage = Math.floor(((total_load - cpus[core].times.idle) / total_load) * 100);
 
-				if (json_cpus.length) {
-					for (var cpu = 0, k = cpus.length;
-					     cpu < k;
-					     cpu++) {
-
-						if (json_cpus[cpu].model == cpus[core].model) {
-							json_cpus[cpu].quantity++;
-						}
-						else {
-							json_cpus.push({
-								model   : cpus[core].model,
-								quantity: 1,
-								usage   : cpu_usage
-							});
-						}
-					}
-				}
-				else {
-					json_cpus.push({
-						model   : cpus[core].model,
-						quantity: 1,
-						usage   : cpu_usage
-					});
-				}
+				json_cpus.push({
+					model: cpus[core].model,
+					speed: cpus[core].speed,
+					usage: cpu_usage
+				});
 			}
 
 			json_api_body.info.push({

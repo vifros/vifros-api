@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var express = require('express');
-var http = require('http'); // TODO: At some point change the protocol to HTTPS.
+var http = require('http'); // TODO: At some point change the protocol to HTTPS. or give the two options?
 
 var config = require('./config');
 var pkg_info = require('./package.json');
@@ -13,17 +13,34 @@ app.set('port', config.website.port
 	|| process.env.PORT
 	|| 3000);
 
-//// TODO: Log API requests.
-//app.use(function (req, res, next) {
-//	console.log(res.server_code)
-//	next()
-//});
-
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser(pkg_info.name));
 app.use(express.session());
+
+// Log API requests.
+app.use(function (req, res, next) {
+	logger.info('API request.', {
+		module: 'core',
+		tags  : [
+			log_tags.api_request
+		],
+		data  : {
+			req: {
+				method: req.method,
+				url   : req.url,
+				ip    : req.ip
+			},
+			res: {
+				status_code: res.statusCode
+			}
+		}
+	});
+
+	next();
+});
+
 app.use(app.router);
 
 if (app.get('env') == 'development') {
@@ -76,4 +93,23 @@ require('./init')(function (error) {
 			});
 		});
 	}
+});
+
+/*
+ * Log uncaught errors and act accordingly.
+ * http://shapeshed.com/uncaught-exceptions-in-node/
+ */
+process.on('uncaughtException', function (error) {
+	logger.error(error.message, {
+		module: 'core',
+		tags  : [
+			log_tags.uncaught
+		],
+		data  : {
+			stack: error.stack
+		}
+	});
+
+	// Exit the app with error status.
+	process.exit(1);
 });

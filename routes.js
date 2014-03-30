@@ -29,6 +29,13 @@ module.exports = function (app) {
 	app.get(config.api.prefix + '/system/logging/logs/:log', require('./routes/system/logging/logs/show'));
 
 	/*
+	 * System. Logging. Settings.
+	 */
+	app.get(config.api.prefix + '/system/logging/settings', require('./routes/system/logging/settings/index'));
+	app.get(config.api.prefix + '/system/logging/settings/:setting', require('./routes/system/logging/settings/show'));
+	app.patch(config.api.prefix + '/system/logging/settings/:setting', require('./routes/system/logging/settings/patch'));
+
+	/*
 	 * System. Tunables.
 	 */
 	app.get(config.api.prefix + '/system/tunables', require('./routes/system/tunables/index'));

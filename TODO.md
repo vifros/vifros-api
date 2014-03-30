@@ -4,19 +4,13 @@
 
 ### Immediate
 
-- System/Info: que se pueda acceder individualmente a ellos.
+- Fix URLs ids to be human readable identifiers of objects, so they can be also used in the future CLI.
 
-- Arreglar URLs para que todos los ids sean algo con lo que un humano pueda identificar el recurso en la consola.
+- Add `/logs/settings`.
 
-- **logs:** Add `/logs/settings`.
+- Add interfaces list `interfaces` with their common data.
 
-- Log API requests in all routes. With `express` middleware? How to get `res` status code?
-
-- **interfaces:** implementar el listar interfaces con los datos comunes a ellas.
-
-- Implementar un PUT en los recursos q soporten el PATCH, para poder asi editar el recurso como un todo?
-
-- Migrate to waterline ORM once it reach v0.10.
+- Add status to rules & routes to let them be in DB but not in OS.
 
 ###  Queue
 
@@ -26,6 +20,10 @@
 
 - Firewall
 
-- Implement authentication.
+- Auth
 
 - QoS
+
+- Migrate to waterline ORM once it reach v0.10.
+
+- Use `apidocjs` to generate API docs?
