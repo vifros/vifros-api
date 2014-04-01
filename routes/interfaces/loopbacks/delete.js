@@ -14,10 +14,12 @@ module.exports = function (req, res) {
 		errors: []
 	};
 
-	Loopback.findById(req.params.loopback, function (error, doc) {
+	Loopback.findOne({
+		name: req.params.loopback
+	}, function (error, doc) {
 		if (error) {
 			logger.error(error.message, {
-				module: 'interfaces/Loopbacks',
+				module: 'interfaces/loopbacks',
 				tags  : [
 					log_tags.api_request,
 					log_tags.db

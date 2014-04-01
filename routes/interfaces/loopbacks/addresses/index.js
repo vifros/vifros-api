@@ -12,7 +12,9 @@ module.exports = function (req, res) {
 		errors: []
 	};
 
-	Loopback.findById(req.params.loopback, function (error, doc) {
+	Loopback.findOne({
+		name: req.params.loopback
+	}, function (error, doc) {
 		if (error) {
 			logger.error(error.name, {
 				module: 'interfaces/loopbacks',

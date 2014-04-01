@@ -26,8 +26,8 @@ module.exports = function (req, res) {
 
 	var json_api_body = {
 		links    : {
-			loopbacks            : req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/loopbacks' + '/' + '{loopbacks.id}',
-			'loopbacks.addresses': req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/loopbacks' + '/' + '{loopbacks.id}' + '/addresses'
+			loopbacks            : req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/loopbacks' + '/' + '{loopbacks.name}',
+			'loopbacks.addresses': req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/loopbacks' + '/' + '{loopbacks.name}' + '/addresses'
 		},
 		loopbacks: []
 	};
@@ -37,7 +37,7 @@ module.exports = function (req, res) {
 	 */
 	if (is_addresses_requested) {
 		json_api_body.links['loopbacks.addresses'] = {
-			href: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/loopbacks/{loopbacks.id}/addresses/{loopbacks.addresses.id}',
+			href: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/loopbacks/{loopbacks.name}/addresses/{loopbacks.addresses.address}',
 			type: 'addresses'
 		};
 
@@ -50,7 +50,9 @@ module.exports = function (req, res) {
 		errors: []
 	};
 
-	Loopback.findById(req.params.loopback, function (error, doc) {
+	Loopback.findOne({
+		name: req.params.loopback
+	}, function (error, doc) {
 		if (error) {
 			logger.error(error.name, {
 				module: 'interfaces/loopbacks',

@@ -18,7 +18,9 @@ module.exports = function (req, res) {
 			errors: []
 		};
 
-		Loopback.findById(req.params.loopback, function (error, doc) {
+		Loopback.findOne({
+			name: req.params.loopback
+		}, function (error, doc) {
 			if (error) {
 				logger.error(error.name, {
 					module: 'interfaces/loopbacks',
@@ -146,7 +148,9 @@ module.exports = function (req, res) {
 					&& valid_changed_options.hasOwnProperty('description')) {
 					// If only the description was changed, only save it to DB without touching the OS.
 
-					Loopback.findByIdAndUpdate(req.params.loopback, doc_patch.loopbacks[0], function (error) {
+					Loopback.findOneAndUpdate({
+						name: req.params.loopback
+					}, doc_patch.loopbacks[0], function (error) {
 						if (error) {
 							logger.error(error, {
 								module: 'interfaces/loopbacks',
@@ -225,7 +229,9 @@ module.exports = function (req, res) {
 								else {
 									doc_patch.loopbacks[0].status.operational = links[0].state;
 
-									Loopback.findByIdAndUpdate(req.params.loopback, doc_patch.loopbacks[0], function (error) {
+									Loopback.findOneAndUpdate({
+										name: req.params.loopback
+									}, doc_patch.loopbacks[0], function (error) {
 										if (error) {
 											logger.error(error.name, {
 												module: 'interfaces/loopbacks',

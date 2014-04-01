@@ -18,7 +18,7 @@ module.exports = function (req, res) {
 		 */
 		addresses_index(req, res, {
 			filter  : {
-				_id: req.params.address
+				address: req.params.address
 			},
 			base_url: '/loopbacks/' + req.params.loopback
 		});
