@@ -16,7 +16,9 @@ module.exports = function (req, res, options) {
 			errors: []
 		};
 
-		Setting.findById(req.params.setting, function (error, doc) {
+		Setting.findOne({
+			name: req.params.setting
+		}, function (error, doc) {
 			if (error) {
 				logger.error(error.message, {
 					module: 'common/settings',
@@ -162,7 +164,9 @@ module.exports = function (req, res, options) {
 								res.json(500, json_api_errors); // Internal Server Error.
 							}
 							else {
-								Setting.findByIdAndUpdate(req.params.setting, doc_patch.settings[0],
+								Setting.findOneAndUpdate({
+										name: req.params.setting
+									}, doc_patch.settings[0],
 									function (error) {
 										if (error) {
 											logger.error(error.message, {
@@ -188,7 +192,9 @@ module.exports = function (req, res, options) {
 						});
 					}
 					else {
-						Setting.findByIdAndUpdate(req.params.setting, doc_patch.settings[0],
+						Setting.findOneAndUpdate({
+								name: req.params.setting
+							}, doc_patch.settings[0],
 							function (error) {
 								if (error) {
 									logger.error(error.message, {

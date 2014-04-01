@@ -13,7 +13,7 @@ module.exports = function (req, res) {
 		 */
 		settings_index(req, res, {
 			filter  : {
-				_id: req.params.setting
+				name: req.params.setting
 			},
 			base_url: '/system'
 		});
