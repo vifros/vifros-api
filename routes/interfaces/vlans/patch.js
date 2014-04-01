@@ -18,7 +18,10 @@ module.exports = function (req, res) {
 			errors: []
 		};
 
-		VLAN.findById(req.params.vlan, function (error, doc) {
+		VLAN.findOne({
+			interface: req.params.vlan_interface,
+			tag      : req.params.vlan_tag
+		}, function (error, doc) {
 			if (error) {
 				logger.error(error.name, {
 					module: 'interfaces/vlans',
@@ -147,7 +150,10 @@ module.exports = function (req, res) {
 					&& valid_changed_options.hasOwnProperty('description')) {
 					// If only the description was changed, only save it to DB without touching the OS.
 
-					VLAN.findByIdAndUpdate(req.params.vlan, doc_patch.vlans[0], function (error) {
+					VLAN.findOneAndUpdate({
+						interface: req.params.vlan_interface,
+						tag      : req.params.vlan_tag
+					}, doc_patch.vlans[0], function (error) {
 						if (error) {
 							logger.error(error, {
 								module: 'interfaces/vlans',
@@ -224,7 +230,10 @@ module.exports = function (req, res) {
 								else {
 									doc_patch.vlans[0].status.operational = links[0].state;
 
-									VLAN.findByIdAndUpdate(req.params.vlan, doc_patch.vlans[0], function (error) {
+									VLAN.findOneAndUpdate({
+										interface: req.params.vlan_interface,
+										tag      : req.params.vlan_tag
+									}, doc_patch.vlans[0], function (error) {
 										if (error) {
 											logger.error(error.name, {
 												module: 'interfaces/vlans',

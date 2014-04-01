@@ -18,9 +18,10 @@ module.exports = function (req, res) {
 		 */
 		addresses_index(req, res, {
 			filter  : {
-				_id: req.params.address
+				interface: req.params.vlan_interface + '.' + req.params.vlan_tag,
+				address  : req.params.address
 			},
-			base_url: '/vlans/' + req.params.vlan
+			base_url: '/vlans/' + req.params.vlan_interface + '.' + req.params.vlan_tag
 		});
 	}
 	catch (error) {

@@ -17,7 +17,7 @@ module.exports = function (req, res) {
 
 		var json_api_body = {
 			links: {
-				vlans: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans' + '/' + '{vlans.id}'
+				vlans: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans' + '/' + '{vlans.interface}.{vlans.tag}'
 			},
 			vlans: []
 		};
@@ -145,7 +145,7 @@ module.exports = function (req, res) {
 									/*
 									 * Clean unneeded alias.
 									 */
-									item_to_send.href = req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans' + '/' + vlan._id;
+									item_to_send.href = req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans' + '/' + vlan.interface + '.' + vlan.tag;
 									item_to_send.id = vlan._id;
 
 									res.location(item_to_send.href);

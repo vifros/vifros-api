@@ -12,7 +12,10 @@ module.exports = function (req, res) {
 		errors: []
 	};
 
-	VLAN.findById(req.params.vlan, function (error, doc) {
+	VLAN.findOne({
+		interface: req.params.vlan_interface,
+		tag      : req.params.vlan_tag
+	}, function (error, doc) {
 		if (error) {
 			logger.error(error.message, {
 				module: 'interfaces/vlans',
@@ -36,7 +39,8 @@ module.exports = function (req, res) {
 				 * Delegate the responsibility to send the response to this method.
 				 */
 				addresses_create(req, res, {
-					base_url: '/vlans/' + req.params.vlan
+					interface: req.params.vlan_interface + '.' + req.params.vlan_tag,
+					base_url : '/vlans/' + req.params.vlan_interface + '.' + req.params.vlan_tag
 				});
 			}
 			catch (error) {

@@ -38,7 +38,8 @@ module.exports = function (req, res) {
 				 * Delegate the responsibility to send the response to this method.
 				 */
 				addresses_create(req, res, {
-					base_url: '/loopbacks/' + req.params.loopback
+					interface: req.params.loopback,
+					base_url : '/loopbacks/' + req.params.loopback
 				});
 			}
 			catch (error) {

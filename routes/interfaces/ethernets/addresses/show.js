@@ -18,7 +18,8 @@ module.exports = function (req, res) {
 		 */
 		addresses_index(req, res, {
 			filter  : {
-				address: req.params.address
+				interface: req.params.ethernet,
+				address  : req.params.address
 			},
 			base_url: '/ethernets/' + req.params.ethernet
 		});

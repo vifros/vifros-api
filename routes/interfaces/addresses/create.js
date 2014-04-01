@@ -55,7 +55,7 @@ module.exports = function (req, res, options) {
 			 */
 			var doc_req = req.body.addresses[0];
 
-			doc_req['dev'] = doc_req['interface'] = req.params.ethernet;
+			doc_req['dev'] = doc_req['interface'] = options.interface;
 			doc_req['local'] = doc_req.address;
 
 			var address = new Address(doc_req);

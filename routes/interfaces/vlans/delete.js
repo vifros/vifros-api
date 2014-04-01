@@ -16,7 +16,8 @@ module.exports = function (req, res) {
 
 	VLAN.purgeFromOSandDB({
 		filter: {
-			_id: req.params.vlan
+			interface: req.params.vlan_interface,
+			tag      : req.params.vlan_tag
 		}
 	}, function (error, ret) {
 		if (error) {

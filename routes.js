@@ -94,18 +94,18 @@ module.exports = function (app) {
 	 */
 	app.get(config.api.prefix + '/interfaces/vlans', require('./routes/interfaces/vlans/index'));
 	app.post(config.api.prefix + '/interfaces/vlans', require('./routes/interfaces/vlans/create'));
-	app.get(config.api.prefix + '/interfaces/vlans/:vlan', require('./routes/interfaces/vlans/show'));
-	app.patch(config.api.prefix + '/interfaces/vlans/:vlan', require('./routes/interfaces/vlans/patch'));
-	app.delete(config.api.prefix + '/interfaces/vlans/:vlan', require('./routes/interfaces/vlans/delete'));
+	app.get(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag', require('./routes/interfaces/vlans/show'));
+	app.patch(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag', require('./routes/interfaces/vlans/patch'));
+	app.delete(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag', require('./routes/interfaces/vlans/delete'));
 
 	/*
 	 * Interfaces. VLANs. Addresses.
 	 */
-	app.get(config.api.prefix + '/interfaces/vlans/:vlan/addresses', require('./routes/interfaces/vlans/addresses/index'));
-	app.post(config.api.prefix + '/interfaces/vlans/:vlan/addresses', require('./routes/interfaces/vlans/addresses/create'));
-	app.get(config.api.prefix + '/interfaces/vlans/:vlan/addresses/:address', require('./routes/interfaces/vlans/addresses/show'));
-	app.delete(config.api.prefix + '/interfaces/vlans/:vlan/addresses/:address', require('./routes/interfaces/addresses/delete'));
-	app.patch(config.api.prefix + '/interfaces/vlans/:vlan/addresses/:address', require('./routes/interfaces/addresses/patch'));
+	app.get(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses', require('./routes/interfaces/vlans/addresses/index'));
+	app.post(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses', require('./routes/interfaces/vlans/addresses/create'));
+	app.get(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses/:address', require('./routes/interfaces/vlans/addresses/show'));
+	app.delete(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses/:address', require('./routes/interfaces/addresses/delete'));
+	app.patch(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses/:address', require('./routes/interfaces/addresses/patch'));
 
 	/*
 	 * Routing.

@@ -26,8 +26,8 @@ module.exports = function (req, res) {
 
 	var json_api_body = {
 		links: {
-			vlans            : req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans' + '/' + '{vlans.id}',
-			'vlans.addresses': req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans' + '/' + '{vlans.id}' + '/addresses'
+			vlans            : req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans' + '/' + '{vlans.interface}.{vlans.tag}',
+			'vlans.addresses': req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans' + '/' + '{vlans.interface}.{vlans.tag}' + '/addresses'
 		},
 		vlans: []
 	};
@@ -37,7 +37,7 @@ module.exports = function (req, res) {
 	 */
 	if (is_addresses_requested) {
 		json_api_body.links['vlans.addresses'] = {
-			href: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans/{vlans.id}/addresses/{vlans.addresses.id}',
+			href: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans/{vlans.interface}.{vlans.tag}/addresses/{vlans.addresses.address}',
 			type: 'addresses'
 		};
 
@@ -50,7 +50,10 @@ module.exports = function (req, res) {
 		errors: []
 	};
 
-	VLAN.findById(req.params.vlan, function (error, doc) {
+	VLAN.findOne({
+		interface: req.params.vlan_interface,
+		tag      : req.params.vlan_tag
+	}, function (error, doc) {
 		if (error) {
 			logger.error(error.message, {
 				module: 'interfaces/vlans',
