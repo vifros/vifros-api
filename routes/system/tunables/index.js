@@ -12,7 +12,7 @@ module.exports = function (req, res) {
 
 	var json_api_body = {
 		links   : {
-			tunables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/tunables' + '/' + '{tunables.id}'
+			tunables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/tunables' + '/' + '{tunables.path}'
 		},
 		tunables: []
 	};
@@ -42,7 +42,7 @@ module.exports = function (req, res) {
 		else if (docs && docs.length) {
 			async.each(docs, function (item, cb_each) {
 				var buffer = item.toObject();
-				buffer.id = item._id;
+				buffer.id = item.path;
 
 				delete buffer._id;
 				delete buffer.__v;

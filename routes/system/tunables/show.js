@@ -10,7 +10,7 @@ module.exports = function (req, res) {
 
 	var json_api_body = {
 		links   : {
-			tunables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/tunables' + '/' + '{tunables.id}'
+			tunables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/tunables' + '/' + '{tunables.path}'
 		},
 		tunables: []
 	};
@@ -19,7 +19,9 @@ module.exports = function (req, res) {
 		errors: []
 	};
 
-	Tunable.findById(req.params.tunable, function (error, doc) {
+	Tunable.findOne({
+		path: req.params.tunable
+	}, function (error, doc) {
 		if (error) {
 			logger.error(error.message, {
 				module: 'system/tunables',
@@ -42,7 +44,7 @@ module.exports = function (req, res) {
 			 * Build JSON API response.
 			 */
 			var buffer = doc.toObject();
-			buffer.id = doc._id;
+			buffer.id = doc.path;
 
 			delete buffer._id;
 			delete buffer.__v;
