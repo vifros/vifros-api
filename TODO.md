@@ -4,13 +4,11 @@
 
 ### Immediate
 
-- Fix URLs ids to be human readable identifiers of objects, so they can be also used in the future CLI.
-
 - Add `/logs/settings`.
 
-- Add interfaces list `interfaces` with their common data.
+- Add pagination.
 
-- Add status to rules & routes to let them be in DB but not in OS.
+- Add sorting.
 
 ###  Queue
 
