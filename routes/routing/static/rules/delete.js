@@ -9,7 +9,7 @@ module.exports = function (req, res) {
 
 	StaticRoutingRule.purgeFromOSandDB({
 		filter: {
-			_id: req.params.rule
+			priority: req.params.rule
 		}
 	}, function (error, ret) {
 		if (error) {

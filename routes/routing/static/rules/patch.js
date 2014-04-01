@@ -18,7 +18,9 @@ module.exports = function (req, res) {
 			errors: []
 		};
 
-		StaticRoutingRule.findById(req.params.rule, function (error, doc) {
+		StaticRoutingRule.findOne({
+			priority: req.params.rule
+		}, function (error, doc) {
 			if (error) {
 				logger.error(error.message, {
 					module: 'routing/static/rules',
@@ -142,7 +144,9 @@ module.exports = function (req, res) {
 					/*
 					 * The only possible changed field is from description, so save it directly to DB.
 					 */
-					StaticRoutingRule.findByIdAndUpdate(req.params.rule, doc_patch.rules[0],
+					StaticRoutingRule.findOneAndUpdate({
+							priority: req.params.rule
+						}, doc_patch.rules[0],
 						function (error) {
 							if (error) {
 								logger.error(error.message, {

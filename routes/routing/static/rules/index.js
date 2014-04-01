@@ -25,7 +25,8 @@ module.exports = function (req, res) {
 
 	var json_api_body = {
 		links: {
-			rules: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/rules/{rules.id}'
+			rules        : req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/rules/{rules.priority}',
+			'rules.table': req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/{rules.table}'
 		},
 		rules: []
 	};

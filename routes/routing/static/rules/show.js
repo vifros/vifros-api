@@ -23,7 +23,8 @@ module.exports = function (req, res) {
 
 	var json_api_body = {
 		links: {
-			rules: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/rules/{rules.id}'
+			rules        : req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/rules/{rules.priority}',
+			'rules.table': req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/' + '{rules.table}'
 		},
 		rules: []
 	};
@@ -46,7 +47,9 @@ module.exports = function (req, res) {
 		errors: []
 	};
 
-	StaticRoutingRule.findById(req.params.rule, function (error, doc) {
+	StaticRoutingRule.findOne({
+		priority: req.params.rule
+	}, function (error, doc) {
 		if (error) {
 			logger.error(error.message, {
 				module: 'routing/static/rules',
