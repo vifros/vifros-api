@@ -18,7 +18,9 @@ module.exports = function (req, res) {
 			errors: []
 		};
 
-		Ethernet.findById(req.params.ethernet, function (error, doc) {
+		Ethernet.findOne({
+			name: req.params.ethernet
+		}, function (error, doc) {
 			if (error) {
 				logger.error(error.name, {
 					module: 'interfaces/ethernets',
@@ -146,7 +148,9 @@ module.exports = function (req, res) {
 					&& valid_changed_options.hasOwnProperty('description')) {
 					// If only the description was changed, only save it to DB without touching the OS.
 
-					Ethernet.findByIdAndUpdate(req.params.ethernet, doc_patch.ethernets[0], function (error) {
+					Ethernet.findOneAndUpdate({
+						name: req.params.ethernet
+					}, doc_patch.ethernets[0], function (error) {
 						if (error) {
 							logger.error(error, {
 								module: 'interfaces/ethernets',
@@ -225,7 +229,9 @@ module.exports = function (req, res) {
 								else {
 									doc_patch.ethernets[0].status.operational = links[0].state;
 
-									Ethernet.findByIdAndUpdate(req.params.ethernet, doc_patch.ethernets[0], function (error) {
+									Ethernet.findOneAndUpdate({
+										name: req.params.ethernet
+									}, doc_patch.ethernets[0], function (error) {
 										if (error) {
 											logger.error(error.name, {
 												module: 'interfaces/ethernets',

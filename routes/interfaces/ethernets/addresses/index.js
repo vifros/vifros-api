@@ -12,7 +12,9 @@ module.exports = function (req, res) {
 		errors: []
 	};
 
-	Ethernet.findById(req.params.ethernet, function (error, doc) {
+	Ethernet.findOne({
+		name: req.params.ethernet
+	}, function (error, doc) {
 		if (error) {
 			logger.error(error.name, {
 				module: 'interfaces/ethernets',

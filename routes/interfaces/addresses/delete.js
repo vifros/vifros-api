@@ -9,7 +9,7 @@ module.exports = function (req, res) {
 
 	Address.purgeFromOSandDB({
 		filter: {
-			_id: req.params.address
+			address: req.params.address
 		}
 	}, function (error, ret) {
 		if (error) {

@@ -16,7 +16,7 @@ module.exports = function (req, res, options) {
 
 		var json_api_body = {
 			links    : {
-				addresses: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces' + options.base_url + '/addresses/{addresses.id}'
+				addresses: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces' + options.base_url + '/addresses/{addresses.address}'
 			},
 			addresses: []
 		};
@@ -30,9 +30,6 @@ module.exports = function (req, res, options) {
 		 */
 		var failed_required_fields = [];
 
-		if (typeof req.body.addresses[0].interface == 'undefined') {
-			failed_required_fields.push('interface');
-		}
 		if (typeof req.body.addresses[0].address == 'undefined') {
 			failed_required_fields.push('address');
 		}
@@ -58,7 +55,7 @@ module.exports = function (req, res, options) {
 			 */
 			var doc_req = req.body.addresses[0];
 
-			doc_req['dev'] = doc_req.interface;
+			doc_req['dev'] = doc_req['interface'] = req.params.ethernet;
 			doc_req['local'] = doc_req.address;
 
 			var address = new Address(doc_req);
@@ -111,7 +108,7 @@ module.exports = function (req, res, options) {
 							delete item_to_send.dev;
 							delete item_to_send.local;
 
-							item_to_send.href = req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces' + options.base_url + '/addresses/' + address._id;
+							item_to_send.href = req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces' + options.base_url + '/addresses/' + encodeURIComponent(address.address);
 							item_to_send.id = address._id;
 
 							res.location(item_to_send.href);

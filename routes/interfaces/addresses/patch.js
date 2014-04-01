@@ -16,7 +16,9 @@ module.exports = function (req, res) {
 			errors: []
 		};
 
-		Address.findById(req.params.address, function (error, doc) {
+		Address.findOne({
+			address: req.params.address
+		}, function (error, doc) {
 			if (error) {
 				logger.error(error.message, {
 					module: 'interfaces/addresses',
@@ -140,7 +142,9 @@ module.exports = function (req, res) {
 					/*
 					 * The only possible changed field is from description, so save it directly to DB.
 					 */
-					Address.findByIdAndUpdate(req.params.address, doc_patch.addresses[0],
+					Address.findOneAndUpdate({
+							address: req.params.address
+						}, doc_patch.addresses[0],
 						function (error) {
 							if (error) {
 								logger.error(error.message, {
