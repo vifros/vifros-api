@@ -66,11 +66,11 @@ module.exports = function (app) {
 	/*
 	 * Interfaces. Ethernets. Addresses.
 	 */
-	app.get(config.api.prefix + '/interfaces/ethernets/:ethernet' + '/addresses', require('./routes/interfaces/ethernets/addresses/index'));
-	app.post(config.api.prefix + '/interfaces/ethernets/:ethernet' + '/addresses', require('./routes/interfaces/ethernets/addresses/create'));
-	app.get(config.api.prefix + '/interfaces/ethernets/:ethernet' + '/addresses/:address', require('./routes/interfaces/ethernets/addresses/show'));
-	app.delete(config.api.prefix + '/interfaces/ethernets/:ethernet' + '/addresses/:address', require('./routes/interfaces/addresses/delete'));
-	app.patch(config.api.prefix + '/interfaces/ethernets/:ethernet' + '/addresses/:address', require('./routes/interfaces/addresses/patch'));
+	app.get(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses', require('./routes/interfaces/ethernets/addresses/index'));
+	app.post(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses', require('./routes/interfaces/ethernets/addresses/create'));
+	app.get(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses/:address', require('./routes/interfaces/ethernets/addresses/show'));
+	app.delete(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses/:address', require('./routes/interfaces/addresses/delete'));
+	app.patch(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses/:address', require('./routes/interfaces/addresses/patch'));
 
 	/*
 	 * Interfaces. Loopbacks.
@@ -83,11 +83,11 @@ module.exports = function (app) {
 	/*
 	 * Interfaces. Loopbacks. Addresses.
 	 */
-	app.get(config.api.prefix + '/interfaces/loopbacks/:loopback' + '/addresses', require('./routes/interfaces/loopbacks/addresses/index'));
-	app.post(config.api.prefix + '/interfaces/loopbacks/:loopback' + '/addresses', require('./routes/interfaces/loopbacks/addresses/create'));
-	app.get(config.api.prefix + '/interfaces/loopbacks/:loopback' + '/addresses/:address', require('./routes/interfaces/loopbacks/addresses/show'));
-	app.delete(config.api.prefix + '/interfaces/loopbacks/:loopback' + '/addresses/:address', require('./routes/interfaces/addresses/delete'));
-	app.patch(config.api.prefix + '/interfaces/loopbacks/:loopback' + '/addresses/:address', require('./routes/interfaces/addresses/patch'));
+	app.get(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses', require('./routes/interfaces/loopbacks/addresses/index'));
+	app.post(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses', require('./routes/interfaces/loopbacks/addresses/create'));
+	app.get(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses/:address', require('./routes/interfaces/loopbacks/addresses/show'));
+	app.delete(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses/:address', require('./routes/interfaces/addresses/delete'));
+	app.patch(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses/:address', require('./routes/interfaces/addresses/patch'));
 
 	/*
 	 * Interfaces. VLANs.
@@ -101,11 +101,11 @@ module.exports = function (app) {
 	/*
 	 * Interfaces. VLANs. Addresses.
 	 */
-	app.get(config.api.prefix + '/interfaces/vlans/:vlan' + '/addresses', require('./routes/interfaces/vlans/addresses/index'));
-	app.post(config.api.prefix + '/interfaces/vlans/:vlan' + '/addresses', require('./routes/interfaces/vlans/addresses/create'));
-	app.get(config.api.prefix + '/interfaces/vlans/:vlan' + '/addresses/:address', require('./routes/interfaces/vlans/addresses/show'));
-	app.delete(config.api.prefix + '/interfaces/vlans/:vlan' + '/addresses/:address', require('./routes/interfaces/addresses/delete'));
-	app.patch(config.api.prefix + '/interfaces/vlans/:vlan' + '/addresses/:address', require('./routes/interfaces/addresses/patch'));
+	app.get(config.api.prefix + '/interfaces/vlans/:vlan/addresses', require('./routes/interfaces/vlans/addresses/index'));
+	app.post(config.api.prefix + '/interfaces/vlans/:vlan/addresses', require('./routes/interfaces/vlans/addresses/create'));
+	app.get(config.api.prefix + '/interfaces/vlans/:vlan/addresses/:address', require('./routes/interfaces/vlans/addresses/show'));
+	app.delete(config.api.prefix + '/interfaces/vlans/:vlan/addresses/:address', require('./routes/interfaces/addresses/delete'));
+	app.patch(config.api.prefix + '/interfaces/vlans/:vlan/addresses/:address', require('./routes/interfaces/addresses/patch'));
 
 	/*
 	 * Routing.
