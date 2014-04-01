@@ -5,7 +5,6 @@
 ### Immediate
 
 - Fix URLs ids to be human readable identifiers of objects, so they can be also used in the future CLI.
-	Tunables: Update PATCH and DELETE.
 
 - Add `/logs/settings`.
 

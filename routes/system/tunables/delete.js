@@ -10,7 +10,9 @@ module.exports = function (req, res) {
 		errors: []
 	};
 
-	Tunable.findByIdAndRemove(req.params.tunable, function (error) {
+	Tunable.findOneAndRemove({
+		path: req.params.tunable
+	}, function (error) {
 		if (error) {
 			logger.error(error.message, {
 				module: 'system/tunables',

@@ -18,7 +18,9 @@ module.exports = function (req, res) {
 			errors: []
 		};
 
-		Tunable.findById(req.params.tunable, function (error, doc) {
+		Tunable.findOne({
+			path: req.params.tunable
+		}, function (error, doc) {
 			if (error) {
 				logger.error(error.message, {
 					module: 'system/tunables',
@@ -142,7 +144,9 @@ module.exports = function (req, res) {
 					&& valid_changed_options.hasOwnProperty('description')) {
 
 					// If only the description was changed, only save it to DB without touching the OS.
-					Tunable.findByIdAndUpdate(req.params.tunable, doc_patch.tunables[0], function (error) {
+					Tunable.findOneAndUpdate({
+						path: req.params.tunable
+					}, doc_patch.tunables[0], function (error) {
 						if (error) {
 							logger.error(error.message, {
 								module: 'system/tunables',
@@ -185,7 +189,9 @@ module.exports = function (req, res) {
 							res.json(500, json_api_errors); // Internal Server Error.
 						}
 						else {
-							Tunable.findByIdAndUpdate(req.params.tunable, doc_patch.tunables[0], function (error) {
+							Tunable.findOneAndUpdate({
+								path: req.params.tunable
+							}, doc_patch.tunables[0], function (error) {
 								if (error) {
 									logger.error(error.message, {
 										module: 'system/tunables',
