@@ -37,7 +37,7 @@ module.exports = function (req, res, options) {
 	Setting.find(filter, function (error, docs) {
 		if (error) {
 			logger.error(error.message, {
-				module: 'routing',
+				module: 'common/settings',
 				tags  : [
 					log_tags.api_request,
 					log_tags.db
@@ -66,7 +66,7 @@ module.exports = function (req, res, options) {
 			}, function (error) {
 				if (error) {
 					logger.error(error, {
-						module: 'routing',
+						module: 'common/settings',
 						tags  : [
 							log_tags.api_request
 						]
