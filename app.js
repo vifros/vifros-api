@@ -13,7 +13,6 @@ app.set('port', config.website.port
 	|| process.env.PORT
 	|| 3000);
 
-app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser(pkg_info.name));
@@ -24,6 +23,10 @@ var log_tags = require('./common/logger').tags;
 
 // Log API requests.
 app.use(function (req, res, next) {
+	res.links({
+		profile: 'http://api.example.com/profile'
+	});
+
 	res.on('finish', function () {
 		logger.info('API request.', {
 			module: 'core',

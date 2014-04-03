@@ -6,9 +6,13 @@
 
 - Add `/logs/settings`.
 
+- Add sorting.
+
 - Add pagination.
 
-- Add sorting.
+- Classify errors in codes.
+
+- Fill the `field` property in errors.
 
 ###  Queue
 
@@ -24,4 +28,4 @@
 
 - Migrate to waterline ORM once it reach v0.10.
 
-- Use `apidocjs` to generate API docs?
+- Use `apidocjs` to generate API docs? Or use apiary.io for this?

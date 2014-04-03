@@ -1,5 +1,5 @@
 var winston = require('winston');
-require('winston-mongodb').MongoDB; // Monkeypatch Winston for MongoDb transport.
+require('winston-mongodb').MongoDB; // Monkey-patch Winston for MongoDb transport.
 
 var config = require('../config');
 
