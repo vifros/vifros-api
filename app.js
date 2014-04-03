@@ -19,6 +19,9 @@ app.use(express.methodOverride());
 app.use(express.cookieParser(pkg_info.name));
 app.use(express.session());
 
+var logger = require('./common/logger').logger;
+var log_tags = require('./common/logger').tags;
+
 // Log API requests.
 app.use(function (req, res, next) {
 	res.on('finish', function () {
@@ -57,9 +60,6 @@ if (app.get('env') == 'development') {
 if (app.get('env') == 'production') {
 	app.use(express.errorHandler());
 }
-
-var logger = require('./common/logger').logger;
-var log_tags = require('./common/logger').tags;
 
 // Connect to database.
 require('./common/db').connect();
