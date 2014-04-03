@@ -21,21 +21,23 @@ app.use(express.session());
 
 // Log API requests.
 app.use(function (req, res, next) {
-	logger.info('API request.', {
-		module: 'core',
-		tags  : [
-			log_tags.api_request
-		],
-		data  : {
-			req: {
-				method: req.method,
-				url   : req.url,
-				ip    : req.ip
-			},
-			res: {
-				status_code: res.statusCode
+	res.on('finish', function () {
+		logger.info('API request.', {
+			module: 'core',
+			tags  : [
+				log_tags.api_request
+			],
+			data  : {
+				req: {
+					method: req.method,
+					url   : req.url,
+					ip    : req.ip
+				},
+				res: {
+					status_code: res.statusCode
+				}
 			}
-		}
+		});
 	});
 
 	next();
