@@ -24,7 +24,7 @@ var log_tags = require('./common/logger').tags;
 // Log API requests.
 app.use(function (req, res, next) {
 	res.links({
-		profile: 'http://api.example.com/profile'
+		profile: 'http://api.example.com/profile' // TODO: Update the URL when the API documentation gets published.
 	});
 
 	res.on('finish', function () {

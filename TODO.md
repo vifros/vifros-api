@@ -10,6 +10,8 @@
 
 - Add pagination.
 
+- Add filtering by fields.
+
 - Classify errors in codes.
 
 - Fill the `field` property in errors.
