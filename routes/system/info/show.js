@@ -169,7 +169,7 @@ module.exports = function (req, res) {
 							 * Is a valid disk device.
 							 */
 							json_disks.push({
-								installed: disks[line].split('\t')[1],
+								installed: disks[line].split('\t')[1] * 1000,
 								usage    : disks[line].split('\t')[2].split('%')[0],
 								device   : disks[line].split('\t')[0],
 								path     : disks[line].split('\t')[3]
