@@ -1,12 +1,15 @@
 var async = require('async');
 
 var config = require('../../../../config');
+var _ = require('lodash');
 
 var StaticRoutingTable = require('../../../../models/routing/static/table').StaticRoutingTable;
 var StaticRoutingRoute = require('../../../../models/routing/static/route').StaticRoutingRoute;
 
 var logger = require('../../../../common/logger').logger;
 var log_tags = require('../../../../common/logger').tags;
+
+var jsonapi = require('../../../../utils/jsonapi');
 
 module.exports = function (req, res, options) {
   res.type('application/vnd.api+json');
@@ -59,12 +62,26 @@ module.exports = function (req, res, options) {
     errors: []
   };
 
+  var query_filter = jsonapi.buildQueryFilterFromReq({
+    req          : req,
+    resource_name: 'routes',
+    model        : StaticRoutingRoute
+  });
+
+  var query_options = jsonapi.buildQueryOptionsFromReq({
+    req          : req,
+    resource_name: 'routes',
+    model        : StaticRoutingRoute
+  });
+
   var filter = {};
   if (is_public_call && typeof options.filter != 'undefined') {
     filter = options.filter;
   }
 
-  StaticRoutingRoute.find(filter, function (error, docs) {
+  query_filter = _.merge(query_filter, filter);
+
+  StaticRoutingRoute.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
       logger.error(error.message, {
         module: 'routing/static/routes',
@@ -90,23 +107,54 @@ module.exports = function (req, res, options) {
         var related_table_ids = [];
       }
 
-      async.each(docs, function (item, cb_each) {
-        var buffer = item.toObject();
-        buffer.id = item._id;
+      async.parallel([
+        function (cb_parallel) {
+          async.each(docs, function (item, cb_each) {
+            var buffer = item.toObject();
+            buffer.id = item._id;
 
-        delete buffer._id;
-        delete buffer.__v;
+            delete buffer._id;
+            delete buffer.__v;
 
-        if (is_tables_requested
-          && related_table_ids.indexOf(buffer.table) == -1) {
+            if (is_tables_requested
+              && related_table_ids.indexOf(buffer.table) == -1) {
 
-          related_table_ids.push(buffer.table);
+              related_table_ids.push(buffer.table);
+            }
+
+            json_api_body.routes.push(buffer);
+
+            cb_each(null);
+          }, function (error) {
+            if (error) {
+              cb_parallel(error);
+
+              return;
+            }
+
+            cb_parallel(null);
+          });
+        },
+        function (cb_parallel) {
+          StaticRoutingRoute.count(filter, function (error, count) {
+            if (error) {
+              cb_parallel(error);
+
+              return;
+            }
+
+            json_api_body['meta'] = {
+              routes: {
+                total : count,
+                limit : Number(query_options.limit),
+                offset: Number(query_options.skip)
+              }
+            };
+
+            cb_parallel(null);
+          });
         }
-
-        json_api_body.routes.push(buffer);
-
-        cb_each(null);
-      }, function (error) {
+      ], function (error) {
         if (error) {
           logger.error(error.message, {
             module: 'routing/static/routes',

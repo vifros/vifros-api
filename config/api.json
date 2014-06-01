@@ -1,7 +1,10 @@
 {
-  "prefix": "/api",
-  "admin" : {
+  "prefix"    : "/api",
+  "admin"     : {
     "name"    : "admin@root",
     "password": "admin505"
+  },
+  "pagination": {
+    "limit": 10
   }
 }

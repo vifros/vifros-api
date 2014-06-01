@@ -1,4 +1,5 @@
 var async = require('async');
+var _ = require('lodash');
 
 var config = require('../../../config');
 
@@ -6,6 +7,8 @@ var logger = require('../../../common/logger').logger;
 var log_tags = require('../../../common/logger').tags;
 
 var Setting = require('../../../models/common/setting').Setting;
+
+var jsonapi = require('../../../utils/jsonapi');
 
 module.exports = function (req, res, options) {
   res.type('application/vnd.api+json');
@@ -29,12 +32,26 @@ module.exports = function (req, res, options) {
     errors: []
   };
 
+  var query_filter = jsonapi.buildQueryFilterFromReq({
+    req          : req,
+    resource_name: 'settings',
+    model        : Setting
+  });
+
+  var query_options = jsonapi.buildQueryOptionsFromReq({
+    req          : req,
+    resource_name: 'settings',
+    model        : Setting
+  });
+
   var filter = {};
   if (is_public_call && typeof options.filter != 'undefined') {
     filter = options.filter;
   }
 
-  Setting.find(filter, function (error, docs) {
+  query_filter = _.merge(query_filter, filter);
+
+  Setting.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
       logger.error(error.message, {
         module: 'common/settings',
@@ -56,17 +73,48 @@ module.exports = function (req, res, options) {
     }
 
     if (docs && docs.length) {
-      async.each(docs, function (item, cb_each) {
-        var buffer = item.toObject();
-        buffer.id = item._id;
+      async.parallel([
+        function (cb_parallel) {
+          async.each(docs, function (item, cb_each) {
+            var buffer = item.toObject();
+            buffer.id = item._id;
 
-        delete buffer._id;
-        delete buffer.__v;
+            delete buffer._id;
+            delete buffer.__v;
 
-        json_api_body.settings.push(buffer);
+            json_api_body.settings.push(buffer);
 
-        cb_each(null);
-      }, function (error) {
+            cb_each(null);
+          }, function (error) {
+            if (error) {
+              cb_parallel(error);
+
+              return;
+            }
+
+            cb_parallel(null);
+          });
+        },
+        function (cb_parallel) {
+          Setting.count(filter, function (error, count) {
+            if (error) {
+              cb_parallel(error);
+
+              return;
+            }
+
+            json_api_body['meta'] = {
+              settings: {
+                total : count,
+                limit : Number(query_options.limit),
+                offset: Number(query_options.skip)
+              }
+            };
+
+            cb_parallel(null);
+          });
+        }
+      ], function (error) {
         if (error) {
           logger.error(error, {
             module: 'common/settings',

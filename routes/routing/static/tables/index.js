@@ -7,6 +7,8 @@ var log_tags = require('../../../../common/logger').tags;
 
 var StaticRoutingTable = require('../../../../models/routing/static/table').StaticRoutingTable;
 
+var jsonapi = require('../../../../utils/jsonapi');
+
 module.exports = function (req, res) {
   res.type('application/vnd.api+json');
 
@@ -21,7 +23,19 @@ module.exports = function (req, res) {
     errors: []
   };
 
-  StaticRoutingTable.find({}, function (error, docs) {
+  var query_filter = jsonapi.buildQueryFilterFromReq({
+    req          : req,
+    resource_name: 'tables',
+    model        : StaticRoutingTable
+  });
+
+  var query_options = jsonapi.buildQueryOptionsFromReq({
+    req          : req,
+    resource_name: 'tables',
+    model        : StaticRoutingTable
+  });
+
+  StaticRoutingTable.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
       logger.error(error.message, {
         module: 'routing/static/tables',
@@ -43,16 +57,47 @@ module.exports = function (req, res) {
     }
 
     if (docs && docs.length) {
-      async.each(docs, function (item, cb_each) {
-        var buffer = item.toObject();
+      async.parallel([
+        function (cb_parallel) {
+          async.each(docs, function (item, cb_each) {
+            var buffer = item.toObject();
 
-        delete buffer._id;
-        delete buffer.__v;
+            delete buffer._id;
+            delete buffer.__v;
 
-        json_api_body.tables.push(buffer);
+            json_api_body.tables.push(buffer);
 
-        cb_each(null);
-      }, function (error) {
+            cb_each(null);
+          }, function (error) {
+            if (error) {
+              cb_parallel(error);
+
+              return;
+            }
+
+            cb_parallel(null);
+          });
+        },
+        function (cb_parallel) {
+          StaticRoutingTable.count(function (error, count) {
+            if (error) {
+              cb_parallel(error);
+
+              return;
+            }
+
+            json_api_body['meta'] = {
+              tables: {
+                total : count,
+                limit : Number(query_options.limit),
+                offset: Number(query_options.skip)
+              }
+            };
+
+            cb_parallel(null);
+          });
+        }
+      ], function (error) {
         if (error) {
           logger.error(error, {
             module: 'routing/static/tables',

@@ -8,6 +8,8 @@ var log_tags = require('../../../../common/logger').tags;
 var StaticRoutingTable = require('../../../../models/routing/static/table').StaticRoutingTable;
 var StaticRoutingRule = require('../../../../models/routing/static/rule').StaticRoutingRule;
 
+var jsonapi = require('../../../../utils/jsonapi');
+
 module.exports = function (req, res) {
   res.type('application/vnd.api+json');
 
@@ -49,7 +51,19 @@ module.exports = function (req, res) {
     errors: []
   };
 
-  StaticRoutingRule.find({}, function (error, docs) {
+  var query_filter = jsonapi.buildQueryFilterFromReq({
+    req          : req,
+    resource_name: 'rules',
+    model        : StaticRoutingRule
+  });
+
+  var query_options = jsonapi.buildQueryOptionsFromReq({
+    req          : req,
+    resource_name: 'rules',
+    model        : StaticRoutingRule
+  });
+
+  StaticRoutingRule.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
       logger.error(error.message, {
         module: 'routing/static/rules',
@@ -75,23 +89,55 @@ module.exports = function (req, res) {
         var related_table_ids = [];
       }
 
-      async.each(docs, function (item, cb_each) {
-        var buffer = item.toObject();
-        buffer.id = item._id;
 
-        delete buffer._id;
-        delete buffer.__v;
+      async.parallel([
+        function (cb_parallel) {
+          async.each(docs, function (item, cb_each) {
+            var buffer = item.toObject();
+            buffer.id = item._id;
 
-        if (is_tables_requested
-          && related_table_ids.indexOf(buffer.table) == -1) {
+            delete buffer._id;
+            delete buffer.__v;
 
-          related_table_ids.push(buffer.table);
+            if (is_tables_requested
+              && related_table_ids.indexOf(buffer.table) == -1) {
+
+              related_table_ids.push(buffer.table);
+            }
+
+            json_api_body.rules.push(buffer);
+
+            cb_each(null);
+          }, function (error) {
+            if (error) {
+              cb_parallel(error);
+
+              return;
+            }
+
+            cb_parallel(null);
+          });
+        },
+        function (cb_parallel) {
+          StaticRoutingRule.count(function (error, count) {
+            if (error) {
+              cb_parallel(error);
+
+              return;
+            }
+
+            json_api_body['meta'] = {
+              rules: {
+                total : count,
+                limit : Number(query_options.limit),
+                offset: Number(query_options.skip)
+              }
+            };
+
+            cb_parallel(null);
+          });
         }
-
-        json_api_body.rules.push(buffer);
-
-        cb_each(null);
-      }, function (error) {
+      ], function (error) {
         if (error) {
           logger.error(error, {
             module: 'routing/static/rules',

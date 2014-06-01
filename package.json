@@ -15,8 +15,11 @@
     "async"          : "*",
     "iproute"        : "*",
     "json-patch"     : "*",
+    "lodash"         : "*",
     "mongoose"       : "*",
     "winston"        : "*",
-    "winston-mongodb": "*"
+    "winston-mongodb": "*",
+
+    "vifros-utils": "*"
   }
 }
