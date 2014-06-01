@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
-var express = require('express');
 var http = require('http'); // TODO: At some point change the protocol to HTTPS. or give the two options?
+
+var express = require('express');
+var bodyParser = require('body-parser');
+var errorHandler = require('errorhandler');
 
 var config = require('./config');
 var pkg_info = require('./package.json');
@@ -13,10 +16,8 @@ app.set('port', config.website.port
   || process.env.PORT
   || 3000);
 
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.cookieParser(pkg_info.name));
-app.use(express.session());
+app.use(bodyParser.json({type: 'application/vnd.api+json'}));
+app.use(require('method-override')());
 
 var logger = require('./common/logger').logger;
 var log_tags = require('./common/logger').tags;
@@ -49,10 +50,8 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(app.router);
-
 if (app.get('env') == 'development') {
-  app.use(express.errorHandler({
+  app.use(errorHandler({
     dumpExceptions: true,
     showStack     : true
   }));
@@ -61,7 +60,7 @@ if (app.get('env') == 'development') {
 }
 
 if (app.get('env') == 'production') {
-  app.use(express.errorHandler());
+  app.use(errorHandler());
 }
 
 // Connect to database.

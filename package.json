@@ -7,8 +7,12 @@
   },
   "description" : "",
   "dependencies": {
+    "express"        : "4.*",
+    "bodyparser"     : "*",
+    "errorhandler"   : "*",
+    "method-override": "*",
+
     "async"          : "*",
-    "express"        : "*",
     "iproute"        : "*",
     "json-patch"     : "*",
     "mongoose"       : "*",

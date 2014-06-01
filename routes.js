@@ -4,150 +4,201 @@ module.exports = function (app) {
   /*
    * API root.
    */
-  app.get(config.api.prefix, require('./routes/index'));
+  app.route(config.api.prefix)
+    .get(require('./routes/index'));
 
   /*
    * System.
    */
-  app.get(config.api.prefix + '/system', require('./routes/system/index'));
+  app.route(config.api.prefix + '/system')
+    .get(require('./routes/system/index'));
 
   /*
    * System. Info.
    */
-  app.get(config.api.prefix + '/system/info', require('./routes/system/info/index'));
-  app.get(config.api.prefix + '/system/info/:info', require('./routes/system/info/show'));
+  app.route(config.api.prefix + '/system/info')
+    .get(require('./routes/system/info/index'));
+
+  app.route(config.api.prefix + '/system/info/:info')
+    .get(require('./routes/system/info/show'));
 
   /*
    * System. Logging.
    */
-  app.get(config.api.prefix + '/system/logging', require('./routes/system/logging/index'));
+  app.route(config.api.prefix + '/system/logging')
+    .get(require('./routes/system/logging/index'));
 
   /*
    * System. Logging. Logs.
    */
-  app.get(config.api.prefix + '/system/logging/logs', require('./routes/system/logging/logs/index'));
-  app.get(config.api.prefix + '/system/logging/logs/:log', require('./routes/system/logging/logs/show'));
+  app.route(config.api.prefix + '/system/logging/logs')
+    .get(require('./routes/system/logging/logs/index'));
+
+  app.route(config.api.prefix + '/system/logging/logs/:log')
+    .get(require('./routes/system/logging/logs/show'));
 
   /*
    * System. Logging. Settings.
    */
-  app.get(config.api.prefix + '/system/logging/settings', require('./routes/system/logging/settings/index'));
-  app.get(config.api.prefix + '/system/logging/settings/:setting', require('./routes/system/logging/settings/show'));
-  app.patch(config.api.prefix + '/system/logging/settings/:setting', require('./routes/system/logging/settings/patch'));
+  app.route(config.api.prefix + '/system/logging/settings')
+    .get(require('./routes/system/logging/settings/index'));
+
+  app.route(config.api.prefix + '/system/logging/settings/:setting')
+    .get(require('./routes/system/logging/settings/show'))
+    .patch(require('./routes/system/logging/settings/patch'));
 
   /*
    * System. Tunables.
    */
-  app.get(config.api.prefix + '/system/tunables', require('./routes/system/tunables/index'));
-  app.get(config.api.prefix + '/system/tunables/:tunable', require('./routes/system/tunables/show'));
-  app.patch(config.api.prefix + '/system/tunables/:tunable', require('./routes/system/tunables/patch'));
-  app.delete(config.api.prefix + '/system/tunables/:tunable', require('./routes/system/tunables/delete'));
+  app.route(config.api.prefix + '/system/tunables')
+    .get(require('./routes/system/tunables/index'));
+
+  app.route(config.api.prefix + '/system/tunables/:tunable')
+    .get(require('./routes/system/tunables/show'))
+    .patch(require('./routes/system/tunables/patch'))
+    .delete(require('./routes/system/tunables/delete'));
 
   /*
    * Routing. Settings.
    */
-  app.get(config.api.prefix + '/system/settings', require('./routes/system/settings/index'));
-  app.get(config.api.prefix + '/system/settings/:setting', require('./routes/system/settings/show'));
-  app.patch(config.api.prefix + '/system/settings/:setting', require('./routes/system/settings/patch'));
+  app.route(config.api.prefix + '/system/settings')
+    .get(require('./routes/system/settings/index'));
+
+  app.route(config.api.prefix + '/system/settings/:setting')
+    .get(require('./routes/system/settings/show'))
+    .patch(require('./routes/system/settings/patch'));
 
   /*
    * Interfaces.
    */
-  app.get(config.api.prefix + '/interfaces', require('./routes/interfaces/index'));
+  app.route(config.api.prefix + '/interfaces')
+    .get(require('./routes/interfaces/index'));
 
   /*
    * Interfaces. Ethernets.
    */
-  app.get(config.api.prefix + '/interfaces/ethernets', require('./routes/interfaces/ethernets/index'));
-  app.get(config.api.prefix + '/interfaces/ethernets/:ethernet', require('./routes/interfaces/ethernets/show'));
-  app.patch(config.api.prefix + '/interfaces/ethernets/:ethernet', require('./routes/interfaces/ethernets/patch'));
-  app.delete(config.api.prefix + '/interfaces/ethernets/:ethernet', require('./routes/interfaces/ethernets/delete'));
+  app.route(config.api.prefix + '/interfaces/ethernets')
+    .get(require('./routes/interfaces/ethernets/index'));
+
+  app.route(config.api.prefix + '/interfaces/ethernets/:ethernet')
+    .get(require('./routes/interfaces/ethernets/show'))
+    .patch(require('./routes/interfaces/ethernets/patch'))
+    .delete(require('./routes/interfaces/ethernets/delete'));
 
   /*
    * Interfaces. Ethernets. Addresses.
    */
-  app.get(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses', require('./routes/interfaces/ethernets/addresses/index'));
-  app.post(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses', require('./routes/interfaces/ethernets/addresses/create'));
-  app.get(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses/:address', require('./routes/interfaces/ethernets/addresses/show'));
-  app.delete(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses/:address', require('./routes/interfaces/addresses/delete'));
-  app.patch(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses/:address', require('./routes/interfaces/addresses/patch'));
+  app.route(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses')
+    .get(require('./routes/interfaces/ethernets/addresses/index'))
+    .post(require('./routes/interfaces/ethernets/addresses/create'));
+
+  app.route(config.api.prefix + '/interfaces/ethernets/:ethernet/addresses/:address')
+    .get(require('./routes/interfaces/ethernets/addresses/show'))
+    .delete(require('./routes/interfaces/addresses/delete'))
+    .patch(require('./routes/interfaces/addresses/patch'));
 
   /*
    * Interfaces. Loopbacks.
    */
-  app.get(config.api.prefix + '/interfaces/loopbacks', require('./routes/interfaces/loopbacks/index'));
-  app.get(config.api.prefix + '/interfaces/loopbacks/:loopback', require('./routes/interfaces/loopbacks/show'));
-  app.patch(config.api.prefix + '/interfaces/loopbacks/:loopback', require('./routes/interfaces/loopbacks/patch'));
-  app.delete(config.api.prefix + '/interfaces/loopbacks/:loopback', require('./routes/interfaces/loopbacks/delete'));
+  app.route(config.api.prefix + '/interfaces/loopbacks')
+    .get(require('./routes/interfaces/loopbacks/index'));
+
+  app.route(config.api.prefix + '/interfaces/loopbacks/:loopback')
+    .get(require('./routes/interfaces/loopbacks/show'))
+    .patch(require('./routes/interfaces/loopbacks/patch'))
+    .delete(require('./routes/interfaces/loopbacks/delete'));
 
   /*
    * Interfaces. Loopbacks. Addresses.
    */
-  app.get(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses', require('./routes/interfaces/loopbacks/addresses/index'));
-  app.post(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses', require('./routes/interfaces/loopbacks/addresses/create'));
-  app.get(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses/:address', require('./routes/interfaces/loopbacks/addresses/show'));
-  app.delete(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses/:address', require('./routes/interfaces/addresses/delete'));
-  app.patch(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses/:address', require('./routes/interfaces/addresses/patch'));
+  app.route(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses')
+    .get(require('./routes/interfaces/loopbacks/addresses/index'))
+    .post(require('./routes/interfaces/loopbacks/addresses/create'));
+
+  app.route(config.api.prefix + '/interfaces/loopbacks/:loopback/addresses/:address')
+    .get(require('./routes/interfaces/loopbacks/addresses/show'))
+    .delete(require('./routes/interfaces/addresses/delete'))
+    .patch(require('./routes/interfaces/addresses/patch'));
 
   /*
    * Interfaces. VLANs.
    */
-  app.get(config.api.prefix + '/interfaces/vlans', require('./routes/interfaces/vlans/index'));
-  app.post(config.api.prefix + '/interfaces/vlans', require('./routes/interfaces/vlans/create'));
-  app.get(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag', require('./routes/interfaces/vlans/show'));
-  app.patch(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag', require('./routes/interfaces/vlans/patch'));
-  app.delete(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag', require('./routes/interfaces/vlans/delete'));
+  app.route(config.api.prefix + '/interfaces/vlans')
+    .get(require('./routes/interfaces/vlans/index'))
+    .post(require('./routes/interfaces/vlans/create'));
+
+  app.route(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag')
+    .get(require('./routes/interfaces/vlans/show'))
+    .patch(require('./routes/interfaces/vlans/patch'))
+    .delete(require('./routes/interfaces/vlans/delete'));
 
   /*
    * Interfaces. VLANs. Addresses.
    */
-  app.get(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses', require('./routes/interfaces/vlans/addresses/index'));
-  app.post(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses', require('./routes/interfaces/vlans/addresses/create'));
-  app.get(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses/:address', require('./routes/interfaces/vlans/addresses/show'));
-  app.delete(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses/:address', require('./routes/interfaces/addresses/delete'));
-  app.patch(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses/:address', require('./routes/interfaces/addresses/patch'));
+  app.route(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses')
+    .get(require('./routes/interfaces/vlans/addresses/index'))
+    .post(require('./routes/interfaces/vlans/addresses/create'));
+
+  app.route(config.api.prefix + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses/:address')
+    .get(require('./routes/interfaces/vlans/addresses/show'))
+    .delete(require('./routes/interfaces/addresses/delete'))
+    .patch(require('./routes/interfaces/addresses/patch'));
 
   /*
    * Routing.
    */
-  app.get(config.api.prefix + '/routing', require('./routes/routing/index'));
+  app.route(config.api.prefix + '/routing')
+    .get(require('./routes/routing/index'));
 
   /*
    * Routing. Settings.
    */
-  app.get(config.api.prefix + '/routing/settings', require('./routes/routing/settings/index'));
-  app.get(config.api.prefix + '/routing/settings/:setting', require('./routes/routing/settings/show'));
-  app.patch(config.api.prefix + '/routing/settings/:setting', require('./routes/routing/settings/patch'));
+  app.route(config.api.prefix + '/routing/settings')
+    .get(require('./routes/routing/settings/index'));
+
+  app.route(config.api.prefix + '/routing/settings/:setting')
+    .get(require('./routes/routing/settings/show'))
+    .patch(require('./routes/routing/settings/patch'));
 
   /*
    * Routing. Static.
    */
-  app.get(config.api.prefix + '/routing/static', require('./routes/routing/static/index'));
+  app.route(config.api.prefix + '/routing/static')
+    .get(require('./routes/routing/static/index'));
 
   /*
    * Routing. Static. Tables.
    */
-  app.get(config.api.prefix + '/routing/static/tables', require('./routes/routing/static/tables/index'));
-  app.post(config.api.prefix + '/routing/static/tables', require('./routes/routing/static/tables/create'));
-  app.get(config.api.prefix + '/routing/static/tables/:table', require('./routes/routing/static/tables/show'));
-  app.delete(config.api.prefix + '/routing/static/tables/:table', require('./routes/routing/static/tables/delete'));
-  app.patch(config.api.prefix + '/routing/static/tables/:table', require('./routes/routing/static/tables/patch'));
+  app.route(config.api.prefix + '/routing/static/tables')
+    .get(require('./routes/routing/static/tables/index'))
+    .post(require('./routes/routing/static/tables/create'));
+
+  app.route(config.api.prefix + '/routing/static/tables/:table')
+    .get(require('./routes/routing/static/tables/show'))
+    .delete(require('./routes/routing/static/tables/delete'))
+    .patch(require('./routes/routing/static/tables/patch'));
 
   /*
    * Routing. Static. Tables. Routes.
    */
-  app.get(config.api.prefix + '/routing/static/tables/:table/routes', require('./routes/routing/static/tables/routes/index'));
-  app.post(config.api.prefix + '/routing/static/tables/:table/routes', require('./routes/routing/static/tables/routes/create'));
-  app.get(config.api.prefix + '/routing/static/tables/:table/routes/:route', require('./routes/routing/static/tables/routes/show'));
-  app.delete(config.api.prefix + '/routing/static/tables/:table/routes/:route', require('./routes/routing/static/routes/delete'));
-  app.patch(config.api.prefix + '/routing/static/tables/:table/routes/:route', require('./routes/routing/static/routes/patch'));
+  app.route(config.api.prefix + '/routing/static/tables/:table/routes')
+    .get(require('./routes/routing/static/tables/routes/index'))
+    .post(require('./routes/routing/static/tables/routes/create'));
+
+  app.route(config.api.prefix + '/routing/static/tables/:table/routes/:route')
+    .get(require('./routes/routing/static/tables/routes/show'))
+    .delete(require('./routes/routing/static/routes/delete'))
+    .patch(require('./routes/routing/static/routes/patch'));
 
   /*
    * Routing. Static. Rules.
    */
-  app.get(config.api.prefix + '/routing/static/rules', require('./routes/routing/static/rules/index'));
-  app.post(config.api.prefix + '/routing/static/rules', require('./routes/routing/static/rules/create'));
-  app.get(config.api.prefix + '/routing/static/rules/:rule', require('./routes/routing/static/rules/show'));
-  app.delete(config.api.prefix + '/routing/static/rules/:rule', require('./routes/routing/static/rules/delete'));
-  app.patch(config.api.prefix + '/routing/static/rules/:rule', require('./routes/routing/static/rules/patch'));
+  app.route(config.api.prefix + '/routing/static/rules')
+    .get(require('./routes/routing/static/rules/index'))
+    .post(require('./routes/routing/static/rules/create'));
+
+  app.route(config.api.prefix + '/routing/static/rules/:rule')
+    .get(require('./routes/routing/static/rules/show'))
+    .delete(require('./routes/routing/static/rules/delete'))
+    .patch(require('./routes/routing/static/rules/patch'));
 };
