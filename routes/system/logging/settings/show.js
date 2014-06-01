@@ -1,30 +1,30 @@
 var settings_index = require('../../../common/settings/index');
 
 module.exports = function (req, res) {
-	res.type('application/vnd.api+json');
+  res.type('application/vnd.api+json');
 
-	var json_api_errors = {
-		errors: []
-	};
+  var json_api_errors = {
+    errors: []
+  };
 
-	try {
-		/*
-		 * Delegate the responsibility to send the response to this method.
-		 */
-		settings_index(req, res, {
-			filter  : {
-				_id: req.params.setting
-			},
-			base_url: '/system/logging'
-		});
-	}
-	catch (error) {
-		json_api_errors.errors.push({
-			code   : error.name,
-			field  : '',
-			message: error.message
-		});
+  try {
+    /*
+     * Delegate the responsibility to send the response to this method.
+     */
+    settings_index(req, res, {
+      filter  : {
+        _id: req.params.setting
+      },
+      base_url: '/system/logging'
+    });
+  }
+  catch (error) {
+    json_api_errors.errors.push({
+      code   : error.name,
+      field  : '',
+      message: error.message
+    });
 
-		res.json(500, json_api_errors); // Internal Server Error.
-	}
+    res.json(500, json_api_errors); // Internal Server Error.
+  }
 };

@@ -6,222 +6,232 @@ var logger = require('../../../common/logger').logger;
 var log_tags = require('../../../common/logger').tags;
 
 module.exports = function (req, res, options) {
-	if (!req.is('application/json-patch+json')) {
-		res.send(415); // Unsupported Media Type.
-	}
-	else {
-		res.type('application/vnd.api+json');
+  if (!req.is('application/json-patch+json')) {
+    res.send(415); // Unsupported Media Type.
 
-		var json_api_errors = {
-			errors: []
-		};
+    return;
+  }
 
-		Setting.findOne({
-			name: req.params.setting
-		}, function (error, doc) {
-			if (error) {
-				logger.error(error.message, {
-					module: 'common/settings',
-					tags  : [
-						log_tags.api_request,
-						log_tags.db
-					]
-				});
+  res.type('application/vnd.api+json');
 
-				json_api_errors.errors.push({
-					code   : error.name,
-					field  : '',
-					message: error.message
-				});
+  var json_api_errors = {
+    errors: []
+  };
 
-				res.json(500, json_api_errors); // Internal Server Error.
-			}
-			else if (doc) {
-				/*
-				 * Validate received patch.
-				 */
-				// Prepare doc for patching.
-				var doc_patch = {};
+  Setting.findOne({
+    name: req.params.setting
+  }, function (error, doc) {
+    if (error) {
+      logger.error(error.message, {
+        module: 'common/settings',
+        tags  : [
+          log_tags.api_request,
+          log_tags.db
+        ]
+      });
 
-				var buffer = doc.toObject();
+      json_api_errors.errors.push({
+        code   : error.name,
+        field  : '',
+        message: error.message
+      });
 
-				delete buffer._id;
-				delete buffer.__v;
+      res.json(500, json_api_errors); // Internal Server Error.
 
-				doc_patch.settings = [buffer];
+      return;
+    }
 
-				/*
-				 * Add the not present variables since the patch need those to work properly.
-				 * Remember to remove the null variables later, after processing is done.
-				 */
-				var schema_vars = JSON.parse(JSON.stringify(Setting.schema.paths)); // This construction is to do a deep copy.
-				delete schema_vars._id;
-				delete schema_vars.__v;
+    if (doc) {
+      /*
+       * Validate received patch.
+       */
+      // Prepare doc for patching.
+      var doc_patch = {};
 
-				for (var i = 0, j = Object.keys(schema_vars).length;
-				     i < j;
-				     i++) {
+      var buffer = doc.toObject();
 
-					var key = Object.keys(schema_vars)[i];
+      delete buffer._id;
+      delete buffer.__v;
 
-					if (!doc_patch.settings[0].hasOwnProperty(key)) {
-						doc_patch.settings[0][key] = null;
-					}
-				}
+      doc_patch.settings = [buffer];
 
-				try {
-					jsonpatch.apply(doc_patch, req.body);
-				}
-				catch (error) {
-					logger.error(error.message, {
-						module: 'common/settings',
-						tags  : [
-							log_tags.api_request
-						]
-					});
+      /*
+       * Add the not present variables since the patch need those to work properly.
+       * Remember to remove the null variables later, after processing is done.
+       */
+      var schema_vars = JSON.parse(JSON.stringify(Setting.schema.paths)); // This construction is to do a deep copy.
+      delete schema_vars._id;
+      delete schema_vars.__v;
 
-					json_api_errors.errors.push({
-						code   : error.name,
-						field  : '',
-						message: error.message
-					});
+      for (var i = 0, j = Object.keys(schema_vars).length;
+           i < j;
+           i++) {
 
-					res.json(400, json_api_errors); // Internal Server Error.
+        var key = Object.keys(schema_vars)[i];
 
-					return;
-				}
+        if (!doc_patch.settings[0].hasOwnProperty(key)) {
+          doc_patch.settings[0][key] = null;
+        }
+      }
 
-				/*
-				 * Remove the null variables needed by json-patch.
-				 */
-				for (var i = 0, j = Object.keys(doc_patch.settings[0]).length;
-				     i < j;
-				     i++) {
+      try {
+        jsonpatch.apply(doc_patch, req.body);
+      }
+      catch (error) {
+        logger.error(error.message, {
+          module: 'common/settings',
+          tags  : [
+            log_tags.api_request
+          ]
+        });
 
-					var key = Object.keys(schema_vars)[i];
+        json_api_errors.errors.push({
+          code   : error.name,
+          field  : '',
+          message: error.message
+        });
 
-					if (doc_patch.settings[0][key] == null) {
-						delete doc_patch.settings[0][key];
-					}
-				}
+        res.json(400, json_api_errors); // Internal Server Error.
 
-				var valid_changed_options = {};
-				var readonly_changed_fields = [];
-				for (var i = 0, j = req.body.length;
-				     i < j;
-				     i++) {
+        return;
+      }
 
-					var path = req.body[i].path.split('/settings/0/')[1];
+      /*
+       * Remove the null variables needed by json-patch.
+       */
+      for (var i = 0, j = Object.keys(doc_patch.settings[0]).length;
+           i < j;
+           i++) {
 
-					// Check for readonly params.
-					if (path == 'module'
-						|| path == 'name') {
+        var key = Object.keys(schema_vars)[i];
 
-						readonly_changed_fields.push(path);
-					}
-					else {
-						valid_changed_options[path] = req.body[i].value;
-					}
-				}
+        if (doc_patch.settings[0][key] == null) {
+          delete doc_patch.settings[0][key];
+        }
+      }
 
-				if (readonly_changed_fields.length) {
-					// There are requests to change readonly values, so throw an error.
-					// Build the error response with the required fields.
-					for (var i = 0, j = readonly_changed_fields.length;
-					     i < j;
-					     i++) {
+      var valid_changed_options = {};
+      var readonly_changed_fields = [];
+      for (var i = 0, j = req.body.length;
+           i < j;
+           i++) {
 
-						json_api_errors.errors.push({
-							code   : 'readonly_field',
-							field  : readonly_changed_fields[i],
-							message: 'The field is readonly and can not be changed.'
-						});
-					}
+        var path = req.body[i].path.split('/settings/0/')[1];
 
-					res.json(400, json_api_errors); // Bad Request.
-				}
-				else {
-					/*
-					 * Cross relationships functionality execution.
-					 * If this is used it means that changing this setting have side effects.
-					 */
-					if (options && options.cb_patch) {
-						options.cb_patch(doc_patch.settings[0], function (error) {
-							if (error) {
-								logger.error(error, {
-									module: 'common/settings',
-									tags  : [
-										log_tags.cross_rel
-									]
-								});
+        // Check for readonly params.
+        if (path == 'module'
+          || path == 'name') {
 
-								json_api_errors.errors.push({
-									code   : error.name,
-									field  : '',
-									message: error.message
-								});
+          readonly_changed_fields.push(path);
+        }
+        else {
+          valid_changed_options[path] = req.body[i].value;
+        }
+      }
 
-								res.json(500, json_api_errors); // Internal Server Error.
-							}
-							else {
-								Setting.findOneAndUpdate({
-										name: req.params.setting
-									}, doc_patch.settings[0],
-									function (error) {
-										if (error) {
-											logger.error(error.message, {
-												module: 'common/settings',
-												tags  : [
-													log_tags.api_request
-												]
-											});
+      if (readonly_changed_fields.length) {
+        // There are requests to change readonly values, so throw an error.
+        // Build the error response with the required fields.
+        for (var i = 0, j = readonly_changed_fields.length;
+             i < j;
+             i++) {
 
-											json_api_errors.errors.push({
-												code   : error.name,
-												field  : '',
-												message: error.message
-											});
+          json_api_errors.errors.push({
+            code   : 'readonly_field',
+            field  : readonly_changed_fields[i],
+            message: 'The field is readonly and can not be changed.'
+          });
+        }
 
-											res.json(500, json_api_errors); // Internal Server Error.
-										}
-										else {
-											res.send(204); // No Content.
-										}
-									});
-							}
-						});
-					}
-					else {
-						Setting.findOneAndUpdate({
-								name: req.params.setting
-							}, doc_patch.settings[0],
-							function (error) {
-								if (error) {
-									logger.error(error.message, {
-										module: 'common/settings',
-										tags  : [
-											log_tags.api_request
-										]
-									});
+        res.json(400, json_api_errors); // Bad Request.
 
-									json_api_errors.errors.push({
-										code   : error.name,
-										field  : '',
-										message: error.message
-									});
+        return;
+      }
 
-									res.json(500, json_api_errors); // Internal Server Error.
-								}
-								else {
-									res.send(204); // No Content.
-								}
-							});
-					}
-				}
-			}
-			else {
-				res.send(404); // Not found.
-			}
-		});
-	}
+      /*
+       * Cross relationships functionality execution.
+       * If this is used it means that changing this setting have side effects.
+       */
+      if (options && options.cb_patch) {
+        options.cb_patch(doc_patch.settings[0], function (error) {
+          if (error) {
+            logger.error(error, {
+              module: 'common/settings',
+              tags  : [
+                log_tags.cross_rel
+              ]
+            });
+
+            json_api_errors.errors.push({
+              code   : error.name,
+              field  : '',
+              message: error.message
+            });
+
+            res.json(500, json_api_errors); // Internal Server Error.
+
+            return;
+          }
+
+          Setting.findOneAndUpdate({
+              name: req.params.setting
+            }, doc_patch.settings[0],
+            function (error) {
+              if (error) {
+                logger.error(error.message, {
+                  module: 'common/settings',
+                  tags  : [
+                    log_tags.api_request
+                  ]
+                });
+
+                json_api_errors.errors.push({
+                  code   : error.name,
+                  field  : '',
+                  message: error.message
+                });
+
+                res.json(500, json_api_errors); // Internal Server Error.
+
+                return;
+              }
+
+              res.send(204); // No Content.
+            });
+        });
+
+        return;
+      }
+
+      Setting.findOneAndUpdate({
+          name: req.params.setting
+        }, doc_patch.settings[0],
+        function (error) {
+          if (error) {
+            logger.error(error.message, {
+              module: 'common/settings',
+              tags  : [
+                log_tags.api_request
+              ]
+            });
+
+            json_api_errors.errors.push({
+              code   : error.name,
+              field  : '',
+              message: error.message
+            });
+
+            res.json(500, json_api_errors); // Internal Server Error.
+
+            return;
+          }
+
+          res.send(204); // No Content.
+        });
+
+      return;
+    }
+
+    res.send(404); // Not found.
+  });
 };

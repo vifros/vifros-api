@@ -8,172 +8,179 @@ var log_tags = require('../../../../common/logger').tags;
 var StaticRoutingRule = require('../../../../models/routing/static/rule').StaticRoutingRule;
 
 module.exports = function (req, res) {
-	if (!req.is('application/json-patch+json')) {
-		res.send(415); // Unsupported Media Type.
-	}
-	else {
-		res.type('application/vnd.api+json');
+  if (!req.is('application/json-patch+json')) {
+    res.send(415); // Unsupported Media Type.
 
-		var json_api_errors = {
-			errors: []
-		};
+    return;
+  }
 
-		StaticRoutingRule.findOne({
-			priority: req.params.rule
-		}, function (error, doc) {
-			if (error) {
-				logger.error(error.message, {
-					module: 'routing/static/rules',
-					tags  : [
-						log_tags.api_request,
-						log_tags.db
-					]
-				});
+  res.type('application/vnd.api+json');
 
-				json_api_errors.errors.push({
-					code   : error.name,
-					field  : '',
-					message: error.message
-				});
+  var json_api_errors = {
+    errors: []
+  };
 
-				res.json(500, json_api_errors); // Internal Server Error.
-			}
-			else if (doc) {
-				/*
-				 * Validate received patch.
-				 */
-				// Prepare doc for patching.
-				var doc_patch = {};
+  StaticRoutingRule.findOne({
+    priority: req.params.rule
+  }, function (error, doc) {
+    if (error) {
+      logger.error(error.message, {
+        module: 'routing/static/rules',
+        tags  : [
+          log_tags.api_request,
+          log_tags.db
+        ]
+      });
 
-				var buffer = doc.toObject();
+      json_api_errors.errors.push({
+        code   : error.name,
+        field  : '',
+        message: error.message
+      });
 
-				delete buffer._id;
-				delete buffer.__v;
+      res.json(500, json_api_errors); // Internal Server Error.
 
-				doc_patch.rules = [buffer];
+      return;
+    }
 
-				/*
-				 * Add the not present variables since the patch needed those to work properly.
-				 * Remember to remove the null variables later, after processing is done.
-				 */
-				var schema_vars = JSON.parse(JSON.stringify(StaticRoutingRule.schema.paths)); // This construction is to do a deep copy.
-				delete schema_vars._id;
-				delete schema_vars.__v;
+    if (doc) {
+      /*
+       * Validate received patch.
+       */
+      // Prepare doc for patching.
+      var doc_patch = {};
 
-				for (var i = 0, j = Object.keys(schema_vars).length;
-				     i < j;
-				     i++) {
+      var buffer = doc.toObject();
 
-					var key = Object.keys(schema_vars)[i];
+      delete buffer._id;
+      delete buffer.__v;
 
-					if (!doc_patch.rules[0].hasOwnProperty(key)) {
-						doc_patch.rules[0][key] = null;
-					}
-				}
+      doc_patch.rules = [buffer];
 
-				try {
-					jsonpatch.apply(doc_patch, req.body);
-				}
-				catch (error) {
-					logger.error(error.message, {
-						module: 'routing/static/rules',
-						tags  : [
-							log_tags.api_request
-						]
-					});
+      /*
+       * Add the not present variables since the patch needed those to work properly.
+       * Remember to remove the null variables later, after processing is done.
+       */
+      var schema_vars = JSON.parse(JSON.stringify(StaticRoutingRule.schema.paths)); // This construction is to do a deep copy.
+      delete schema_vars._id;
+      delete schema_vars.__v;
 
-					json_api_errors.errors.push({
-						code   : error.name,
-						field  : '',
-						message: error.message
-					});
+      for (var i = 0, j = Object.keys(schema_vars).length;
+           i < j;
+           i++) {
 
-					res.json(400, json_api_errors); // Bad Request.
+        var key = Object.keys(schema_vars)[i];
 
-					return;
-				}
+        if (!doc_patch.rules[0].hasOwnProperty(key)) {
+          doc_patch.rules[0][key] = null;
+        }
+      }
 
-				/*
-				 * Remove the null variables needed by json-patch.
-				 */
-				for (var i = 0, j = Object.keys(doc_patch.rules[0]).length;
-				     i < j;
-				     i++) {
+      try {
+        jsonpatch.apply(doc_patch, req.body);
+      }
+      catch (error) {
+        logger.error(error.message, {
+          module: 'routing/static/rules',
+          tags  : [
+            log_tags.api_request
+          ]
+        });
 
-					var key = Object.keys(schema_vars)[i];
+        json_api_errors.errors.push({
+          code   : error.name,
+          field  : '',
+          message: error.message
+        });
 
-					if (doc_patch.rules[0][key] == null) {
-						delete doc_patch.rules[0][key];
-					}
-				}
+        res.json(400, json_api_errors); // Bad Request.
 
-				var valid_changed_options = {};
-				var readonly_changed_fields = [];
-				for (var i = 0, j = req.body.length;
-				     i < j;
-				     i++) {
+        return;
+      }
 
-					var path = req.body[i].path.split('/rules/0/')[1];
+      /*
+       * Remove the null variables needed by json-patch.
+       */
+      for (var i = 0, j = Object.keys(doc_patch.rules[0]).length;
+           i < j;
+           i++) {
 
-					// Check for readonly params.
-					if (path == 'description') {
-						valid_changed_options[path] = req.body[i].value;
-					}
-					else {
-						readonly_changed_fields.push(path);
-					}
-				}
+        var key = Object.keys(schema_vars)[i];
 
-				if (readonly_changed_fields.length) {
-					// There are requests to change readonly values, so throw an error.
-					// Build the error response with the required fields.
-					for (var i = 0, j = readonly_changed_fields.length;
-					     i < j;
-					     i++) {
+        if (doc_patch.rules[0][key] == null) {
+          delete doc_patch.rules[0][key];
+        }
+      }
 
-						json_api_errors.errors.push({
-							code   : 'readonly_field',
-							field  : readonly_changed_fields[i],
-							message: 'The field is readonly and can not be changed.'
-						});
-					}
+      var valid_changed_options = {};
+      var readonly_changed_fields = [];
+      for (var i = 0, j = req.body.length;
+           i < j;
+           i++) {
 
-					res.json(400, json_api_errors); // Bad Request.
-				}
-				else {
-					/*
-					 * The only possible changed field is from description, so save it directly to DB.
-					 */
-					StaticRoutingRule.findOneAndUpdate({
-							priority: req.params.rule
-						}, doc_patch.rules[0],
-						function (error) {
-							if (error) {
-								logger.error(error.message, {
-									module: 'routing/static/rules',
-									tags  : [
-										log_tags.api_request,
-										log_tags.db
-									]
-								});
+        var path = req.body[i].path.split('/rules/0/')[1];
 
-								json_api_errors.errors.push({
-									code   : error.name,
-									field  : '',
-									message: error.message
-								});
+        // Check for readonly params.
+        if (path == 'description') {
+          valid_changed_options[path] = req.body[i].value;
+        }
+        else {
+          readonly_changed_fields.push(path);
+        }
+      }
 
-								res.json(500, json_api_errors); // Internal Server Error.
-							}
-							else {
-								res.send(204); // No Content.
-							}
-						});
-				}
-			}
-			else {
-				res.send(404); // Not found.
-			}
-		});
-	}
+      if (readonly_changed_fields.length) {
+        // There are requests to change readonly values, so throw an error.
+        // Build the error response with the required fields.
+        for (var i = 0, j = readonly_changed_fields.length;
+             i < j;
+             i++) {
+
+          json_api_errors.errors.push({
+            code   : 'readonly_field',
+            field  : readonly_changed_fields[i],
+            message: 'The field is readonly and can not be changed.'
+          });
+        }
+
+        res.json(400, json_api_errors); // Bad Request.
+
+        return;
+      }
+
+      /*
+       * The only possible changed field is from description, so save it directly to DB.
+       */
+      StaticRoutingRule.findOneAndUpdate({
+          priority: req.params.rule
+        }, doc_patch.rules[0],
+        function (error) {
+          if (error) {
+            logger.error(error.message, {
+              module: 'routing/static/rules',
+              tags  : [
+                log_tags.api_request,
+                log_tags.db
+              ]
+            });
+
+            json_api_errors.errors.push({
+              code   : error.name,
+              field  : '',
+              message: error.message
+            });
+
+            res.json(500, json_api_errors); // Internal Server Error.
+
+            return;
+          }
+
+          res.send(204); // No Content.
+        });
+
+      return;
+    }
+
+    res.send(404); // Not found.
+  });
 };

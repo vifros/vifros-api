@@ -1,7 +1,7 @@
 {
-	"prefix": "/api",
-	"admin" : {
-		"name"    : "admin@root",
-		"password": "admin505"
-	}
+  "prefix": "/api",
+  "admin" : {
+    "name"    : "admin@root",
+    "password": "admin505"
+  }
 }

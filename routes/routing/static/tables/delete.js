@@ -12,166 +12,176 @@ var StaticRoutingRule = require('../../../../models/routing/static/rule').Static
 var StaticRoutingTable = require('../../../../models/routing/static/table').StaticRoutingTable;
 
 module.exports = function (req, res) {
-	res.type('application/vnd.api+json');
+  res.type('application/vnd.api+json');
 
-	var json_api_errors = {
-		errors: []
-	};
+  var json_api_errors = {
+    errors: []
+  };
 
-	if (req.params.table == '0'
-		|| req.params.table == '253'
-		|| req.params.table == '254'
-		|| req.params.table == '255') {
+  if (req.params.table == '0'
+    || req.params.table == '253'
+    || req.params.table == '254'
+    || req.params.table == '255') {
 
-		json_api_errors.errors.push({
-			code   : 'readonly_field',
-			field  : '',
-			message: 'The table is readonly and can not be deleted.'
-		});
+    json_api_errors.errors.push({
+      code   : 'readonly_field',
+      field  : '',
+      message: 'The table is readonly and can not be deleted.'
+    });
 
-		res.json(403, json_api_errors); // Forbidden.
-	}
-	else {
-		StaticRoutingTable.findOne({
-			id: req.params.table
-		}, function (error, doc) {
-			if (error) {
-				logger.error(error.message, {
-					module: 'routing/static/tables',
-					tags  : [
-						log_tags.api_request,
-						log_tags.db
-					]
-				});
+    res.json(403, json_api_errors); // Forbidden.
 
-				json_api_errors.errors.push({
-					code   : error.name,
-					field  : '',
-					message: error.message
-				});
+    return;
+  }
 
-				res.json(500, json_api_errors); // Internal Server Error.
-			}
-			else if (doc) {
-				/*
-				 * Remove the table from OS.
-				 */
-				routing_tables.delete(doc, function (error) {
-					if (error) {
-						logger.error(error.message, {
-							module: 'routing/static/tables',
-							tags  : [
-								log_tags.api_request,
-								log_tags.os
-							]
-						});
+  StaticRoutingTable.findOne({
+    id: req.params.table
+  }, function (error, doc) {
+    if (error) {
+      logger.error(error.message, {
+        module: 'routing/static/tables',
+        tags  : [
+          log_tags.api_request,
+          log_tags.db
+        ]
+      });
 
-						json_api_errors.errors.push({
-							code   : 'routing_tables',
-							field  : '',
-							message: error
-						});
+      json_api_errors.errors.push({
+        code   : error.name,
+        field  : '',
+        message: error.message
+      });
 
-						res.json(500, json_api_errors); // Internal Server Error.
-					}
-					else {
-						/*
-						 * Delete table in DB.
-						 */
-						StaticRoutingTable.findOneAndRemove({
-							id: req.params.table
-						}, function (error) {
-							if (error) {
-								logger.error(error.message, {
-									module: 'routing/static/tables',
-									tags  : [
-										log_tags.api_request,
-										log_tags.db
-									]
-								});
+      res.json(500, json_api_errors); // Internal Server Error.
 
-								json_api_errors.errors.push({
-									code   : error.name,
-									field  : '',
-									message: error.message
-								});
+      return;
+    }
 
-								res.json(500, json_api_errors); // Internal Server Error.
-							}
-							else {
-								/*
-								 * Remove all related resources.
-								 */
-								async.parallel([
-									function (cb_parallel) {
-										/*
-										 * Delete static routes.
-										 */
-										StaticRoutingRoute.purgeFromOSandDB({
-											filter: {
-												table: req.params.table
-											}
-										}, function (error) {
-											if (error) {
-												cb_parallel(error);
-											}
-											else {
-												cb_parallel(null);
-											}
-										});
-									},
-									function (cb_parallel) {
-										/*
-										 * Delete rules.
-										 */
-										StaticRoutingRule.purgeFromOSandDB({
-											filter: {
-												table: req.params.table
-											}
-										}, function (error) {
-											if (error) {
-												logger.error(error.message, {
-													module: 'routing/static/tables',
-													tags  : [
-														log_tags.api_request,
-														log_tags.db
-													]
-												});
+    if (doc) {
+      /*
+       * Remove the table from OS.
+       */
+      routing_tables.delete(doc, function (error) {
+        if (error) {
+          logger.error(error.message, {
+            module: 'routing/static/tables',
+            tags  : [
+              log_tags.api_request,
+              log_tags.os
+            ]
+          });
 
-												cb_parallel(error);
-											}
-											else {
-												cb_parallel(null);
-											}
-										});
-									}
-								], function (error) {
-									if (error) {
-										for (var i = 0, j = error.errors.length;
-										     i < j;
-										     i++) {
+          json_api_errors.errors.push({
+            code   : 'routing_tables',
+            field  : '',
+            message: error
+          });
 
-											json_api_errors.errors.push({
-												code   : error.errors[i].code,
-												field  : error.errors[i].field,
-												message: error.errors[i].message
-											});
-										}
+          res.json(500, json_api_errors); // Internal Server Error.
 
-										res.json(error.server_code, json_api_errors);
-									}
-									else {
-										res.send(204); // No Content.
-									}
-								});
-							}
-						});
-					}
-				});
-			}
-			else {
-				res.send(404); // Not found.
-			}
-		});
-	}
+          return;
+        }
+
+        /*
+         * Delete table in DB.
+         */
+        StaticRoutingTable.findOneAndRemove({
+          id: req.params.table
+        }, function (error) {
+          if (error) {
+            logger.error(error.message, {
+              module: 'routing/static/tables',
+              tags  : [
+                log_tags.api_request,
+                log_tags.db
+              ]
+            });
+
+            json_api_errors.errors.push({
+              code   : error.name,
+              field  : '',
+              message: error.message
+            });
+
+            res.json(500, json_api_errors); // Internal Server Error.
+
+            return;
+          }
+
+          /*
+           * Remove all related resources.
+           */
+          async.parallel([
+            function (cb_parallel) {
+              /*
+               * Delete static routes.
+               */
+              StaticRoutingRoute.purgeFromOSandDB({
+                filter: {
+                  table: req.params.table
+                }
+              }, function (error) {
+                if (error) {
+                  cb_parallel(error);
+
+                  return;
+                }
+
+                cb_parallel(null);
+              });
+            },
+            function (cb_parallel) {
+              /*
+               * Delete rules.
+               */
+              StaticRoutingRule.purgeFromOSandDB({
+                filter: {
+                  table: req.params.table
+                }
+              }, function (error) {
+                if (error) {
+                  logger.error(error.message, {
+                    module: 'routing/static/tables',
+                    tags  : [
+                      log_tags.api_request,
+                      log_tags.db
+                    ]
+                  });
+
+                  cb_parallel(error);
+
+                  return;
+                }
+
+                cb_parallel(null);
+              });
+            }
+          ], function (error) {
+            if (error) {
+              for (var i = 0, j = error.errors.length;
+                   i < j;
+                   i++) {
+
+                json_api_errors.errors.push({
+                  code   : error.errors[i].code,
+                  field  : error.errors[i].field,
+                  message: error.errors[i].message
+                });
+              }
+
+              res.json(error.server_code, json_api_errors);
+
+              return;
+            }
+
+            res.send(204); // No Content.
+          });
+        });
+      });
+
+      return;
+    }
+
+    res.send(404); // Not found.
+  });
 };

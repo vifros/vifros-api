@@ -8,218 +8,230 @@ var log_tags = require('../../../common/logger').tags;
 var Tunable = require('../../../models/system/tunable').Tunable;
 
 module.exports = function (req, res) {
-	if (!req.is('application/json-patch+json')) {
-		res.send(415); // Unsupported Media Type.
-	}
-	else {
-		res.type('application/vnd.api+json');
+  if (!req.is('application/json-patch+json')) {
+    res.send(415); // Unsupported Media Type.
 
-		var json_api_errors = {
-			errors: []
-		};
+    return;
+  }
 
-		Tunable.findOne({
-			path: req.params.tunable
-		}, function (error, doc) {
-			if (error) {
-				logger.error(error.message, {
-					module: 'system/tunables',
-					tags  : [
-						log_tags.api_request,
-						log_tags.db
-					]
-				});
+  res.type('application/vnd.api+json');
 
-				json_api_errors.errors.push({
-					code   : error.name,
-					field  : '',
-					message: error.message
-				});
+  var json_api_errors = {
+    errors: []
+  };
 
-				res.json(500, json_api_errors); // Internal Server Error.
-			}
-			else if (doc) {
-				/*
-				 * Validate received patch.
-				 */
-				// Prepare doc for patching.
-				var doc_patch = {};
+  Tunable.findOne({
+    path: req.params.tunable
+  }, function (error, doc) {
+    if (error) {
+      logger.error(error.message, {
+        module: 'system/tunables',
+        tags  : [
+          log_tags.api_request,
+          log_tags.db
+        ]
+      });
 
-				var buffer = doc.toObject();
+      json_api_errors.errors.push({
+        code   : error.name,
+        field  : '',
+        message: error.message
+      });
 
-				delete buffer._id;
-				delete buffer.__v;
+      res.json(500, json_api_errors); // Internal Server Error.
 
-				doc_patch.tunables = [buffer];
+      return;
+    }
 
-				/*
-				 * Add the not present variables since the patch needed those to work properly.
-				 * Remember to remove the null variables later, after processing is done.
-				 */
-				var schema_vars = JSON.parse(JSON.stringify(Tunable.schema.paths)); // This construction is to do a deep copy.
-				delete schema_vars._id;
-				delete schema_vars.__v;
+    if (doc) {
+      /*
+       * Validate received patch.
+       */
+      // Prepare doc for patching.
+      var doc_patch = {};
 
-				for (var i = 0, j = Object.keys(schema_vars).length;
-				     i < j;
-				     i++) {
+      var buffer = doc.toObject();
 
-					var key = Object.keys(schema_vars)[i];
+      delete buffer._id;
+      delete buffer.__v;
 
-					if (!doc_patch.tunables[0].hasOwnProperty(key)) {
-						doc_patch.tunables[0][key] = null;
-					}
-				}
+      doc_patch.tunables = [buffer];
 
-				try {
-					jsonpatch.apply(doc_patch, req.body);
-				}
-				catch (error) {
-					logger.error(error.message, {
-						module: 'system/tunables',
-						tags  : [
-							log_tags.api_request
-						]
-					});
+      /*
+       * Add the not present variables since the patch needed those to work properly.
+       * Remember to remove the null variables later, after processing is done.
+       */
+      var schema_vars = JSON.parse(JSON.stringify(Tunable.schema.paths)); // This construction is to do a deep copy.
+      delete schema_vars._id;
+      delete schema_vars.__v;
 
-					json_api_errors.errors.push({
-						code   : error.name,
-						field  : '',
-						message: error.message
-					});
+      for (var i = 0, j = Object.keys(schema_vars).length;
+           i < j;
+           i++) {
 
-					res.json(400, json_api_errors); // Bad Request.
+        var key = Object.keys(schema_vars)[i];
 
-					return;
-				}
+        if (!doc_patch.tunables[0].hasOwnProperty(key)) {
+          doc_patch.tunables[0][key] = null;
+        }
+      }
 
-				/*
-				 * Remove the null variables needed by json-patch.
-				 */
-				for (var i = 0, j = Object.keys(doc_patch.tunables[0]).length;
-				     i < j;
-				     i++) {
+      try {
+        jsonpatch.apply(doc_patch, req.body);
+      }
+      catch (error) {
+        logger.error(error.message, {
+          module: 'system/tunables',
+          tags  : [
+            log_tags.api_request
+          ]
+        });
 
-					var key = Object.keys(schema_vars)[i];
+        json_api_errors.errors.push({
+          code   : error.name,
+          field  : '',
+          message: error.message
+        });
 
-					if (doc_patch.tunables[0][key] == null) {
-						delete doc_patch.tunables[0][key];
-					}
-				}
+        res.json(400, json_api_errors); // Bad Request.
 
-				var valid_changed_options = {};
-				var readonly_changed_fields = [];
-				for (var i = 0, j = req.body.length;
-				     i < j;
-				     i++) {
+        return;
+      }
 
-					var path = req.body[i].path.split('/tunables/0/')[1];
+      /*
+       * Remove the null variables needed by json-patch.
+       */
+      for (var i = 0, j = Object.keys(doc_patch.tunables[0]).length;
+           i < j;
+           i++) {
 
-					// Check for readonly params.
-					if (path == 'path') {
-						readonly_changed_fields.push(path);
-					}
-					else {
-						valid_changed_options[path] = req.body[i].value;
-					}
-				}
+        var key = Object.keys(schema_vars)[i];
 
-				if (readonly_changed_fields.length) {
-					// There are requests to change readonly values, so throw an error.
-					// Build the error response with the required fields.
-					for (var i = 0, j = readonly_changed_fields.length;
-					     i < j;
-					     i++) {
+        if (doc_patch.tunables[0][key] == null) {
+          delete doc_patch.tunables[0][key];
+        }
+      }
 
-						json_api_errors.errors.push({
-							code   : 'readonly_field',
-							field  : readonly_changed_fields[i],
-							message: 'The field is readonly and can not be changed.'
-						});
-					}
+      var valid_changed_options = {};
+      var readonly_changed_fields = [];
+      for (var i = 0, j = req.body.length;
+           i < j;
+           i++) {
 
-					res.json(400, json_api_errors); // Bad Request.
-				}
-				else if (Object.keys(valid_changed_options).length == 1
-					&& valid_changed_options.hasOwnProperty('description')) {
+        var path = req.body[i].path.split('/tunables/0/')[1];
 
-					// If only the description was changed, only save it to DB without touching the OS.
-					Tunable.findOneAndUpdate({
-						path: req.params.tunable
-					}, doc_patch.tunables[0], function (error) {
-						if (error) {
-							logger.error(error.message, {
-								module: 'system/tunables',
-								tags  : [
-									log_tags.api_request,
-									log_tags.db
-								]
-							});
+        // Check for readonly params.
+        if (path == 'path') {
+          readonly_changed_fields.push(path);
+        }
+        else {
+          valid_changed_options[path] = req.body[i].value;
+        }
+      }
 
-							json_api_errors.errors.push({
-								code   : error.name,
-								field  : '',
-								message: error.message
-							});
+      if (readonly_changed_fields.length) {
+        // There are requests to change readonly values, so throw an error.
+        // Build the error response with the required fields.
+        for (var i = 0, j = readonly_changed_fields.length;
+             i < j;
+             i++) {
 
-							res.json(500, json_api_errors); // Internal Server Error.
-						}
-						else {
-							res.send(204); // No Content.
-						}
-					});
-				}
-				else {
-					Tunable.createFromObjectToOS(doc_patch.tunables[0], function (error) {
-						if (error) {
-							logger.error(error, {
-								module: 'system/tunables',
-								tags  : [
-									log_tags.api_request,
-									log_tags.os
-								]
-							});
+          json_api_errors.errors.push({
+            code   : 'readonly_field',
+            field  : readonly_changed_fields[i],
+            message: 'The field is readonly and can not be changed.'
+          });
+        }
 
-							json_api_errors.errors.push({
-								code   : '',
-								field  : '',
-								message: error
-							});
+        res.json(400, json_api_errors); // Bad Request.
 
-							res.json(500, json_api_errors); // Internal Server Error.
-						}
-						else {
-							Tunable.findOneAndUpdate({
-								path: req.params.tunable
-							}, doc_patch.tunables[0], function (error) {
-								if (error) {
-									logger.error(error.message, {
-										module: 'system/tunables',
-										tags  : [
-											log_tags.api_request,
-											log_tags.db
-										]
-									});
+        return;
+      }
 
-									json_api_errors.errors.push({
-										code   : error.name,
-										field  : '',
-										message: error.message
-									});
+      if (Object.keys(valid_changed_options).length == 1
+        && valid_changed_options.hasOwnProperty('description')) {
 
-									res.json(500, json_api_errors); // Internal Server Error.
-								}
-								else {
-									res.send(204); // No Content.
-								}
-							});
-						}
-					});
-				}
-			}
-			else {
-				res.send(404); // Not found.
-			}
-		});
-	}
+        // If only the description was changed, only save it to DB without touching the OS.
+        Tunable.findOneAndUpdate({
+          path: req.params.tunable
+        }, doc_patch.tunables[0], function (error) {
+          if (error) {
+            logger.error(error.message, {
+              module: 'system/tunables',
+              tags  : [
+                log_tags.api_request,
+                log_tags.db
+              ]
+            });
+
+            json_api_errors.errors.push({
+              code   : error.name,
+              field  : '',
+              message: error.message
+            });
+
+            res.json(500, json_api_errors); // Internal Server Error.
+
+            return;
+          }
+
+          res.send(204); // No Content.
+        });
+
+        return;
+      }
+
+      Tunable.createFromObjectToOS(doc_patch.tunables[0], function (error) {
+        if (error) {
+          logger.error(error, {
+            module: 'system/tunables',
+            tags  : [
+              log_tags.api_request,
+              log_tags.os
+            ]
+          });
+
+          json_api_errors.errors.push({
+            code   : '',
+            field  : '',
+            message: error
+          });
+
+          res.json(500, json_api_errors); // Internal Server Error.
+
+          return;
+        }
+
+        Tunable.findOneAndUpdate({
+          path: req.params.tunable
+        }, doc_patch.tunables[0], function (error) {
+          if (error) {
+            logger.error(error.message, {
+              module: 'system/tunables',
+              tags  : [
+                log_tags.api_request,
+                log_tags.db
+              ]
+            });
+
+            json_api_errors.errors.push({
+              code   : error.name,
+              field  : '',
+              message: error.message
+            });
+
+            res.json(500, json_api_errors); // Internal Server Error.
+
+            return;
+          }
+
+          res.send(204); // No Content.
+        });
+      });
+
+      return;
+    }
+
+    res.send(404); // Not found.
+  });
 };

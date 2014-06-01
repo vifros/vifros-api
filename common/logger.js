@@ -11,30 +11,30 @@ var config = require('../config');
 winston.remove(winston.transports.Console); // To being able to reconfigure it.
 
 if (config.logging.transports.console.enabled) {
-	winston.add(winston.transports.Console, config.logging.transports.console);
+  winston.add(winston.transports.Console, config.logging.transports.console);
 }
 
 /*
  * File transport.
  */
 if (config.logging.transports.file.enabled) {
-	winston.add(winston.transports.File, config.logging.transports.file);
+  winston.add(winston.transports.File, config.logging.transports.file);
 }
 
 /*
  * Enable saving logs to mongodb.
  */
 if (config.logging.transports.mongodb.enabled) {
-	winston.add(winston.transports.MongoDB, config.logging.transports.mongodb);
+  winston.add(winston.transports.MongoDB, config.logging.transports.mongodb);
 }
 
 exports.logger = winston;
 
 exports.tags = {
-	init       : 'init',
-	api_request: 'api_request',
-	db         : 'db',
-	validation : 'validation',
-	cross_rel  : 'cross_relationship',
-	os         : 'os'
+  init       : 'init',
+  api_request: 'api_request',
+  db         : 'db',
+  validation : 'validation',
+  cross_rel  : 'cross_relationship',
+  os         : 'os'
 };

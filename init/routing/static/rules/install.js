@@ -13,106 +13,113 @@ var package_defaults = require('./defaults');
 var StaticRoutingRule = require('../../../../models/routing/static/rule').StaticRoutingRule;
 
 module.exports = function (cb_init) {
-	/*
-	 * Not yet initialized.
-	 */
-	// Clear all OS rules. Note: this will clear all rules but the special priority 0 rule.
-	ip_rule.flush(function (error) {
-		if (error) {
-			logger.error(error, {
-				module: 'routing/static/rules',
-				tags  : [
-					log_tags.init,
-					log_tags.os
-				]
-			});
+  /*
+   * Not yet initialized.
+   */
+  // Clear all OS rules. Note: this will clear all rules but the special priority 0 rule.
+  ip_rule.flush(function (error) {
+    if (error) {
+      logger.error(error, {
+        module: 'routing/static/rules',
+        tags  : [
+          log_tags.init,
+          log_tags.os
+        ]
+      });
 
-			cb_init(error);
-		}
-		else {
-			/*
-			 * Add package defaults to OS.
-			 */
-			async.each(package_defaults.rules, function (item, cb_each) {
-				/*
-				 * Don't re-add the special priority 0 rule since it is read-only and never gets deleted from OS.
-				 */
-				if (item.priority != 0) {
-					ip_rule.add(item, function (error) {
-						if (error) {
-							cb_each(error);
-						}
-						else {
-							var rule = new StaticRoutingRule(item);
+      cb_init(error);
 
-							// Save the object to database.
-							rule.save(function (error) {
-								if (error) {
-									cb_each(error);
-								}
-								else {
-									cb_each(null);
-								}
-							});
-						}
-					});
-				}
-				else {
-					var rule = new StaticRoutingRule(item);
+      return;
+    }
 
-					// Save the object to database.
-					rule.save(function (error) {
-						if (error) {
-							cb_each(error);
-						}
-						else {
-							cb_each(null);
-						}
-					});
-				}
-			}, function (error) {
-				if (error) {
-					logger.error(error, {
-						module: 'routing/static/rules',
-						tags  : [
-							log_tags.init
-						]
-					});
+    /*
+     * Add package defaults to OS.
+     */
+    async.each(package_defaults.rules, function (item, cb_each) {
+      /*
+       * Don't re-add the special priority 0 rule since it is read-only and never gets deleted from OS.
+       */
+      if (item.priority != 0) {
+        ip_rule.add(item, function (error) {
+          if (error) {
+            cb_each(error);
 
-					cb_init(error);
-				}
-				else {
-					var setting = new Setting({
-						module: 'routing/static/rules',
-						name  : 'status',
-						value : setting_statuses.enabled
-					});
+            return;
+          }
 
-					setting.save(function (error) {
-						if (error) {
-							logger.error(error.message, {
-								module: 'routing/static/rules',
-								tags  : [
-									log_tags.init,
-									log_tags.db
-								]
-							});
+          var rule = new StaticRoutingRule(item);
 
-							cb_init(error);
-						}
-						else {
-							logger.info('Module started.', {
-								module: 'routing/static/rules',
-								tags  : [
-									log_tags.init
-								]
-							});
+          // Save the object to database.
+          rule.save(function (error) {
+            if (error) {
+              cb_each(error);
 
-							cb_init(null);
-						}
-					});
-				}
-			});
-		}
-	});
+              return;
+            }
+
+            cb_each(null);
+          });
+        });
+
+        return;
+      }
+
+      var rule = new StaticRoutingRule(item);
+
+      // Save the object to database.
+      rule.save(function (error) {
+        if (error) {
+          cb_each(error);
+
+          return;
+        }
+
+        cb_each(null);
+      });
+    }, function (error) {
+      if (error) {
+        logger.error(error, {
+          module: 'routing/static/rules',
+          tags  : [
+            log_tags.init
+          ]
+        });
+
+        cb_init(error);
+
+        return;
+      }
+
+      var setting = new Setting({
+        module: 'routing/static/rules',
+        name  : 'status',
+        value : setting_statuses.enabled
+      });
+
+      setting.save(function (error) {
+        if (error) {
+          logger.error(error.message, {
+            module: 'routing/static/rules',
+            tags  : [
+              log_tags.init,
+              log_tags.db
+            ]
+          });
+
+          cb_init(error);
+
+          return;
+        }
+
+        logger.info('Module started.', {
+          module: 'routing/static/rules',
+          tags  : [
+            log_tags.init
+          ]
+        });
+
+        cb_init(null);
+      });
+    });
+  });
 };

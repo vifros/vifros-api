@@ -8,101 +8,107 @@ var logger = require('../../../common/logger').logger;
 var log_tags = require('../../../common/logger').tags;
 
 module.exports = function (req, res) {
-	res.type('application/vnd.api+json');
+  res.type('application/vnd.api+json');
 
-	var json_api_errors = {
-		errors: []
-	};
+  var json_api_errors = {
+    errors: []
+  };
 
-	Ethernet.findOne({
-		name: req.params.ethernet
-	}, function (error, doc) {
-		if (error) {
-			logger.error(error.message, {
-				module: 'interfaces/ethernets',
-				tags  : [
-					log_tags.api_request,
-					log_tags.db
-				]
-			});
+  Ethernet.findOne({
+    name: req.params.ethernet
+  }, function (error, doc) {
+    if (error) {
+      logger.error(error.message, {
+        module: 'interfaces/ethernets',
+        tags  : [
+          log_tags.api_request,
+          log_tags.db
+        ]
+      });
 
-			json_api_errors.errors.push({
-				code   : error.name,
-				field  : '',
-				message: error.message
-			});
+      json_api_errors.errors.push({
+        code   : error.name,
+        field  : '',
+        message: error.message
+      });
 
-			res.json(500, json_api_errors); // Internal Server Error.
-		}
-		else if (doc.status.operational != link_statuses.NOTPRESENT) {
-			logger.error('Only interfaces with status NOT_PRESENT can be deleted.', {
-				module: 'interfaces/ethernets',
-				tags  : [
-					log_tags.api_request,
-					log_tags.validation
-				]
-			});
+      res.json(500, json_api_errors); // Internal Server Error.
 
-			json_api_errors.errors.push({
-				code   : '',
-				field  : '',
-				message: 'Only interfaces not present can be deleted.'
-			});
+      return;
+    }
 
-			res.json(403, json_api_errors); // Forbidden.
-		}
-		else {
-			/*
-			 * Only allow interface deletion if its status is NOTPRESENT.
-			 */
-			doc.remove(function (error) {
-				if (error) {
-					logger.error(error.message, {
-						module: 'interfaces/ethernets',
-						tags  : [
-							log_tags.api_request,
-							log_tags.db
-						]
-					});
+    if (doc.status.operational != link_statuses.NOTPRESENT) {
+      logger.error('Only interfaces with status NOT_PRESENT can be deleted.', {
+        module: 'interfaces/ethernets',
+        tags  : [
+          log_tags.api_request,
+          log_tags.validation
+        ]
+      });
 
-					json_api_errors.errors.push({
-						code   : error.name,
-						field  : '',
-						message: error.message
-					});
+      json_api_errors.errors.push({
+        code   : '',
+        field  : '',
+        message: 'Only interfaces not present can be deleted.'
+      });
 
-					res.json(500, json_api_errors); // Internal Server Error.
-				}
-				else {
-					/*
-					 * Delete related addresses from DB.
-					 */
-					Address.remove({
-						interface: doc.name
-					}, function (error) {
-						if (error) {
-							logger.error(error.message, {
-								module: 'interfaces/ethernets',
-								tags  : [
-									log_tags.api_request,
-									log_tags.db
-								]
-							});
+      res.json(403, json_api_errors); // Forbidden.
 
-							json_api_errors.errors.push({
-								code   : error.name,
-								field  : '',
-								message: error.message
-							});
+      return;
+    }
 
-							res.json(500, json_api_errors); // Internal Server Error.
-						}
-						else {
-							res.send(204, json_api_errors); // No Content.
-						}
-					});
-				}
-			});
-		}
-	});
+    /*
+     * Only allow interface deletion if its status is NOTPRESENT.
+     */
+    doc.remove(function (error) {
+      if (error) {
+        logger.error(error.message, {
+          module: 'interfaces/ethernets',
+          tags  : [
+            log_tags.api_request,
+            log_tags.db
+          ]
+        });
+
+        json_api_errors.errors.push({
+          code   : error.name,
+          field  : '',
+          message: error.message
+        });
+
+        res.json(500, json_api_errors); // Internal Server Error.
+
+        return;
+      }
+
+      /*
+       * Delete related addresses from DB.
+       */
+      Address.remove({
+        interface: doc.name
+      }, function (error) {
+        if (error) {
+          logger.error(error.message, {
+            module: 'interfaces/ethernets',
+            tags  : [
+              log_tags.api_request,
+              log_tags.db
+            ]
+          });
+
+          json_api_errors.errors.push({
+            code   : error.name,
+            field  : '',
+            message: error.message
+          });
+
+          res.json(500, json_api_errors); // Internal Server Error.
+
+          return;
+        }
+
+        res.send(204, json_api_errors); // No Content.
+      });
+    });
+  });
 };

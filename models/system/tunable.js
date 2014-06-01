@@ -7,9 +7,9 @@ var statics = require('./tunable-statics');
  * Schema definition.
  */
 var TunableSchema = new Schema({
-	path       : String,
-	value      : String,
-	description: String
+  path       : String,
+  value      : String,
+  description: String
 });
 
 /*

@@ -1,18 +1,18 @@
 {
-	"name"        : "vifros-api",
-	"version"     : "0.0.0",
-	"private"     : true,
-	"scripts"     : {
-		"start": "node app.js"
-	},
-	"description" : "",
-	"dependencies": {
-		"async"          : "*",
-		"express"        : "*",
-		"iproute"        : "*",
-		"json-patch"     : "*",
-		"mongoose"       : "*",
-		"winston"        : "*",
-		"winston-mongodb": "*"
-	}
+  "name"        : "vifros-api",
+  "version"     : "0.0.0",
+  "private"     : true,
+  "scripts"     : {
+    "start": "node app.js"
+  },
+  "description" : "",
+  "dependencies": {
+    "async"          : "*",
+    "express"        : "*",
+    "iproute"        : "*",
+    "json-patch"     : "*",
+    "mongoose"       : "*",
+    "winston"        : "*",
+    "winston-mongodb": "*"
+  }
 }

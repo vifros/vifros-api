@@ -6,71 +6,77 @@ var log_tags = require('../../../../common/logger').tags;
 var StaticRoutingTable = require('../../../../models/routing/static/table').StaticRoutingTable;
 
 module.exports = function (cb_init) {
-	/*
-	 * Already initialized.
-	 */
-	ip_routing_tables.flush(function (error) {
-		if (error) {
-			logger.error(error, {
-				module: 'routing/static/tables',
-				tags  : [
-					log_tags.init,
-					log_tags.os
-				]
-			});
+  /*
+   * Already initialized.
+   */
+  ip_routing_tables.flush(function (error) {
+    if (error) {
+      logger.error(error, {
+        module: 'routing/static/tables',
+        tags  : [
+          log_tags.init,
+          log_tags.os
+        ]
+      });
 
-			cb_init(error);
-		}
-		else {
-			StaticRoutingTable.find({}, function (error, docs) {
-				if (error) {
-					logger.error(error, {
-						module: 'routing/static/tables',
-						tags  : [
-							log_tags.init,
-							log_tags.db
-						]
-					});
+      cb_init(error);
 
-					cb_init(error);
-				}
-				else if (docs && docs.length) {
-					// Insert the tables into OS.
-					ip_routing_tables.add(docs, function (error) {
-						if (error) {
-							logger.error(error, {
-								module: 'routing/static/tables',
-								tags  : [
-									log_tags.init,
-									log_tags.os
-								]
-							});
+      return;
+    }
 
-							cb_init(error);
-						}
-						else {
-							logger.info('Module started.', {
-								module: 'routing/static/tables',
-								tags  : [
-									log_tags.init
-								]
-							});
+    StaticRoutingTable.find({}, function (error, docs) {
+      if (error) {
+        logger.error(error, {
+          module: 'routing/static/tables',
+          tags  : [
+            log_tags.init,
+            log_tags.db
+          ]
+        });
 
-							cb_init(null);
-						}
-					});
-				}
-				else {
-					logger.info('Module started.', {
-						module: 'routing/static/tables',
-						tags  : [
-							log_tags.init
-						]
-					});
+        cb_init(error);
 
-					cb_init(null);
-				}
-			});
-		}
-	});
+        return;
+      }
+
+      if (docs && docs.length) {
+        // Insert the tables into OS.
+        ip_routing_tables.add(docs, function (error) {
+          if (error) {
+            logger.error(error, {
+              module: 'routing/static/tables',
+              tags  : [
+                log_tags.init,
+                log_tags.os
+              ]
+            });
+
+            cb_init(error);
+
+            return;
+          }
+
+          logger.info('Module started.', {
+            module: 'routing/static/tables',
+            tags  : [
+              log_tags.init
+            ]
+          });
+
+          cb_init(null);
+        });
+
+        return;
+      }
+
+      logger.info('Module started.', {
+        module: 'routing/static/tables',
+        tags  : [
+          log_tags.init
+        ]
+      });
+
+      cb_init(null);
+    });
+  });
 };

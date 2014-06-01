@@ -7,18 +7,18 @@ var statics = require('./address-statics');
  * Schema definition.
  */
 var AddressSchema = new Schema({
-	interface  : {
-		type    : String,
-		required: true
-	},
-	address    : {
-		type    : String,
-		required: true
-	},
-	peer       : String, // Used for pointopoint interfaces.
-	broadcast  : String,
-	scope      : String,
-	description: String
+  interface  : {
+    type    : String,
+    required: true
+  },
+  address    : {
+    type    : String,
+    required: true
+  },
+  peer       : String, // Used for pointopoint interfaces.
+  broadcast  : String,
+  scope      : String,
+  description: String
 });
 
 /*
