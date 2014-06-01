@@ -24,13 +24,7 @@ module.exports = function (req, res) {
         ]
       });
 
-      json_api_errors.errors.push({
-        code   : error.name,
-        field  : '',
-        message: error.message
-      });
-
-      res.json(500, json_api_errors); // Internal Server Error.
+      res.send(500); // Internal Server Error.
 
       return;
     }
@@ -53,13 +47,7 @@ module.exports = function (req, res) {
           ]
         });
 
-        json_api_errors.errors.push({
-          code   : error.name,
-          field  : '',
-          message: error.message
-        });
-
-        res.json(500, json_api_errors); // Internal Server Error.
+        res.send(500); // Internal Server Error.
       }
 
       return;

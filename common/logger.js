@@ -38,3 +38,34 @@ exports.tags = {
   cross_rel  : 'cross_relationship',
   os         : 'os'
 };
+
+exports.codes = {
+  json_patch_error              : {
+    code   : 'json_patch_error',
+    message: 'The JSON patch sent contains errors.'
+  },
+  readonly_field                : {
+    code   : 'readonly_field',
+    message: 'The field is readonly and can not be changed.'
+  },
+  readonly_resource             : {
+    code   : 'readonly_resource',
+    message: 'The resource is readonly and can not be changed.'
+  },
+  required_field                : {
+    code   : 'required_field',
+    message: 'Required field was not provided.'
+  },
+  delete_present_interface_error: {
+    code   : 'delete_present_interface_error',
+    message: 'Only interfaces with status NOT_PRESENT can be deleted.'
+  },
+  already_present               : {
+    code   : 'already_present',
+    message: 'A resource with the same data is already present.'
+  },
+  related_resource_not_found    : {
+    code   : 'related_resource_not_found',
+    message: 'The related resource does not exists yet.'
+  }
+};

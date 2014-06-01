@@ -6,10 +6,6 @@
 
 - Add `/logs/settings`.
 
-- Classify errors in codes.
-
-- Fill the `field` property in errors.
-
 ###  Queue
 
 - IP sets

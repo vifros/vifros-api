@@ -6,6 +6,7 @@ var config = require('../../../../config');
 
 var logger = require('../../../../common/logger').logger;
 var log_tags = require('../../../../common/logger').tags;
+var log_codes = require('../../../../common/logger').codes;
 
 var StaticRoutingRoute = require('../../../../models/routing/static/route').StaticRoutingRoute;
 var StaticRoutingRule = require('../../../../models/routing/static/rule').StaticRoutingRule;
@@ -24,9 +25,8 @@ module.exports = function (req, res) {
     || req.params.table == '255') {
 
     json_api_errors.errors.push({
-      code   : 'readonly_field',
-      field  : '',
-      message: 'The table is readonly and can not be deleted.'
+      code   : log_codes.readonly_resource.code,
+      message: log_codes.readonly_resource.message
     });
 
     res.json(403, json_api_errors); // Forbidden.
@@ -46,13 +46,7 @@ module.exports = function (req, res) {
         ]
       });
 
-      json_api_errors.errors.push({
-        code   : error.name,
-        field  : '',
-        message: error.message
-      });
-
-      res.json(500, json_api_errors); // Internal Server Error.
+      res.send(500); // Internal Server Error.
 
       return;
     }
@@ -71,13 +65,7 @@ module.exports = function (req, res) {
             ]
           });
 
-          json_api_errors.errors.push({
-            code   : 'routing_tables',
-            field  : '',
-            message: error
-          });
-
-          res.json(500, json_api_errors); // Internal Server Error.
+          res.send(500); // Internal Server Error.
 
           return;
         }
@@ -97,13 +85,7 @@ module.exports = function (req, res) {
               ]
             });
 
-            json_api_errors.errors.push({
-              code   : error.name,
-              field  : '',
-              message: error.message
-            });
-
-            res.json(500, json_api_errors); // Internal Server Error.
+            res.send(500); // Internal Server Error.
 
             return;
           }

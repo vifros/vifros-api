@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var errorHandler = require('errorhandler');
 
 var config = require('./config');
-var pkg_info = require('./package.json');
 
 var app = express();
 

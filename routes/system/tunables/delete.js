@@ -6,10 +6,6 @@ var Tunable = require('../../../models/system/tunable').Tunable;
 module.exports = function (req, res) {
   res.type('application/vnd.api+json');
 
-  var json_api_errors = {
-    errors: []
-  };
-
   Tunable.findOneAndRemove({
     path: req.params.tunable
   }, function (error) {
@@ -22,13 +18,7 @@ module.exports = function (req, res) {
         ]
       });
 
-      json_api_errors.errors.push({
-        code   : error.name,
-        field  : '',
-        message: error.message
-      });
-
-      res.json(500, json_api_errors); // Internal Server Error.
+      res.send(500); // Internal Server Error.
 
       return;
     }

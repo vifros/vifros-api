@@ -91,13 +91,7 @@ module.exports = function (req, res, options) {
         ]
       });
 
-      json_api_errors.errors.push({
-        code   : error.name,
-        field  : '',
-        message: error.message
-      });
-
-      res.json(500, json_api_errors); // Internal Server Error.
+      res.send(500); // Internal Server Error.
 
       return;
     }
@@ -163,13 +157,7 @@ module.exports = function (req, res, options) {
             ]
           });
 
-          json_api_errors.errors.push({
-            code   : '',
-            field  : '',
-            message: error
-          });
-
-          res.json(500, json_api_errors); // Internal Server Error.
+          res.send(500); // Internal Server Error.
 
           return;
         }
@@ -194,13 +182,7 @@ module.exports = function (req, res, options) {
             $or: or_tables_arr
           }, function (error, docs) {
             if (error) {
-              json_api_errors.errors.push({
-                code   : error.name,
-                field  : '',
-                message: error.message
-              });
-
-              res.json(500, json_api_errors); // Internal Server Error.
+              res.send(500); // Internal Server Error.
 
               return;
             }
@@ -231,6 +213,6 @@ module.exports = function (req, res, options) {
       return;
     }
 
-    res.json(404, json_api_body); // Not found.
+    res.send(404); // Not found.
   });
 };

@@ -4,6 +4,7 @@ var config = require('../../../../config');
 
 var logger = require('../../../../common/logger').logger;
 var log_tags = require('../../../../common/logger').tags;
+var log_codes = require('../../../../common/logger').codes;
 
 var StaticRoutingTable = require('../../../../models/routing/static/table').StaticRoutingTable;
 
@@ -46,9 +47,9 @@ module.exports = function (req, res) {
          i++) {
 
       json_api_errors.errors.push({
-        code   : 'required_field',
-        field  : failed_required_fields[i],
-        message: 'Required field was not provided.'
+        code   : log_codes.required_field.code,
+        field  : '/tables/0/' + failed_required_fields[i],
+        message: log_codes.required_field.message
       });
     }
 
@@ -79,13 +80,7 @@ module.exports = function (req, res) {
         ]
       });
 
-      json_api_errors.errors.push({
-        code   : error.name,
-        field  : '',
-        message: error.message
-      });
-
-      res.json(500, json_api_errors); // Internal Server Error.
+      res.send(500); // Internal Server Error.
 
       return;
     }
@@ -95,9 +90,15 @@ module.exports = function (req, res) {
        * There is already a table, so throw an error.
        */
       json_api_errors.errors.push({
-        code   : 'duplicated',
-        field  : '',
-        message: 'A table with the same data is already present.'
+        code   : log_codes.already_present.code,
+        field  : '/tables/0/id',
+        message: log_codes.already_present.message
+      });
+
+      json_api_errors.errors.push({
+        code   : log_codes.already_present.code,
+        field  : '/tables/0/name',
+        message: log_codes.already_present.message
       });
 
       res.json(500, json_api_errors); // Internal Server Error.
@@ -117,13 +118,7 @@ module.exports = function (req, res) {
           ]
         });
 
-        json_api_errors.errors.push({
-          code   : 'routing_tables',
-          field  : '',
-          message: error
-        });
-
-        res.json(500, json_api_errors); // Internal Server Error.
+        res.send(500); // Internal Server Error.
 
         return;
       }
@@ -141,13 +136,7 @@ module.exports = function (req, res) {
             ]
           });
 
-          json_api_errors.errors.push({
-            code   : error.name,
-            field  : '',
-            message: error.message
-          });
-
-          res.json(500, json_api_errors); // Internal Server Error.
+          res.send(500); // Internal Server Error.
 
           return;
         }

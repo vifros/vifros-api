@@ -4,6 +4,7 @@ var Setting = require('../../../models/common/setting').Setting;
 
 var logger = require('../../../common/logger').logger;
 var log_tags = require('../../../common/logger').tags;
+var log_codes = require('../../../common/logger').codes;
 
 module.exports = function (req, res, options) {
   if (!req.is('application/json-patch+json')) {
@@ -30,13 +31,7 @@ module.exports = function (req, res, options) {
         ]
       });
 
-      json_api_errors.errors.push({
-        code   : error.name,
-        field  : '',
-        message: error.message
-      });
-
-      res.json(500, json_api_errors); // Internal Server Error.
+      res.send(500); // Internal Server Error.
 
       return;
     }
@@ -86,12 +81,11 @@ module.exports = function (req, res, options) {
         });
 
         json_api_errors.errors.push({
-          code   : error.name,
-          field  : '',
-          message: error.message
+          code   : log_codes.json_patch_error.code,
+          message: log_codes.json_patch_error.message
         });
 
-        res.json(400, json_api_errors); // Internal Server Error.
+        res.json(400, json_api_errors); // Bad Request.
 
         return;
       }
@@ -137,9 +131,9 @@ module.exports = function (req, res, options) {
              i++) {
 
           json_api_errors.errors.push({
-            code   : 'readonly_field',
-            field  : readonly_changed_fields[i],
-            message: 'The field is readonly and can not be changed.'
+            code   : log_codes.readonly_field.code,
+            field  : '/settings/0/' + readonly_changed_fields[i],
+            message: log_codes.readonly_field.message
           });
         }
 
@@ -162,13 +156,7 @@ module.exports = function (req, res, options) {
               ]
             });
 
-            json_api_errors.errors.push({
-              code   : error.name,
-              field  : '',
-              message: error.message
-            });
-
-            res.json(500, json_api_errors); // Internal Server Error.
+            res.send(500); // Internal Server Error.
 
             return;
           }
@@ -185,13 +173,7 @@ module.exports = function (req, res, options) {
                   ]
                 });
 
-                json_api_errors.errors.push({
-                  code   : error.name,
-                  field  : '',
-                  message: error.message
-                });
-
-                res.json(500, json_api_errors); // Internal Server Error.
+                res.send(500); // Internal Server Error.
 
                 return;
               }
@@ -215,13 +197,7 @@ module.exports = function (req, res, options) {
               ]
             });
 
-            json_api_errors.errors.push({
-              code   : error.name,
-              field  : '',
-              message: error.message
-            });
-
-            res.json(500, json_api_errors); // Internal Server Error.
+            res.send(500); // Internal Server Error.
 
             return;
           }

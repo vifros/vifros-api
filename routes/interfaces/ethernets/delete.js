@@ -6,6 +6,7 @@ var Ethernet = require('../../../models/interfaces/ethernet').Ethernet;
 
 var logger = require('../../../common/logger').logger;
 var log_tags = require('../../../common/logger').tags;
+var log_codes = require('../../../common/logger').codes;
 
 module.exports = function (req, res) {
   res.type('application/vnd.api+json');
@@ -26,13 +27,7 @@ module.exports = function (req, res) {
         ]
       });
 
-      json_api_errors.errors.push({
-        code   : error.name,
-        field  : '',
-        message: error.message
-      });
-
-      res.json(500, json_api_errors); // Internal Server Error.
+      res.send(500); // Internal Server Error.
 
       return;
     }
@@ -47,9 +42,9 @@ module.exports = function (req, res) {
       });
 
       json_api_errors.errors.push({
-        code   : '',
-        field  : '',
-        message: 'Only interfaces not present can be deleted.'
+        code   : log_codes.json_patch_error.code.delete_present_interface_error,
+        field  : '/ethernets/0/status/operational',
+        message: 'Only not present interfaces can be deleted.'
       });
 
       res.json(403, json_api_errors); // Forbidden.
@@ -70,13 +65,7 @@ module.exports = function (req, res) {
           ]
         });
 
-        json_api_errors.errors.push({
-          code   : error.name,
-          field  : '',
-          message: error.message
-        });
-
-        res.json(500, json_api_errors); // Internal Server Error.
+        res.send(500); // Internal Server Error.
 
         return;
       }
@@ -96,13 +85,7 @@ module.exports = function (req, res) {
             ]
           });
 
-          json_api_errors.errors.push({
-            code   : error.name,
-            field  : '',
-            message: error.message
-          });
-
-          res.json(500, json_api_errors); // Internal Server Error.
+          res.send(500); // Internal Server Error.
 
           return;
         }

@@ -7,6 +7,7 @@ var VLAN = require('../../../models/interfaces/vlan').VLAN;
 
 var logger = require('../../../common/logger').logger;
 var log_tags = require('../../../common/logger').tags;
+var log_codes = require('../../../common/logger').codes;
 
 module.exports = function (req, res) {
   if (!req.is('application/vnd.api+json')) {
@@ -53,9 +54,9 @@ module.exports = function (req, res) {
          i++) {
 
       json_api_errors.errors.push({
-        code   : 'required_field',
-        field  : failed_required_fields[i],
-        message: 'Required field was not provided.'
+        code   : log_codes.required_field.code,
+        field  : '/vlans/0/' + failed_required_fields[i],
+        message: log_codes.required_field.message
       });
     }
 
@@ -87,13 +88,7 @@ module.exports = function (req, res) {
         ]
       });
 
-      json_api_errors.errors.push({
-        code   : 'iproute',
-        field  : '',
-        message: error
-      });
-
-      res.json(500, json_api_errors); // Internal Server Error.
+      res.send(500); // Internal Server Error.
 
       return;
     }
@@ -113,13 +108,7 @@ module.exports = function (req, res) {
           ]
         });
 
-        json_api_errors.errors.push({
-          code   : 'iproute',
-          field  : '',
-          message: error
-        });
-
-        res.json(500, json_api_errors); // Internal Server Error.
+        res.send(500); // Internal Server Error.
 
         return;
       }
@@ -139,13 +128,7 @@ module.exports = function (req, res) {
             ]
           });
 
-          json_api_errors.errors.push({
-            code   : error.name,
-            field  : '',
-            message: error.message
-          });
-
-          res.json(500, json_api_errors); // Internal Server Error.
+          res.send(500); // Internal Server Error.
 
           return;
         }

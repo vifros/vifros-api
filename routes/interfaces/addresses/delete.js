@@ -17,11 +17,19 @@ module.exports = function (req, res) {
            i < j;
            i++) {
 
-        json_api_errors.errors.push({
-          code   : ret.errors[i].code,
-          field  : ret.errors[i].field,
-          message: ret.errors[i].message
-        });
+        var errors = {};
+
+        if (ret.errors[i].code) {
+          errors.code = ret.errors[i].code;
+        }
+        if (ret.errors[i].field) {
+          errors.field = ret.errors[i].field;
+        }
+        if (ret.errors[i].message) {
+          errors.message = ret.errors[i].message;
+        }
+
+        json_api_errors.errors.push(errors);
       }
 
       res.json(ret.server_code, json_api_errors);

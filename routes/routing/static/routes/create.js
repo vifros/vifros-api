@@ -2,6 +2,7 @@ var ip_route = require('iproute').route;
 
 var logger = require('../../../../common/logger').logger;
 var log_tags = require('../../../../common/logger').tags;
+var log_codes = require('../../../../common/logger').codes;
 
 var config = require('../../../../config');
 
@@ -53,9 +54,9 @@ module.exports = function (req, res, options) {
          i++) {
 
       json_api_errors.errors.push({
-        code   : 'required_field',
-        field  : failed_required_fields[i],
-        message: 'Required field was not provided.'
+        code   : log_codes.required_field.code,
+        field  : '/routes/0/' + failed_required_fields[i],
+        message: log_codes.required_field.message
       });
     }
 
@@ -78,13 +79,7 @@ module.exports = function (req, res, options) {
         ]
       });
 
-      json_api_errors.errors.push({
-        code   : error.name,
-        field  : '',
-        message: error.message
-      });
-
-      res.json(500, json_api_errors); // Internal Server Error.
+      res.send(500); // Internal Server Error.
 
       return;
     }
@@ -104,13 +99,7 @@ module.exports = function (req, res, options) {
             ]
           });
 
-          json_api_errors.errors.push({
-            code   : error.name,
-            field  : '',
-            message: error.message
-          });
-
-          res.json(500, json_api_errors); // Internal Server Error.
+          res.send(500); // Internal Server Error.
 
           return;
         }
@@ -120,9 +109,9 @@ module.exports = function (req, res, options) {
            * There is already a table, so throw an error.
            */
           json_api_errors.errors.push({
-            code   : 'duplicated',
-            field  : 'to',
-            message: 'A route with the same data is already present.'
+            code   : log_codes.already_present.code,
+            field  : '/routes/0/to',
+            message: log_codes.already_present.message
           });
 
           res.json(500, json_api_errors); // Internal Server Error.
@@ -142,13 +131,7 @@ module.exports = function (req, res, options) {
               ]
             });
 
-            json_api_errors.errors.push({
-              code   : 'iproute',
-              field  : '',
-              message: error
-            });
-
-            res.json(500, json_api_errors); // Internal Server Error.
+            res.send(500); // Internal Server Error.
 
             return;
           }
@@ -166,13 +149,7 @@ module.exports = function (req, res, options) {
                 ]
               });
 
-              json_api_errors.errors.push({
-                code   : error.name,
-                field  : '',
-                message: error.message
-              });
-
-              res.json(500, json_api_errors); // Internal Server Error.
+              res.send(500); // Internal Server Error.
 
               return;
             }
@@ -199,11 +176,11 @@ module.exports = function (req, res, options) {
     }
 
     json_api_errors.errors.push({
-      code   : 'not_found',
-      field  : 'table',
-      message: 'The provided table does not exists yet.'
+      code   : log_codes.related_resource_not_found.code,
+      field  : '/routes/0/table',
+      message: log_codes.related_resource_not_found.message
     });
 
-    res.json(500, json_api_errors); // Internal Server Error.
+    res.send(404); // Not found.
   });
 };
