@@ -9,6 +9,9 @@ module.exports = function (cb_init) {
   // System. Settings.
   init.push(require('./system/settings/index'));
 
+  // System. IPSets.
+  init.push(require('./system/ipsets/index'));
+
   // Interfaces. Loopbacks.
   init.push(require('./interfaces/loopbacks/index'));
 
