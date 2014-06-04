@@ -59,7 +59,7 @@ module.exports = function (app) {
     .delete(require('./routes/system/tunables/delete'));
 
   /*
-   * Routing. Settings.
+   * System. Settings.
    */
   app.route(config.api.prefix + '/system/settings')
     .get(require('./routes/system/settings/index'));
@@ -67,6 +67,15 @@ module.exports = function (app) {
   app.route(config.api.prefix + '/system/settings/:setting')
     .get(require('./routes/system/settings/show'))
     .patch(require('./routes/system/settings/patch'));
+
+  /*
+   * System. IPSets.
+   */
+  app.route(config.api.prefix + '/system/ipsets')
+    .get(require('./routes/system/ipsets/index'));
+
+  app.route(config.api.prefix + '/system/ipsets/:ipset')
+    .get(require('./routes/system/ipsets/show'));
 
   /*
    * Interfaces.

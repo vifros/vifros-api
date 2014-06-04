@@ -7,7 +7,8 @@ var Schema = mongoose.Schema;
 var IPSetSchema = new Schema({
   name       : {
     type    : String,
-    required: true
+    required: true,
+    unique  : true
   },
   type       : {
     type    : String,

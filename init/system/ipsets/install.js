@@ -178,7 +178,7 @@ module.exports = function (cb_init) {
   ], function (error) {
     if (error) {
       logger.error(error, {
-        module: 'settings/ipsets',
+        module: 'system/ipsets',
         tags  : [
           log_tags.init
         ]
@@ -190,7 +190,7 @@ module.exports = function (cb_init) {
     }
 
     var setting = new Setting({
-      module: 'settings/ipsets',
+      module: 'system/ipsets',
       name  : 'status',
       value : setting_statuses.enabled
     });
@@ -198,7 +198,7 @@ module.exports = function (cb_init) {
     setting.save(function (error) {
       if (error) {
         logger.error(error.message, {
-          module: 'settings/ipsets',
+          module: 'system/ipsets',
           tags  : [
             log_tags.init,
             log_tags.db
@@ -211,7 +211,7 @@ module.exports = function (cb_init) {
       }
 
       logger.info('Module started.', {
-        module: 'settings/ipsets',
+        module: 'system/ipsets',
         tags  : [
           log_tags.init
         ]

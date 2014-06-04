@@ -81,7 +81,7 @@ module.exports = {
       ]
     },
     {
-      setname       : 'all_martian',
+      setname       : 'all_martians',
       type       : 'list:set',
       description: 'All known martian address ranges.',
 
