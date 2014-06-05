@@ -11,7 +11,7 @@ var config = require('./config');
 var app = express();
 
 // All environments
-app.set('port', config.website.port
+app.set('port', config.api.port
   || process.env.PORT
   || 3000);
 

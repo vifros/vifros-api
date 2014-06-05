@@ -18,6 +18,7 @@
 ###  Queue
 
 - Auth
+	- digest
 
 - Add `/logs/settings`.
 
