@@ -4,15 +4,18 @@
 
 ### Immediate
 
-- IP sets
-
 - NAT
+	- bidirectional
+	- source
+	- destination
 
 - Firewall
 
-###  Queue
+- IP sets
 
-- At some point re-modularize the project structure.
+- Add tests.
+
+###  Queue
 
 - Auth
 

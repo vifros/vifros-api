@@ -65,11 +65,11 @@ if (app.get('env') == 'production') {
 // Connect to database.
 require('./common/db').connect();
 
-// Setup routes.
+// Setup root routes.
 require('./routes')(app);
 
 // Initialize app.
-require('./init')(function (error) {
+require('./init')(app, function (error) {
   if (error) {
     /*
      * Do nothing. This error is already handled by the innermost package.
