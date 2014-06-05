@@ -13,12 +13,12 @@
 
 - IP sets
 
-- Add tests.
+- Add tests
 
 ###  Queue
 
 - Auth
-	- digest
+	- Digest
 
 - Add `/logs/settings`.
 

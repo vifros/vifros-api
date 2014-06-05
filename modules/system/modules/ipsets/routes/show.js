@@ -44,7 +44,7 @@ module.exports = function (req, res) {
       delete buffer._id;
       delete buffer.__v;
 
-      var ipset_models = require('../../../models/system/ipsets/' + doc.type.replace(/:|,/, '-'));
+      var ipset_models = require('../models/' + doc.type.replace(/:|,/, '-'));
 
       var model_name = '';
       for (var i = 0, j = doc.type.split(/:|,/), k = j.length;
