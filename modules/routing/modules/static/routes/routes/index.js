@@ -58,10 +58,6 @@ module.exports = function (req, res, options) {
     };
   }
 
-  var json_api_errors = {
-    errors: []
-  };
-
   var query_filter = jsonapi.buildQueryFilterFromReq({
     req          : req,
     resource_name: 'routes',

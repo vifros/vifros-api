@@ -7,7 +7,8 @@ module.exports = function (req, res) {
     links: {
       system    : req.protocol + '://' + req.get('Host') + config.api.prefix + '/system',
       interfaces: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces',
-      routing   : req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing'
+      routing   : req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing',
+      services  : req.protocol + '://' + req.get('Host') + config.api.prefix + '/services'
     }
   };
 

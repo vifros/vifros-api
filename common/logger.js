@@ -67,5 +67,9 @@ exports.codes = {
   related_resource_not_found    : {
     code   : 'related_resource_not_found',
     message: 'The related resource does not exists yet.'
+  },
+  invalid_value                 : {
+    code   : 'invalid_value',
+    message: 'Invalid value for this field'
   }
 };

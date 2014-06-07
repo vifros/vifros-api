@@ -44,7 +44,7 @@ module.exports = function (cb_init) {
        * Add package defaults to OS.
        */
       async.each(package_defaults.ipsets, function (item, cb_each) {
-        var ipset_models = require('../../../models/system/ipsets/' + item.type.replace(/:|,/, '-'));
+        var ipset_models = require('../models/' + item.type.replace(/:|,/, '-'));
 
         var model_name = '';
         for (var i = 0, j = item.type.split(/:|,/), k = j.length;

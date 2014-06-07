@@ -1,26 +1,24 @@
-var config = require('../../../../../../config');
+var config = require('../../../../../../../../config');
 
-var logger = require('../../../../../../common/logger').logger;
-var log_tags = require('../../../../../../common/logger').tags;
+var logger = require('../../../../../../../../common/logger').logger;
+var log_tags = require('../../../../../../../../common/logger').tags;
 
-var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
+var NATRule = require('../../../../models/rule').NATRule;
 
 module.exports = function (req, res) {
   res.type('application/vnd.api+json');
 
   var json_api_body = {
-    links : {
-      tables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/{tables.id}'
+    links: {
+      rules: req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/rules/{rules.id}'
     },
-    tables: []
+    rules: []
   };
 
-  StaticRoutingTable.findOne({
-    id: req.params.table
-  }, function (error, doc) {
+  NATRule.findById(req.params.rule, function (error, doc) {
     if (error) {
       logger.error(error.message, {
-        module: 'routing/static/tables',
+        module: 'services/nat/source/rules',
         tags  : [
           log_tags.api_request,
           log_tags.db
@@ -37,11 +35,12 @@ module.exports = function (req, res) {
        * Build JSON API response.
        */
       var buffer = doc.toObject();
+      buffer.id = doc._id;
 
       delete buffer._id;
       delete buffer.__v;
 
-      json_api_body.tables.push(buffer);
+      json_api_body.rules.push(buffer);
 
       res.json(200, json_api_body); // OK.
 

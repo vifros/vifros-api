@@ -1,40 +1,41 @@
 var async = require('async');
 
-var config = require('../../../../../config');
+var config = require('../../../../../../../config');
 
-var logger = require('../../../../../common/logger').logger;
-var log_tags = require('../../../../../common/logger').tags;
+var logger = require('../../../../../../../common/logger').logger;
+var log_tags = require('../../../../../../../common/logger').tags;
 
-var Tunable = require('../models/tunable').Tunable;
+var NATChain = require('../../../models/chain').NATChain;
 
-var jsonapi = require('../../../../../utils/jsonapi');
+var jsonapi = require('../../../../../../../utils/jsonapi');
 
 module.exports = function (req, res) {
   res.type('application/vnd.api+json');
 
   var json_api_body = {
-    links   : {
-      tunables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/tunables' + '/' + '{tunables.path}'
+    links : {
+      chains: req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/chains/{chains.name}'
     },
-    tunables: []
+    chains: []
   };
 
   var query_filter = jsonapi.buildQueryFilterFromReq({
     req          : req,
-    resource_name: 'tunables',
-    model        : Tunable
+    resource_name: 'chains',
+    model        : NATChain
   });
+  query_filter.type = 'source';
 
   var query_options = jsonapi.buildQueryOptionsFromReq({
     req          : req,
-    resource_name: 'tunables',
-    model        : Tunable
+    resource_name: 'chains',
+    model        : NATChain
   });
 
-  Tunable.find(query_filter, {}, query_options, function (error, docs) {
+  NATChain.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
       logger.error(error.message, {
-        module: 'system/tunables',
+        module: 'services/nat/source/chains',
         tags  : [
           log_tags.api_request,
           log_tags.db
@@ -56,7 +57,7 @@ module.exports = function (req, res) {
             delete buffer._id;
             delete buffer.__v;
 
-            json_api_body.tunables.push(buffer);
+            json_api_body.chains.push(buffer);
 
             cb_each(null);
           }, function (error) {
@@ -70,7 +71,9 @@ module.exports = function (req, res) {
           });
         },
         function (cb_parallel) {
-          Tunable.count(function (error, count) {
+          NATChain.count({
+            type: 'source'
+          }, function (error, count) {
             if (error) {
               cb_parallel(error);
 
@@ -78,7 +81,7 @@ module.exports = function (req, res) {
             }
 
             json_api_body['meta'] = {
-              tunables: {
+              chains: {
                 total : count,
                 limit : Number(query_options.limit),
                 offset: Number(query_options.skip)
@@ -91,7 +94,7 @@ module.exports = function (req, res) {
       ], function (error) {
         if (error) {
           logger.error(error, {
-            module: 'system/tunables',
+            module: 'services/nat/source/chains',
             tags  : [
               log_tags.api_request
             ]

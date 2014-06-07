@@ -19,10 +19,6 @@ module.exports = function (req, res) {
     tables: []
   };
 
-  var json_api_errors = {
-    errors: []
-  };
-
   var query_filter = jsonapi.buildQueryFilterFromReq({
     req          : req,
     resource_name: 'tables',

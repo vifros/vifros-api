@@ -5,25 +5,26 @@
 ### Immediate
 
 - NAT
-	- bidirectional
 	- source
 	- destination
+
+	- add default rules to prevent auto-lockout:
+		- out-if: lo
+		- type: source
+		- jump: ACCEPT
 
 - Firewall
 
 - IP sets
 
-- Add tests
-
 ###  Queue
 
 - Auth
-	- Digest
 
 - Add `/logs/settings`.
 
 - Add options to select from HTTP or HTTPS. Set HTTPS as the default.
 
-- Use `apidocjs` to generate API docs? Or use apiary.io for this?
+- Use `apidocjs` to generate API docs?
 
-- QoS
+- Add acceptance tests.
