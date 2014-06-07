@@ -17,8 +17,6 @@
 
 - IP sets
 
-###  Queue
-
 - Auth
 
 - Add `/logs/settings`.
