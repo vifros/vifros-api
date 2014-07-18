@@ -10,8 +10,6 @@ var Tunable = require('../models/tunable').Tunable;
 var jsonapi = require('../../../../../utils/jsonapi');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links   : {
       tunables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/tunables' + '/' + '{tunables.path}'
@@ -70,7 +68,7 @@ module.exports = function (req, res) {
           });
         },
         function (cb_parallel) {
-          Tunable.count(function (error, count) {
+          Tunable.count(query_filter, function (error, count) {
             if (error) {
               cb_parallel(error);
 

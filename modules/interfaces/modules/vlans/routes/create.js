@@ -16,8 +16,6 @@ module.exports = function (req, res) {
     return;
   }
 
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links: {
       vlans: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/vlans' + '/' + '{vlans.interface}.{vlans.tag}'

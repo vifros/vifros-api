@@ -9,16 +9,12 @@ var NATChain = require('../../../models/chain').NATChain;
 module.exports = function (req, res) {
   if (!req.is('application/vnd.api+json')) {
     res.send(415); // Unsupported Media Type.
-
     return;
   }
 
-  res.type('application/vnd.api+json');
+  var url_prefix = req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/chains';
 
   var json_api_body = {
-    links : {
-      chains: req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/chains/{chains.name}'
-    },
     chains: []
   };
 
@@ -27,8 +23,9 @@ module.exports = function (req, res) {
   };
 
   /*
-   * Required values checks.
+   * Validation checks.
    */
+  // Required values.
   if (typeof req.body.chains[0].type == 'undefined') {
     req.body.chains[0].type = 'source';
   }
@@ -48,21 +45,10 @@ module.exports = function (req, res) {
     });
   }
 
-  if (json_api_errors.errors.length) {
-    res.json(400, json_api_errors); // Bad Request.
-
-    return;
-  }
-
-  /*
-   * Check if the table exists.
-   */
-  NATChain.findOne({
-    type: req.body.chains[0].type,
-    name: req.body.chains[0].name
-  }, function (error, doc) {
+  // Run the field validations.
+  NATChain.validate(req.body.chains[0], function (error, api_errors) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'services/nat/source/chains',
         tags  : [
           log_tags.api_request,
@@ -71,74 +57,103 @@ module.exports = function (req, res) {
       });
 
       res.send(500); // Internal Server Error.
-
       return;
     }
 
-    if (doc) {
-      /*
-       * There is already a table, so throw an error.
-       */
-      json_api_errors.errors.push({
-        code   : log_codes.already_present.code,
-        field  : '/chains/0/name',
-        message: log_codes.already_present.message
-      });
+    if (api_errors.length) {
+      json_api_errors.errors = json_api_errors.errors.concat(api_errors);
+    }
 
+    if (json_api_errors.errors.length) {
       res.json(400, json_api_errors); // Bad Request.
-
       return;
     }
 
-    var chain = new NATChain(req.body.chains[0]);
-
-    NATChain.createFromObjectToOS(chain, function (error) {
+    /*
+     * Check if the chain exists.
+     */
+    NATChain.findOne({
+      type: req.body.chains[0].type,
+      name: req.body.chains[0].name
+    }, function (error, doc) {
       if (error) {
         logger.error(error, {
           module: 'services/nat/source/chains',
           tags  : [
             log_tags.api_request,
-            log_tags.os
+            log_tags.db
           ]
         });
 
         res.send(500); // Internal Server Error.
-
         return;
       }
 
-      /*
-       * Save changes to database.
-       */
-      chain.save(function (error) {
+      if (doc) {
+        /*
+         * There is already a chain with those params, so throw an error.
+         */
+        json_api_errors.errors.push({
+          code   : log_codes.already_present.code,
+          field  : '/chains/0/name',
+          message: log_codes.already_present.message
+        });
+
+        res.json(400, json_api_errors); // Bad Request.
+        return;
+      }
+
+      var chain = new NATChain(req.body.chains[0]);
+
+      NATChain.createFromObjectToOS(chain, function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'services/nat/source/chains',
             tags  : [
               log_tags.api_request,
-              log_tags.db
+              log_tags.os
             ]
           });
 
           res.send(500); // Internal Server Error.
-
           return;
         }
 
-        var item_to_send = req.body.chains[0];
-
-        item_to_send.href = req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/chains/' + chain.name;
-        item_to_send.id = chain._id;
-
-        res.location(item_to_send.href);
-
         /*
-         * Build JSON API response.
+         * Save changes to database.
          */
-        json_api_body.chains = [];
-        json_api_body.chains.push(item_to_send);
+        chain.save(function (error, doc) {
+          if (error) {
+            logger.error(error, {
+              module: 'services/nat/source/chains',
+              tags  : [
+                log_tags.api_request,
+                log_tags.db
+              ]
+            });
 
-        res.json(200, json_api_body); // OK.
+            res.send(500); // Internal Server Error.
+            return;
+          }
+
+          var item_to_send = JSON.parse(JSON.stringify(doc)); // This construction is to do a deep copy.
+
+          item_to_send.href = url_prefix + '/' + item_to_send.name;
+          item_to_send.id = item_to_send._id;
+
+          delete item_to_send._id;
+          delete item_to_send.__v;
+
+          res.location(item_to_send.href);
+
+          /*
+           * Build JSON API response.
+           */
+          json_api_body.chains = [];
+          json_api_body.chains.push(item_to_send);
+
+          res.json(200, json_api_body); // OK.
+        });
       });
     });
   });

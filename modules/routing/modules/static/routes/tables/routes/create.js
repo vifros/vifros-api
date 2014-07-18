@@ -6,8 +6,6 @@ var StaticRoutingTable = require('../../../models/table').StaticRoutingTable;
 var routes_create = require('../../routes/create');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   StaticRoutingTable.findOne({
     id: req.params.table
   }, function (error, doc) {

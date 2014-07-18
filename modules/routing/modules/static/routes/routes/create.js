@@ -16,8 +16,6 @@ module.exports = function (req, res, options) {
     return;
   }
 
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links : {
       routes: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static' + options.base_url + '/routes/{routes.id}'
@@ -178,7 +176,7 @@ module.exports = function (req, res, options) {
     json_api_errors.errors.push({
       code   : log_codes.related_resource_not_found.code,
       field  : '/routes/0/table',
-      message: log_codes.related_resource_not_found.message
+      message: log_codes.related_resource_not_found.message.replace('%s', 'table')
     });
 
     res.send(404); // Not found.

@@ -9,8 +9,6 @@ var log_tags = require('../../../../../common/logger').tags;
 var log_codes = require('../../../../../common/logger').codes;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_errors = {
     errors: []
   };

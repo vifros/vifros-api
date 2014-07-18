@@ -6,8 +6,6 @@ var log_tags = require('../../../../../../common/logger').tags;
 var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links : {
       tables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/{tables.id}'

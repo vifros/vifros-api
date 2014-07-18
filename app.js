@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 var http = require('http'); // TODO: At some point change the protocol to HTTPS. or give the two options?
-
 var express = require('express');
-var bodyParser = require('body-parser');
 var errorHandler = require('errorhandler');
 
 var config = require('./config');
+var logger = require('./common/logger').logger;
+var log_tags = require('./common/logger').tags;
 
 var app = express();
 
@@ -15,11 +15,10 @@ app.set('port', config.api.port
   || process.env.PORT
   || 3000);
 
-app.use(bodyParser.json({type: 'application/vnd.api+json'}));
-app.use(require('method-override')());
-
-var logger = require('./common/logger').logger;
-var log_tags = require('./common/logger').tags;
+// TODO: At some point move this to the POST calls themselves.
+// TODO: Add the parser for PATCH verbs too.
+app.use(require('body-parser').json({type: 'application/vnd.api+json'}));
+app.use(require('method-override')()); // TODO: What is this for?
 
 // Log API requests.
 app.use(function (req, res, next) {
@@ -27,7 +26,10 @@ app.use(function (req, res, next) {
     profile: 'http://api.example.com/profile' // TODO: Update the URL when the API documentation gets published.
   });
 
-  res.on('finish', function () {
+  // Unless explicitly stated, all responses are JSON API ones.
+  res.type('application/vnd.api+json');
+
+  res.on('finish', function cbOnResFinish() {
     logger.info('API request.', {
       module: 'core',
       tags  : [
@@ -54,7 +56,6 @@ if (app.get('env') == 'development') {
     dumpExceptions: true,
     showStack     : true
   }));
-
   app.locals.pretty = true;
 }
 
@@ -69,13 +70,13 @@ require('./common/db').connect();
 require('./routes')(app);
 
 // Initialize app.
-require('./init')(app, function (error) {
+require('./init')(app, function cbOnAppInit(error) {
   if (error) {
     /*
      * Do nothing. This error is already handled by the innermost package.
      * For now, do not start the server.
      */
-    logger.error('Application will not start due init errors.', {
+    logger.error('Application won\'t start due init errors.', {
       module: 'core',
       tags  : [
         log_tags.init
@@ -84,12 +85,11 @@ require('./init')(app, function (error) {
 
     // Exit the app with error status.
     process.exit(1);
-
     return;
   }
 
   var server = http.createServer(app);
-  server.listen(app.get('port'), function () {
+  server.listen(app.get('port'), function cbOnServerListen() {
     logger.info('Server listening on port ' + app.get('port') + '.', {
       module: 'core',
       tags  : [
@@ -103,15 +103,12 @@ require('./init')(app, function (error) {
  * Log uncaught errors and act accordingly.
  * http://shapeshed.com/uncaught-exceptions-in-node/
  */
-process.on('uncaughtException', function (error) {
-  logger.error(error.message, {
+process.on('uncaughtException', function cbOnUncaughtException(error) {
+  logger.error(error, {
     module: 'core',
     tags  : [
       log_tags.uncaught
-    ],
-    data  : {
-      stack: error.stack
-    }
+    ]
   });
 
   // Exit the app with error status.

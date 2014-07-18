@@ -4,8 +4,6 @@ var log_tags = require('../../../../../common/logger').tags;
 var Tunable = require('../models/tunable').Tunable;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   Tunable.findOneAndRemove({
     path: req.params.tunable
   }, function (error) {

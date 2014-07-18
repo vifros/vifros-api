@@ -3,8 +3,6 @@ var ip_forward = require('iproute').utils.ip_forward;
 var settings_patch = require('../../../common/settings/routes/patch');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   try {
     /*
      * Delegate the responsibility to send the response to this method.

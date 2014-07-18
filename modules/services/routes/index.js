@@ -1,11 +1,11 @@
 var config = require('../../../config');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
+  var url_prefix = req.protocol + '://' + req.get('Host') + config.api.prefix + '/services';
 
   var json_api_body = {
     links: {
-      nat: req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat'
+      nat: url_prefix + '/nat'
     }
   };
 

@@ -15,8 +15,6 @@ module.exports = function (req, res) {
     return;
   }
 
-  res.type('application/vnd.api+json');
-
   var json_api_errors = {
     errors: []
   };

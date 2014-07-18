@@ -8,8 +8,6 @@ var logger = require('../../../../../common/logger').logger;
 var log_tags = require('../../../../../common/logger').tags;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_errors = {
     errors: []
   };

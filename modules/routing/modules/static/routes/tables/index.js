@@ -10,8 +10,6 @@ var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 var jsonapi = require('../../../../../../utils/jsonapi');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links : {
       tables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/{tables.id}'
@@ -69,7 +67,7 @@ module.exports = function (req, res) {
           });
         },
         function (cb_parallel) {
-          StaticRoutingTable.count(function (error, count) {
+          StaticRoutingTable.count(query_filter, function (error, count) {
             if (error) {
               cb_parallel(error);
 

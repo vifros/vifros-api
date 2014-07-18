@@ -6,8 +6,6 @@ var Loopback = require('../../models/loopback').Loopback;
 var addresses_index = require('../../../common/addresses/routes/index');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_errors = {
     errors: []
   };

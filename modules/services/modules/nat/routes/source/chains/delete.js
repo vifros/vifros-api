@@ -3,14 +3,11 @@ var iptables = require('netfilter').iptables;
 
 var logger = require('../../../../../../../common/logger').logger;
 var log_tags = require('../../../../../../../common/logger').tags;
-var log_codes = require('../../../../../../../common/logger').codes;
 
 var NATChain = require('../../../models/chain').NATChain;
 var NATRule = require('../../../models/rule').NATRule;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   // Find a matching chain in the DB.
   NATChain.findOne({
     type: 'source',
@@ -39,25 +36,23 @@ module.exports = function (req, res) {
     async.series([
       function (cb_series) {
         // Delete binding rule from built-in chains.
-        NATChain.buildRuleOptions(doc, function (error, rule_options) {
-          iptables.delete(rule_options, function (error) {
-            if (error) {
+        var rule_options = NATChain.buildRuleOptions(doc);
 
-              cb_series(error);
+        iptables.delete(rule_options, function (error) {
+          if (error) {
 
-              return;
-            }
+            cb_series(error);
 
-            cb_series(null);
-          });
+            return;
+          }
+
+          cb_series(null);
         });
       },
       function (cb_series) {
         // Purge the chain and its rules from OS.
         NATChain.purgeFromOS({
-          filter: {
-            chain: doc.type + '-' + req.params.chain
-          }
+          chain: doc.type + '-' + req.params.chain
         }, function (error) {
           if (error) {
 

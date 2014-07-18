@@ -10,8 +10,6 @@ var Log = require('../../models/log').Log;
 var jsonapi = require('../../../../../../utils/jsonapi');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links: {
       logs: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/logging/logs' + '/' + '{logs.id}'
@@ -74,7 +72,7 @@ module.exports = function (req, res) {
           });
         },
         function (cb_parallel) {
-          Log.count(function (error, count) {
+          Log.count(query_filter, function (error, count) {
             if (error) {
               cb_parallel(error);
 

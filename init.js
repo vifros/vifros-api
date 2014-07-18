@@ -6,7 +6,7 @@ var config = require('./config');
 
 var global_app;
 
-module.exports = function (app, cb_init) {
+module.exports = function init(app, cb_init) {
   global_app = app;
 
   loadModules(
@@ -14,9 +14,12 @@ module.exports = function (app, cb_init) {
     cb_init);
 };
 
-/*
+/**
  * Recursive function.
  * It uses a global reference to app. This is so to not add a constant parameter to the function.
+ *
+ * @param {string}    modules_path
+ * @param {function}  cb
  */
 function loadModules(modules_path, cb) {
   fs.readdir(modules_path, function (error, files) {
@@ -24,7 +27,7 @@ function loadModules(modules_path, cb) {
     if (error) {
       switch (error.code) {
         case 'ENOENT':
-          // Was reached the leaf so there are no more submodules to load.
+          // Was reached the leaf so there are no more sub modules to load.
           cb(null);
           break;
 
@@ -32,15 +35,13 @@ function loadModules(modules_path, cb) {
           cb(error);
           break;
       }
-
       return;
     }
 
     async.each(files, function (item, cb_each) {
       if (item == 'common') {
-        // Ignore the common module, since it doesn not have any init methods.
+        // Ignore the common module, since it doesn't have any `init` method.
         cb_each(null);
-
         return;
       }
 
@@ -59,26 +60,23 @@ function loadModules(modules_path, cb) {
             module.init(function (error) {
               if (error) {
                 cb_series(error);
-
                 return;
               }
 
               cb_series(null);
             });
-
             return;
           }
 
           cb_series(null);
         },
         function (cb_series) {
-          // Load submodules.
+          // Load sub-modules.
           loadModules(item_path + path.sep + 'modules', cb_series);
         }
       ], function (error) {
         if (error) {
           cb_each(error);
-
           return;
         }
 
@@ -87,7 +85,6 @@ function loadModules(modules_path, cb) {
     }, function (error) {
       if (error) {
         cb(error);
-
         return;
       }
 

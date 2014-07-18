@@ -6,8 +6,6 @@ var log_tags = require('../../../../../../../../common/logger').tags;
 var NATRule = require('../../../../models/rule').NATRule;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links: {
       rules: req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/rules/{rules.id}'

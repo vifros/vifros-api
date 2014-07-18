@@ -10,8 +10,6 @@ var IPSet = require('../models/ipset').IPSet;
 var jsonapi = require('../../../../../utils/jsonapi');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links : {
       ipsets: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/ipsets' + '/' + '{ipsets.name}'
@@ -70,7 +68,7 @@ module.exports = function (req, res) {
           });
         },
         function (cb_parallel) {
-          IPSet.count(function (error, count) {
+          IPSet.count(query_filter, function (error, count) {
             if (error) {
               cb_parallel(error);
 

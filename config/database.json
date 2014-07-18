@@ -1,5 +1,7 @@
 {
-  "host": "localhost",
-  "name": "vifros",
-  "port": ""
+  "host"    : "localhost",
+  "port"    : "",
+  "username": "",
+  "password": "",
+  "name"    : "vifros"
 }

@@ -17,12 +17,11 @@ module.exports = function (cb_init) {
   async.series([
     function (cb_series) {
       /*
-       * Clear system.
+       * Clear chains in the system.
        */
       NATChain.purgeFromOS({}, function (error) {
         if (error) {
           cb_series(error);
-
           return;
         }
 
@@ -36,7 +35,6 @@ module.exports = function (cb_init) {
       NATChain.setDefaultPolicy(function (error) {
         if (error) {
           cb_series(error);
-
           return;
         }
 
@@ -51,7 +49,6 @@ module.exports = function (cb_init) {
         NATChain.createFromObjectToOS(item, function (error) {
           if (error) {
             cb_each(error);
-
             return;
           }
 
@@ -61,7 +58,6 @@ module.exports = function (cb_init) {
           chain.save(function (error) {
             if (error) {
               cb_each(error);
-
               return;
             }
 
@@ -71,7 +67,6 @@ module.exports = function (cb_init) {
       }, function (error) {
         if (error) {
           cb_series(error);
-
           return;
         }
 
@@ -88,7 +83,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -100,7 +94,7 @@ module.exports = function (cb_init) {
 
     setting.save(function (error) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'services/nat',
           tags  : [
             log_tags.init,
@@ -109,7 +103,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 

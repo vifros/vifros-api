@@ -1,10 +1,6 @@
 {
   "prefix"    : "/api",
   "port"      : 3000,
-  "admin"     : {
-    "name"    : "admin@root",
-    "password": "admin505"
-  },
   "pagination": {
     "limit": 10
   }

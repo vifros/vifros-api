@@ -12,7 +12,7 @@ module.exports = function (cb_init) {
     name  : 'status'
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'services/nat',
         tags  : [
           log_tags.init,
@@ -21,7 +21,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -30,7 +29,6 @@ module.exports = function (cb_init) {
        * Already initialized.
        */
       startup(cb_init);
-
       return;
     }
 

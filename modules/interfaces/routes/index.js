@@ -3,8 +3,6 @@ var config = require('../../../config');
 module.exports = function (req, res) {
   var url_prefix = req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces';
 
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links: {
       ethernets: url_prefix + '/ethernets',

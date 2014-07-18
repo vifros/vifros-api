@@ -1,7 +1,7 @@
 var async = require('async');
 
 var config = require('../../../../../../config');
-var _ = require('lodash');
+var lodash = require('lodash');
 
 var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 var StaticRoutingRoute = require('../../models/route').StaticRoutingRoute;
@@ -12,8 +12,6 @@ var log_tags = require('../../../../../../common/logger').tags;
 var jsonapi = require('../../../../../../utils/jsonapi');
 
 module.exports = function (req, res, options) {
-  res.type('application/vnd.api+json');
-
   /*
    * Check for external calling.
    */
@@ -75,7 +73,8 @@ module.exports = function (req, res, options) {
     filter = options.filter;
   }
 
-  query_filter = _.merge(query_filter, filter);
+  // TODO: Find a way to do a merge to let go `lodash`.
+  query_filter = lodash.merge(query_filter, filter);
 
   StaticRoutingRoute.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
@@ -126,7 +125,7 @@ module.exports = function (req, res, options) {
           });
         },
         function (cb_parallel) {
-          StaticRoutingRoute.count(filter, function (error, count) {
+          StaticRoutingRoute.count(query_filter, filter, function (error, count) {
             if (error) {
               cb_parallel(error);
 

@@ -1,19 +1,41 @@
 var mongoose = require('mongoose');
 
 var config = require('../config');
-
 var logger = require('./logger').logger;
 var log_tags = require('./logger').tags;
 
+/*
+ * Build the connection string.
+ */
+var url = 'mongodb://';
+
+if (config.database.username) {
+  url += config.database.username;
+
+  if (config.database.password) {
+    url += ':' + config.database.password;
+  }
+
+  url += '@';
+}
+url += config.database.host + '/' + config.database.name;
+
 module.exports = {
-  connect: function () {
+  connect: function cbOnConnect() {
     // Open DB connection to database.
-    mongoose.connect(config.database.host, config.database.name);
+    mongoose.connect(url, {
+      server: {
+        auto_reconnect: true,
+        socketOptions : {
+          keepAlive: 1 // Needed for long running applications. Prevent 'connection closed' errors.
+        }
+      }
+    });
 
     /*
      * Database checks.
      */
-    mongoose.connection.on('error', function (error) {
+    mongoose.connection.on('error', function cbOnConnectionError(error) {
       logger.error(error, {
         module: 'core',
         tags  : [
@@ -23,7 +45,7 @@ module.exports = {
       });
     });
 
-    mongoose.connection.once('open', function () {
+    mongoose.connection.once('open', function cbOnConnectionOpen() {
       logger.info('Database connection opened.', {
         module: 'core',
         tags  : [

@@ -11,8 +11,6 @@ var log_tags = require('../../../../../common/logger').tags;
 var jsonapi = require('../../../../../utils/jsonapi');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   /*
    * Check for document inclusion.
    */
@@ -164,7 +162,7 @@ module.exports = function (req, res) {
           });
         },
         function (cb_parallel) {
-          Loopback.count(function (error, count) {
+          Loopback.count(query_filter, function (error, count) {
             if (error) {
               cb_parallel(error);
 

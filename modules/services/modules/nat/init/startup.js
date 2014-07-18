@@ -13,12 +13,11 @@ module.exports = function (cb_init) {
   async.series([
     function (cb_series) {
       /*
-       * Clear system.
+       * Clear chains in the system.
        */
       NATChain.purgeFromOS({}, function (error) {
         if (error) {
           cb_series(error);
-
           return;
         }
 
@@ -32,7 +31,6 @@ module.exports = function (cb_init) {
       NATChain.setDefaultPolicy(function (error) {
         if (error) {
           cb_series(error);
-
           return;
         }
 
@@ -41,78 +39,70 @@ module.exports = function (cb_init) {
     },
     function (cb_series) {
       /*
-       * Get all chains from DB.
+       * Get all chains from DB & insert them into OS.
        */
       NATChain.find({}, function (error, docs) {
         if (error) {
           cb_series(error);
-
           return;
         }
 
-        if (docs && docs.length) {
-          async.eachSeries(docs, function (item, cb_each) {
-            NATChain.createFromObjectToOS(item, function (error) {
-              if (error) {
-                cb_each(error);
+        if (!docs) {
+          cb_series(null);
+          return;
+        }
 
-                return;
-              }
-
-              cb_each(null);
-            });
-          }, function (error) {
+        async.eachSeries(docs, function (item, cb_each) {
+          NATChain.createFromObjectToOS(item, function (error) {
             if (error) {
-              cb_series(error);
-
+              cb_each(error);
               return;
             }
 
-            cb_series(null);
+            cb_each(null);
           });
+        }, function (error) {
+          if (error) {
+            cb_series(error);
+            return;
+          }
 
-          return;
-        }
-
-        cb_series(null);
+          cb_series(null);
+        });
       });
     },
     function (cb_series) {
       /*
-       * Get all rules from DB.
+       * Get all chain rules from DB & insert them into OS.
        */
       NATRule.find({}, function (error, docs) {
         if (error) {
           cb_series(error);
-
           return;
         }
 
-        if (docs && docs.length) {
-          async.eachSeries(docs, function (item, cb_each) {
-            NATRule.createFromObjectToOS(item, function (error) {
-              if (error) {
-                cb_each(error);
+        if (!docs) {
+          cb_series(null);
+          return;
+        }
 
-                return;
-              }
-
-              cb_each(null);
-            });
-          }, function (error) {
+        async.eachSeries(docs, function (item, cb_each) {
+          NATRule.createFromObjectToOS(item, function (error) {
             if (error) {
-              cb_series(error);
-
+              cb_each(error);
               return;
             }
 
-            cb_series(null);
+            cb_each(null);
           });
+        }, function (error) {
+          if (error) {
+            cb_series(error);
+            return;
+          }
 
-          return;
-        }
-
-        cb_series(null);
+          cb_series(null);
+        });
       });
     }
   ], function (error) {
@@ -125,7 +115,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 

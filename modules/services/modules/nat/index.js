@@ -1,27 +1,42 @@
+var bodyParser = require('body-parser');
+
 var config = require('../../../../config');
 
 exports.init = require('./init');
 
 exports.setRoutes = function (app) {
-  app.route(config.api.prefix + '/services/nat')
+  var url_prefix = config.api.prefix + '/services/nat';
+
+  app.route(url_prefix)
     .get(require('./routes/index'));
 
-  app.route(config.api.prefix + '/services/nat/source')
+  // TODO: At some point unify `source`, `destination` & `bidirectional` NAT types in only one set of files.
+  /*
+   * Source.
+   */
+  app.route(url_prefix + '/source')
     .get(require('./routes/source'));
 
-  app.route(config.api.prefix + '/services/nat/source/chains')
+  /*
+   * Source. Chains.
+   */
+  app.route(url_prefix + '/source/chains')
     .get(require('./routes/source/chains'))
-    .post(require('./routes/source/chains/create'));
+    .post(bodyParser.json({type: 'application/vnd.api+json'}), require('./routes/source/chains/create'));
 
-  app.route(config.api.prefix + '/services/nat/source/chains/:chain')
+  app.route(url_prefix + '/source/chains/:chain')
     .get(require('./routes/source/chains/show'))
-    .delete(require('./routes/source/chains/delete'));
+    .delete(require('./routes/source/chains/delete'))
+    .patch(bodyParser.json({type: 'application/json-patch+json'}), require('./routes/source/chains/patch'));
 
-  app.route(config.api.prefix + '/services/nat/source/chains/:chain/rules')
+  /*
+   * Source. Rules.
+   */
+  app.route(url_prefix + '/source/chains/:chain/rules')
     .get(require('./routes/source/chains/rules'))
-    .post(require('./routes/source/chains/rules/create'));
+    .post(bodyParser.json({type: 'application/vnd.api+json'}), require('./routes/source/chains/rules/create'));
 
-  app.route(config.api.prefix + '/services/nat/source/chains/:chain/rules/:rule')
+  app.route(url_prefix + '/source/chains/:chain/rules/:rule')
     .get(require('./routes/source/chains/rules/show'))
     .delete(require('./routes/source/chains/rules/delete'));
 };

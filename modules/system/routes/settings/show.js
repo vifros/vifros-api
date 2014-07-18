@@ -1,8 +1,6 @@
 var settings_index = require('../../../common/settings/routes/index');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_errors = {
     errors: []
   };

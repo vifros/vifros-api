@@ -4,8 +4,6 @@ var log_tags = require('../../../../../../../../common/logger').tags;
 var NATRule = require('../../../../models/rule').NATRule;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   NATRule.findById(req.params.rule, function (error, doc) {
     if (error) {
       logger.error(error.message, {

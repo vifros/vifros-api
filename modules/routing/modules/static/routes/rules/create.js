@@ -16,8 +16,6 @@ module.exports = function (req, res) {
     return;
   }
 
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links: {
       rules: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/rules/{rules.priority}'
@@ -177,7 +175,7 @@ module.exports = function (req, res) {
     json_api_errors.errors.push({
       code   : log_codes.related_resource_not_found.code,
       field  : '/rule/0/table',
-      message: log_codes.related_resource_not_found.message
+      message: log_codes.related_resource_not_found.message.replace('%s', 'table')
     });
 
     res.json(500, json_api_errors); // Internal Server Error.

@@ -15,8 +15,6 @@ module.exports = function (req, res, options) {
     return;
   }
 
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links    : {
       addresses: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces' + options.base_url + '/addresses/{addresses.address}'

@@ -13,12 +13,13 @@
     "method-override": "*",
 
     "async"          : "*",
-    "iproute"        : "*",
-    "json-patch"     : "*",
+    "jsonpatch"      : "*",
     "lodash"         : "*",
     "mongoose"       : "*",
-    "netfilter"      : "*",
     "winston"        : "*",
-    "winston-mongodb": "*"
+    "winston-mongodb": "*",
+
+    "iproute"  : "*",
+    "netfilter": "*"
   }
 }

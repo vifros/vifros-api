@@ -1,49 +1,31 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-
 /*
  * Schema definition.
  */
-var MatchSchema = new Schema({
-  addrtype: {
-    'src-type'       : {
-      inverted: Boolean,
-      value   : {
-        type: String,
-        enum: [
-          'UNSPEC',
-          'UNICAST',
-          'LOCAL',
-          'BROADCAST',
-          'ANYCAST',
-          'MULTICAST',
-          'BLACKHOLE',
-          'UNREACHABLE',
-          'PROHIBIT',
-          'THROW',
-          'NAT',
-          'XRESOLVE',
-        ]
-      }
-    },
-    'dst-type'       : {
-      inverted: Boolean,
-      value   : String
-    },
-    'limit-iface-in' : Boolean,
-    'limit-iface-out': Boolean
-  },
-  ah      : {
-    ahspi: {
-      inverted: Boolean,
-      value   : String
-    },
-    ahlen: {
-      inverted: Boolean,
-      value   : String
-    },
-    ahres: Boolean
-  }
-});
+var Match = {};
 
-exports.MatchSchema = MatchSchema;
+Match.comment = {
+  // Must be less than 256 chars.
+  comment: String
+};
+
+/*
+ * Only if ports are: tcp, udp, udplite, dccp, sctp.
+ * Up to 15 ports.
+ * A port range counts as two ports.
+ */
+Match.multiport = {
+  'source-ports'     : {
+    inverted: Boolean,
+    value   : String
+  },
+  'destination-ports': {
+    inverted: Boolean,
+    value   : String
+  },
+  ports              : {
+    inverted: Boolean,
+    value   : String
+  }
+};
+
+exports.MatchSchema = Match;

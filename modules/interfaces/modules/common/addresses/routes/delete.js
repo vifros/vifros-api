@@ -1,8 +1,6 @@
 var Address = require('../models/address').Address;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_errors = {
     errors: []
   };

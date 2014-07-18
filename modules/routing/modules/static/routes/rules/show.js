@@ -7,8 +7,6 @@ var StaticRoutingRule = require('../../models/rule').StaticRoutingRule;
 var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var requested_docs_to_include = req.query.include;
   var is_tables_requested = false;
 

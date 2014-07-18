@@ -1,5 +1,5 @@
 var async = require('async');
-var _ = require('lodash');
+var lodash = require('lodash');
 
 var config = require('../../../../../../config');
 
@@ -12,8 +12,6 @@ var log_codes = require('../../../../../../common/logger').codes;
 var jsonapi = require('../../../../../../utils/jsonapi');
 
 module.exports = function (req, res, options) {
-  res.type('application/vnd.api+json');
-
   /*
    * Check for external calling.
    */
@@ -50,7 +48,8 @@ module.exports = function (req, res, options) {
     filter = options.filter;
   }
 
-  query_filter = _.merge(query_filter, filter);
+  // TODO: Find a way to do a merge to let go `lodash`.
+  query_filter = lodash.merge(query_filter, filter);
 
   Address.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
@@ -91,7 +90,7 @@ module.exports = function (req, res, options) {
           });
         },
         function (cb_parallel) {
-          Address.count(filter, function (error, count) {
+          Address.count(query_filter, function (error, count) {
             if (error) {
               cb_parallel(error);
 

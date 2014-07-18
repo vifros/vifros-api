@@ -11,8 +11,6 @@ var StaticRoutingRule = require('../../models/rule').StaticRoutingRule;
 var jsonapi = require('../../../../../../utils/jsonapi');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var requested_docs_to_include = req.query.include;
   var is_tables_requested = false;
 
@@ -113,7 +111,7 @@ module.exports = function (req, res) {
           });
         },
         function (cb_parallel) {
-          StaticRoutingRule.count(function (error, count) {
+          StaticRoutingRule.count(query_filter, function (error, count) {
             if (error) {
               cb_parallel(error);
 

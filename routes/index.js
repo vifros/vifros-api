@@ -1,14 +1,14 @@
 var config = require('../config');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
+  var url_prefix = req.protocol + '://' + req.get('Host') + config.api.prefix;
 
   var json_api_body = {
     links: {
-      system    : req.protocol + '://' + req.get('Host') + config.api.prefix + '/system',
-      interfaces: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces',
-      routing   : req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing',
-      services  : req.protocol + '://' + req.get('Host') + config.api.prefix + '/services'
+      system    : url_prefix + '/system',
+      interfaces: url_prefix + '/interfaces',
+      routing   : url_prefix + '/routing',
+      services  : url_prefix + '/services'
     }
   };
 

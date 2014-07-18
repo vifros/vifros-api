@@ -66,10 +66,18 @@ exports.codes = {
   },
   related_resource_not_found    : {
     code   : 'related_resource_not_found',
-    message: 'The related resource does not exists yet.'
+    message: 'The related `%s` resource doesn\'t exists yet.'
   },
   invalid_value                 : {
     code   : 'invalid_value',
-    message: 'Invalid value for this field'
+    message: 'Invalid value for this field.'
+  },
+  invalid_field                 : {
+    code   : 'invalid_field',
+    message: 'Invalid field for this resource.'
+  },
+  too_long                      : {
+    code   : 'too_long',
+    message: 'The value for this field is too long. Has to be less than %s.'
   }
 };

@@ -14,8 +14,6 @@ module.exports = function (req, res) {
     return;
   }
 
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links: {
       rules: req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/chains/' + req.params.chain + '/rules/{rules.id}'

@@ -5,8 +5,6 @@ var async = require('async');
 var settings_patch = require('../../../../../common/settings/routes/patch');
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_errors = {
     errors: []
   };

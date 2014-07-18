@@ -6,8 +6,6 @@ var log_tags = require('../../../../../common/logger').tags;
 var Tunable = require('../models/tunable').Tunable;
 
 module.exports = function (req, res) {
-  res.type('application/vnd.api+json');
-
   var json_api_body = {
     links   : {
       tunables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/tunables' + '/' + '{tunables.path}'
