@@ -28,8 +28,8 @@ module.exports = function (req, res) {
 
   var json_api_body = {
     links    : {
-      loopbacks            : req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/loopbacks' + '/' + '{loopbacks.name}',
-      'loopbacks.addresses': req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/loopbacks' + '/' + '{loopbacks.name}' + '/addresses'
+      loopbacks            : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/loopbacks' + '/' + '{loopbacks.name}',
+      'loopbacks.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/loopbacks' + '/' + '{loopbacks.name}' + '/addresses'
     },
     loopbacks: []
   };
@@ -39,7 +39,7 @@ module.exports = function (req, res) {
    */
   if (is_addresses_requested) {
     json_api_body.links['loopbacks.addresses'] = {
-      href: req.protocol + '://' + req.get('Host') + req.get('Host') + config.api.prefix + '/interfaces/loopbacks/{loopbacks.name}/addresses/{loopbacks.addresses.address}',
+      href: req.protocol + '://' + req.get('Host') + req.get('Host') + config.get('api:prefix') + '/interfaces/loopbacks/{loopbacks.name}/addresses/{loopbacks.addresses.address}',
       type: 'addresses'
     };
 

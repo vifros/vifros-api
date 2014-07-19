@@ -12,7 +12,7 @@ var jsonapi = require('../../../../../utils/jsonapi');
 module.exports = function (req, res) {
   var json_api_body = {
     links : {
-      ipsets: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/ipsets' + '/' + '{ipsets.name}'
+      ipsets: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/ipsets' + '/' + '{ipsets.name}'
     },
     ipsets: []
   };

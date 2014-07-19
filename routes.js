@@ -4,6 +4,6 @@ module.exports = function (app) {
   /*
    * API root.
    */
-  app.route(config.api.prefix)
+  app.route(config.get('api:prefix'))
     .get(require('./routes/index'));
 };

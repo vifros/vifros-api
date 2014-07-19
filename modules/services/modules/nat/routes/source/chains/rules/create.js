@@ -16,7 +16,7 @@ module.exports = function (req, res) {
 
   var json_api_body = {
     links: {
-      rules: req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/chains/' + req.params.chain + '/rules/{rules.id}'
+      rules: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/services/nat/source/chains/' + req.params.chain + '/rules/{rules.id}'
     },
     rules: []
   };
@@ -107,7 +107,7 @@ module.exports = function (req, res) {
 
         var item_to_send = req.body.rules[0];
 
-        item_to_send.href = req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/chains/' + req.params.chain + '/rules/' + rule.id;
+        item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/services/nat/source/chains/' + req.params.chain + '/rules/' + rule.id;
         item_to_send.id = rule._id;
 
         res.location(item_to_send.href);

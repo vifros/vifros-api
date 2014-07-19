@@ -11,7 +11,7 @@ var log_tags = require('./common/logger').tags;
 var app = express();
 
 // All environments
-app.set('port', config.api.port
+app.set('port', config.get('api:port')
   || process.env.PORT
   || 3000);
 
@@ -51,7 +51,9 @@ app.use(function (req, res, next) {
   next();
 });
 
-if (app.get('env') == 'development') {
+if (app.get('env') == 'development'
+  || app.get('env') == 'test') {
+
   app.use(errorHandler({
     dumpExceptions: true,
     showStack     : true

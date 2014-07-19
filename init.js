@@ -2,8 +2,6 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 
-var config = require('./config');
-
 var global_app;
 
 module.exports = function init(app, cb_init) {

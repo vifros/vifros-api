@@ -22,7 +22,7 @@ module.exports = function (req, res, options) {
 
   var json_api_body = {
     links    : {
-      addresses: req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces' + options.base_url + '/addresses/{addresses.address}'
+      addresses: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces' + options.base_url + '/addresses/{addresses.address}'
     },
     addresses: []
   };

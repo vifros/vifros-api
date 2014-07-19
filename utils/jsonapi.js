@@ -65,7 +65,7 @@ exports.buildQueryOptionsFromReq = function buildQueryOptionsFromReq(options) {
     query_options.limit = options.req.query.limit[options.resource_name];
   }
   else {
-    query_options.limit = config.api.pagination.limit;
+    query_options.limit = config.get('api:pagination:limit');
   }
 
   // Offset.

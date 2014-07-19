@@ -37,7 +37,7 @@ module.exports = function (req, res, options) {
 
   var json_api_body = {
     links : {
-      routes: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static' + options.base_url + '/routes/{routes.id}'
+      routes: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/{routes.id}'
     },
     routes: []
   };
@@ -47,7 +47,7 @@ module.exports = function (req, res, options) {
    */
   if (is_tables_requested) {
     json_api_body.links['routes.table'] = {
-      href: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static' + options.base_url + '/{routes.table}',
+      href: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/{routes.table}',
       type: 'tables'
     };
 

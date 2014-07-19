@@ -1,25 +1,29 @@
 {
-  "name"        : "vifros-api",
-  "version"     : "0.0.0",
-  "private"     : true,
-  "scripts"     : {
+  "name": "vifros-api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
     "start": "node app.js"
   },
-  "description" : "",
+  "description": "",
   "dependencies": {
-    "express"        : "4.*",
-    "body-parser"    : "*",
-    "errorhandler"   : "*",
+    "express": "4.*",
+    "body-parser": "*",
+    "errorhandler": "*",
     "method-override": "*",
-
-    "async"          : "*",
-    "jsonpatch"      : "*",
-    "lodash"         : "*",
-    "mongoose"       : "*",
-    "winston"        : "*",
+    "async": "*",
+    "jsonpatch": "*",
+    "lodash": "*",
+    "mongoose": "*",
+    "winston": "*",
     "winston-mongodb": "*",
-
-    "iproute"  : "*",
-    "netfilter": "*"
+    "iproute": "*",
+    "netfilter": "*",
+    "nconf": "~0.6.9"
+  },
+  "devDependencies": {
+    "supertest": "~0.13.0",
+    "should": "~4.0.4",
+    "mocha": "~1.20.1"
   }
 }

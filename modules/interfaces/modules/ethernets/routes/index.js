@@ -28,8 +28,8 @@ module.exports = function (req, res) {
 
   var json_api_body = {
     links    : {
-      ethernets            : req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/ethernets' + '/' + '{ethernets.name}',
-      'ethernets.addresses': req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces/ethernets' + '/' + '{ethernets.name}' + '/addresses'
+      ethernets            : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/ethernets' + '/' + '{ethernets.name}',
+      'ethernets.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/ethernets' + '/' + '{ethernets.name}' + '/addresses'
     },
     ethernets: []
   };
@@ -39,7 +39,7 @@ module.exports = function (req, res) {
    */
   if (is_addresses_requested) {
     json_api_body.links['ethernets.addresses'] = {
-      href: req.protocol + '://' + req.get('Host') + req.get('Host') + config.api.prefix + '/interfaces/ethernets/{ethernets.name}/addresses/{ethernets.addresses.address}',
+      href: req.protocol + '://' + req.get('Host') + req.get('Host') + config.get('api:prefix') + '/interfaces/ethernets/{ethernets.name}/addresses/{ethernets.addresses.address}',
       type: 'addresses'
     };
 

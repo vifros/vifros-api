@@ -9,16 +9,16 @@ var log_tags = require('./logger').tags;
  */
 var url = 'mongodb://';
 
-if (config.database.username) {
-  url += config.database.username;
+if (config.get('database:username')) {
+  url += config.get('database:username');
 
-  if (config.database.password) {
-    url += ':' + config.database.password;
+  if (config.get('database:password')) {
+    url += ':' + config.get('database:password');
   }
 
   url += '@';
 }
-url += config.database.host + '/' + config.database.name;
+url += config.get('database:host') + '/' + config.get('database:name');
 
 module.exports = {
   connect: function cbOnConnect() {

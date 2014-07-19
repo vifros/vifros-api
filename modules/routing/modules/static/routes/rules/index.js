@@ -25,8 +25,8 @@ module.exports = function (req, res) {
 
   var json_api_body = {
     links: {
-      rules        : req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/rules/{rules.priority}',
-      'rules.table': req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/{rules.table}'
+      rules        : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/{rules.priority}',
+      'rules.table': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/{rules.table}'
     },
     rules: []
   };
@@ -36,7 +36,7 @@ module.exports = function (req, res) {
    */
   if (is_tables_requested) {
     json_api_body.links['rules.table'] = {
-      href: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/{rules.table}',
+      href: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/{rules.table}',
       type: 'tables'
     };
 

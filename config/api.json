@@ -1,7 +1,0 @@
-{
-  "prefix"    : "/api",
-  "port"      : 3000,
-  "pagination": {
-    "limit": 10
-  }
-}

@@ -12,7 +12,7 @@ module.exports = function (req, res) {
     return;
   }
 
-  var url_prefix = req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/chains';
+  var url_prefix = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/services/nat/source/chains';
 
   var json_api_body = {
     chains: []

@@ -21,7 +21,7 @@ module.exports = function (req, res, options) {
 
   var json_api_body = {
     links   : {
-      settings: req.protocol + '://' + req.get('Host') + config.api.prefix + options.base_url + '/settings/{settings.name}'
+      settings: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + options.base_url + '/settings/{settings.name}'
     },
     settings: []
   };

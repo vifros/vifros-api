@@ -8,7 +8,7 @@ var NATChain = require('../../../models/chain').NATChain;
 module.exports = function (req, res) {
   var json_api_body = {
     links : {
-      'chains.rules': req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/chains/' + req.params.chain + '/rules'
+      'chains.rules': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/services/nat/source/chains/' + req.params.chain + '/rules'
     },
     chains: []
   };

@@ -8,7 +8,7 @@ var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 module.exports = function (req, res) {
   var json_api_body = {
     links : {
-      tables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/{tables.id}'
+      tables: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/{tables.id}'
     },
     tables: []
   };

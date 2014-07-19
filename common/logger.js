@@ -10,22 +10,22 @@ var config = require('../config');
  */
 winston.remove(winston.transports.Console); // To being able to reconfigure it.
 
-if (config.logging.transports.console.enabled) {
-  winston.add(winston.transports.Console, config.logging.transports.console);
+if (config.get('logging:transports:console:enabled')) {
+  winston.add(winston.transports.Console, config.get('logging:transports:console'));
 }
 
 /*
  * File transport.
  */
-if (config.logging.transports.file.enabled) {
-  winston.add(winston.transports.File, config.logging.transports.file);
+if (config.get('logging:transports:file:enabled')) {
+  winston.add(winston.transports.File, config.get('logging:transports:file'));
 }
 
 /*
  * Enable saving logs to mongodb.
  */
-if (config.logging.transports.mongodb.enabled) {
-  winston.add(winston.transports.MongoDB, config.logging.transports.mongodb);
+if (config.get('logging:transports:mongodb:enabled')) {
+  winston.add(winston.transports.MongoDB, config.get('logging:transports:mongodb'));
 }
 
 exports.logger = winston;

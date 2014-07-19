@@ -3,8 +3,8 @@ var config = require('../../../config');
 module.exports = function (req, res) {
   var json_api_body = {
     links: {
-      static  : req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static',
-      settings: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/settings'
+      static  : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static',
+      settings: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/settings'
     }
   };
 

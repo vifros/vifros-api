@@ -11,7 +11,7 @@ var log_tags = require('../../../../../common/logger').tags;
 module.exports = function (req, res) {
   var json_api_body = {
     links: {
-      info: req.protocol + '://' + req.get('Host') + config.api.prefix + '/system/info/{info.name}'
+      info: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/info/{info.name}'
     },
     info : [
       {

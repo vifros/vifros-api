@@ -5,7 +5,7 @@ var config = require('../../../../config');
 exports.init = require('./init');
 
 exports.setRoutes = function (app) {
-  var url_prefix = config.api.prefix + '/services/nat';
+  var url_prefix = config.get('api:prefix') + '/services/nat';
 
   app.route(url_prefix)
     .get(require('./routes/index'));

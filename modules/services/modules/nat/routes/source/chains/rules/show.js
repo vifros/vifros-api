@@ -8,7 +8,7 @@ var NATRule = require('../../../../models/rule').NATRule;
 module.exports = function (req, res) {
   var json_api_body = {
     links: {
-      rules: req.protocol + '://' + req.get('Host') + config.api.prefix + '/services/nat/source/rules/{rules.id}'
+      rules: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/services/nat/source/rules/{rules.id}'
     },
     rules: []
   };

@@ -1,7 +1,7 @@
 var config = require('../../../config');
 
 module.exports = function (req, res) {
-  var url_prefix = req.protocol + '://' + req.get('Host') + config.api.prefix + '/interfaces';
+  var url_prefix = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces';
 
   var json_api_body = {
     links: {

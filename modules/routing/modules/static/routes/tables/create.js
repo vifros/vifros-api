@@ -17,7 +17,7 @@ module.exports = function (req, res) {
 
   var json_api_body = {
     links : {
-      tables: req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/{tables.id}'
+      tables: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/{tables.id}'
     },
     tables: []
   };
@@ -141,7 +141,7 @@ module.exports = function (req, res) {
 
         var item_to_send = req.body.tables[0];
 
-        item_to_send.href = req.protocol + '://' + req.get('Host') + config.api.prefix + '/routing/static/tables/' + table.id;
+        item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/' + table.id;
 
         res.location(item_to_send.href);
 
