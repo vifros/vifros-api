@@ -1,9 +1,3 @@
-# TO
-
-## Implement
-
-### Immediate
-
 - NAT
 	- source
 	- destination

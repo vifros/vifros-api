@@ -44,10 +44,6 @@ module.exports = function (req, res) {
     ]
   };
 
-  var json_api_errors = {
-    errors: []
-  };
-
   async.parallel([
     function (cb_parallel) {
       /*
@@ -86,7 +82,6 @@ module.exports = function (req, res) {
       }, function (error, file_content) {
         if (error) {
           cb_parallel(error);
-
           return;
         }
 
@@ -95,7 +90,7 @@ module.exports = function (req, res) {
         json_api_body.info.push({
           name : 'swap',
           value: {
-            installed: proc_swap[1],
+            installed: parseInt(proc_swap[1]),
             usage    : Math.floor((proc_swap[2] / proc_swap[1]) * 100)
           }
         });
@@ -110,7 +105,6 @@ module.exports = function (req, res) {
       exec("df | awk '{print  $1\"\t\"$2\"\t\"$5\"\t\"$6}'", function (error, stdout, stderror) {
         if (error) {
           cb_parallel(stderror.replace(/\n/g, ''));
-
           return;
         }
 
@@ -127,8 +121,8 @@ module.exports = function (req, res) {
              * Is a valid disk device.
              */
             json_disks.push({
-              installed: disks[line].split('\t')[1],
-              usage    : disks[line].split('\t')[2].split('%')[0],
+              installed: parseInt(disks[line].split('\t')[1]),
+              usage    : parseInt(disks[line].split('\t')[2].split('%')[0]),
               device   : disks[line].split('\t')[0],
               path     : disks[line].split('\t')[3]
             });
@@ -153,7 +147,6 @@ module.exports = function (req, res) {
         });
 
         res.send(500); // Internal Server Error.
-
         return;
       }
 

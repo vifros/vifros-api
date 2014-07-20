@@ -12,11 +12,7 @@ module.exports = function (req, res) {
     links: {
       info: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/info/{info.name}'
     },
-    info : []
-  };
-
-  var json_api_errors = {
-    errors: []
+    info : {}
   };
 
   var buffer = {
@@ -31,10 +27,9 @@ module.exports = function (req, res) {
         current: (new Date()).getTime()
       };
 
-      json_api_body.info.push(buffer);
+      json_api_body.info = buffer;
 
       res.json(200, json_api_body); // OK.
-
       break;
 
     case 'os':
@@ -45,10 +40,9 @@ module.exports = function (req, res) {
         platform: os.platform()
       };
 
-      json_api_body.info.push(buffer);
+      json_api_body.info = buffer;
 
       res.json(200, json_api_body); // OK.
-
       break;
 
     case 'memory':
@@ -57,19 +51,17 @@ module.exports = function (req, res) {
         usage    : Math.floor(((os.totalmem() - os.freemem()) / os.totalmem()) * 100)
       };
 
-      json_api_body.info.push(buffer);
+      json_api_body.info = buffer;
 
       res.json(200, json_api_body); // OK.
-
       break;
 
     case 'load':
       buffer.value = os.loadavg();
 
-      json_api_body.info.push(buffer);
+      json_api_body.info = buffer;
 
       res.json(200, json_api_body); // OK.
-
       break;
 
     case 'cpus':
@@ -92,11 +84,9 @@ module.exports = function (req, res) {
 
       buffer.value = json_cpus;
 
-      json_api_body.info.push(buffer);
+      json_api_body.info = buffer;
 
       res.json(200, json_api_body); // OK.
-
-
       break;
 
     case 'swap':
@@ -112,22 +102,20 @@ module.exports = function (req, res) {
           });
 
           res.send(500); // Internal Server Error.
-
           return;
         }
 
         var proc_swap = file_content.split('\n')[1].split('\t');
 
         buffer.value = {
-          installed: proc_swap[1],
+          installed: parseInt(proc_swap[1]),
           usage    : Math.floor((proc_swap[2] / proc_swap[1]) * 100)
         };
 
-        json_api_body.info.push(buffer);
+        json_api_body.info = buffer;
 
         res.json(200, json_api_body); // OK.
       });
-
       break;
 
     case 'disks':
@@ -141,7 +129,6 @@ module.exports = function (req, res) {
           });
 
           res.send(500); // Internal Server Error.
-
           return;
         }
 
@@ -158,8 +145,8 @@ module.exports = function (req, res) {
              * Is a valid disk device.
              */
             json_disks.push({
-              installed: disks[line].split('\t')[1] * 1000,
-              usage    : disks[line].split('\t')[2].split('%')[0],
+              installed: parseInt(disks[line].split('\t')[1] * 1000),
+              usage    : parseInt(disks[line].split('\t')[2].split('%')[0]),
               device   : disks[line].split('\t')[0],
               path     : disks[line].split('\t')[3]
             });
@@ -168,16 +155,14 @@ module.exports = function (req, res) {
 
         buffer.value = json_disks;
 
-        json_api_body.info.push(buffer);
+        json_api_body.info = buffer;
 
         res.json(200, json_api_body); // OK.
       });
-
       break;
 
     default:
       res.send(404); // Not found.
-
       break;
   }
 };

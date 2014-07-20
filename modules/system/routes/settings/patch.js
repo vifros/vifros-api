@@ -5,10 +5,6 @@ var async = require('async');
 var settings_patch = require('../../../common/settings/routes/patch');
 
 module.exports = function (req, res) {
-  var json_api_errors = {
-    errors: []
-  };
-
   try {
     /*
      * Delegate the responsibility to send the response to this method.

@@ -23,7 +23,6 @@ module.exports = function (cb_init) {
       }, function (error, file_content) {
         if (error) {
           cb_parallel(error);
-
           return;
         }
 
@@ -65,7 +64,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -103,7 +101,6 @@ module.exports = function (cb_init) {
         item.save(function (error) {
           if (error) {
             cb_each(error);
-
             return;
           }
 
@@ -119,7 +116,6 @@ module.exports = function (cb_init) {
           });
 
           cb_init(error);
-
           return;
         }
 

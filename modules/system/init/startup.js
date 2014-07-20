@@ -20,7 +20,6 @@ module.exports = function (cb_init) {
       }, function (error, doc) {
         if (error) {
           cb_parallel(error);
-
           return;
         }
 
@@ -30,7 +29,6 @@ module.exports = function (cb_init) {
             fs.writeFile('/etc/hostname', doc.value + '\n', function (error) {
               if (error) {
                 cb_parallel_inner(error);
-
                 return;
               }
 
@@ -42,7 +40,6 @@ module.exports = function (cb_init) {
             exec('sysctl -w kernel.hostname=' + doc.value, function (error, stdout, stderror) {
               if (error) {
                 cb_parallel_inner(stderror.replace(/\n/g, ''));
-
                 return;
               }
 
@@ -53,7 +50,6 @@ module.exports = function (cb_init) {
         ], function (error) {
           if (error) {
             cb_parallel(error);
-
             return;
           }
 
@@ -73,7 +69,6 @@ module.exports = function (cb_init) {
           }, function (error, doc) {
             if (error) {
               cb_parallel_inner(error);
-
               return;
             }
 
@@ -90,7 +85,6 @@ module.exports = function (cb_init) {
           }, function (error, doc) {
             if (error) {
               cb_parallel_inner(error);
-
               return;
             }
 
@@ -100,7 +94,6 @@ module.exports = function (cb_init) {
       ], function (error, results) {
         if (error) {
           cb_parallel(error);
-
           return;
         }
 
@@ -111,7 +104,6 @@ module.exports = function (cb_init) {
           function (cb_parallel_inner) {
             if (!domain) {
               cb_parallel_inner(null);
-
               return;
             }
 
@@ -119,7 +111,6 @@ module.exports = function (cb_init) {
             exec('sysctl -w kernel.domainname=' + domain, function (error, stdout, stderror) {
               if (error) {
                 cb_parallel_inner(stderror.replace(/\n/g, ''));
-
                 return;
               }
 
@@ -147,7 +138,6 @@ module.exports = function (cb_init) {
             fs.writeFile('/etc/resolvconf/resolv.conf.d/base', resolv_conf_body, function (error) {
               if (error) {
                 cb_parallel_inner(error);
-
                 return;
               }
 
@@ -157,7 +147,6 @@ module.exports = function (cb_init) {
               exec('resolvconf -u', function (error, stdout, stderror) {
                 if (error) {
                   cb_parallel_inner(stderror.replace(/\n/g, ''));
-
                   return;
                 }
 
@@ -168,7 +157,6 @@ module.exports = function (cb_init) {
         ], function (error) {
           if (error) {
             cb_parallel(error);
-
             return;
           }
 
@@ -186,7 +174,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 

@@ -1,10 +1,6 @@
 var settings_index = require('../../../common/settings/routes/index');
 
 module.exports = function (req, res) {
-  var json_api_errors = {
-    errors: []
-  };
-
   try {
     /*
      * Delegate the responsibility to send the response to this method.

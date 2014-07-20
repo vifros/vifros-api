@@ -1,4 +1,4 @@
 test:
-	NODE_ENV=test ./node_modules/.bin/mocha --timeout 5000 --reporter spec
+	NODE_ENV=test ./node_modules/.bin/mocha --recursive --reporter spec
 
 .PHONY: test
