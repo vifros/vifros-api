@@ -2,15 +2,15 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 var async = require('async');
 
-var settings_patch = require('../../../common/settings/routes/patch');
+var settings_update = require('../../../common/settings/routes/update');
 
 module.exports = function (req, res) {
   try {
     /*
      * Delegate the responsibility to send the response to this method.
      */
-    settings_patch(req, res, {
-      cb_patch: cb_patch
+    settings_update(req, res, {
+      cb_update: cb_update
     });
   }
   catch (error) {
@@ -21,7 +21,7 @@ module.exports = function (req, res) {
 /*
  * Function for cross-relationships.
  */
-function cb_patch(setting, cb) {
+function cb_update(setting, cb) {
   if (typeof arguments[0] != 'object'
     || typeof arguments[1] != 'function') {
 
@@ -36,7 +36,6 @@ function cb_patch(setting, cb) {
           fs.writeFile('/etc/hostname', setting.value + '\n', function (error) {
             if (error) {
               cb_parallel(error);
-
               return;
             }
 
@@ -48,24 +47,21 @@ function cb_patch(setting, cb) {
           exec('sysctl -w kernel.hostname=' + setting.value, function (error, stdout, stderror) {
             if (error) {
               cb_parallel(stderror.replace(/\n/g, ''));
-
               return;
             }
 
             cb_parallel(null);
           });
         }
-        // It should be replaced also the /etc/hosts file but this task is cumbersome. Maybe does not worth the effort?
+        // TODO: It should be replaced also the /etc/hosts file but this task is cumbersome. Maybe does not worth the effort?
       ], function (error) {
         if (error) {
           cb(error);
-
           return;
         }
 
         cb(null);
       });
-
       break;
 
     case 'domain':
@@ -75,7 +71,6 @@ function cb_patch(setting, cb) {
           exec('sysctl -w kernel.domainname=' + setting.value, function (error, stdout, stderror) {
             if (error) {
               cb_parallel(stderror.replace(/\n/g, ''));
-
               return;
             }
 
@@ -91,7 +86,6 @@ function cb_patch(setting, cb) {
           }, function (error, file_content) {
             if (error) {
               cb_parallel(error);
-
               return;
             }
 
@@ -118,7 +112,6 @@ function cb_patch(setting, cb) {
             fs.writeFile('/etc/resolvconf/resolv.conf.d/base', new_resolv_conf, function (error) {
               if (error) {
                 cb_parallel(error);
-
                 return;
               }
 
@@ -128,7 +121,6 @@ function cb_patch(setting, cb) {
               exec('resolvconf -u', function (error, stdout, stderror) {
                 if (error) {
                   cb_parallel(stderror.replace(/\n/g, ''));
-
                   return;
                 }
 
@@ -140,13 +132,11 @@ function cb_patch(setting, cb) {
       ], function (error) {
         if (error) {
           cb(error);
-
           return;
         }
 
         cb(null);
       });
-
       break;
 
     case 'nameservers':
@@ -158,7 +148,6 @@ function cb_patch(setting, cb) {
       }, function (error, file_content) {
         if (error) {
           cb(error);
-
           return;
         }
 
@@ -190,7 +179,6 @@ function cb_patch(setting, cb) {
         fs.writeFile('/etc/resolvconf/resolv.conf.d/base', new_resolv_conf, function (error) {
           if (error) {
             cb(error);
-
             return;
           }
 
@@ -200,7 +188,6 @@ function cb_patch(setting, cb) {
           exec('resolvconf -u', function (error, stdout, stderror) {
             if (error) {
               cb(stderror.replace(/\n/g, ''));
-
               return;
             }
 
@@ -208,12 +195,10 @@ function cb_patch(setting, cb) {
           });
         });
       });
-
       break;
 
     default:
       cb(null);
-
       break;
   }
 }

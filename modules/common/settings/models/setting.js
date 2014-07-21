@@ -5,10 +5,15 @@ var Schema = mongoose.Schema;
  * Schema definition.
  */
 var SettingSchema = new Schema({
+  /*
+   * Read-only.
+   */
   module     : {
     type    : String,
-    required: true
+    required: true,
+    select  : false
   },
+  // Read-only.
   name       : {
     type    : String,
     required: true

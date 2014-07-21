@@ -20,3 +20,5 @@
 - Use `apidocjs` to generate API docs?
 
 - Add acceptance tests.
+
+- Change errors to the new way. Add json errors even to 404 & 500.

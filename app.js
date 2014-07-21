@@ -15,10 +15,9 @@ app.set('port', config.get('api:port')
   || process.env.PORT
   || 3000);
 
-// TODO: At some point move this to the POST calls themselves.
-// TODO: Add the parser for PATCH verbs too.
+// TODO: At some point move this to the POST/PUT calls themselves?
 app.use(require('body-parser').json({type: 'application/vnd.api+json'}));
-app.use(require('method-override')()); // TODO: What is this for?
+app.use(require('method-override')());
 
 // Log API requests.
 app.use(function (req, res, next) {

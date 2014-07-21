@@ -23,7 +23,7 @@ module.exports = function (req, res, options) {
     links   : {
       settings: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + options.base_url + '/settings/{settings.name}'
     },
-    settings: []
+    settings: (options.single) ? {} : []
   };
 
   var query_filter = jsonapi.buildQueryFilterFromReq({
@@ -43,8 +43,12 @@ module.exports = function (req, res, options) {
     filter = options.filter;
   }
 
-  // TODO: Find a way to do a merge to let go `lodash`.
   query_filter = lodash.merge(query_filter, filter);
+  query_options.nor = [
+    {
+      name: 'status'
+    }
+  ];
 
   Setting.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
@@ -57,13 +61,11 @@ module.exports = function (req, res, options) {
       });
 
       res.send(500); // Internal Server Error.
-
       return;
     }
 
-    if (!docs) {
+    if (!docs.length && options.single) {
       res.json(404, json_api_body); // Not found.
-
       return;
     }
 
@@ -76,13 +78,17 @@ module.exports = function (req, res, options) {
           delete buffer._id;
           delete buffer.__v;
 
-          json_api_body.settings.push(buffer);
+          if (options.single) {
+            json_api_body.settings = buffer;
+          }
+          else {
+            json_api_body.settings.push(buffer);
+          }
 
           cb_each(null);
         }, function (error) {
           if (error) {
             cb_parallel(error);
-
             return;
           }
 
@@ -90,23 +96,30 @@ module.exports = function (req, res, options) {
         });
       },
       function (cb_parallel) {
-        Setting.count(query_filter, function (error, count) {
-          if (error) {
-            cb_parallel(error);
-
-            return;
+        query_filter.$nor = [
+          {
+            name: 'status'
           }
-
-          json_api_body['meta'] = {
-            settings: {
-              total : count,
-              limit : Number(query_options.limit),
-              offset: Number(query_options.skip)
+        ];
+        Setting.count(query_filter, function (error, count) {
+            if (error) {
+              cb_parallel(error);
+              return;
             }
-          };
 
-          cb_parallel(null);
-        });
+            if (!options.single) {
+              json_api_body['meta'] = {
+                settings: {
+                  total : count,
+                  limit : Number(query_options.limit),
+                  offset: Number(query_options.skip)
+                }
+              };
+            }
+
+            cb_parallel(null);
+          }
+        );
       }
     ], function (error) {
       if (error) {
@@ -118,7 +131,6 @@ module.exports = function (req, res, options) {
         });
 
         res.send(500); // Internal Server Error.
-
         return;
       }
 

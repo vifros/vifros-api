@@ -9,7 +9,8 @@ module.exports = function (req, res) {
       filter  : {
         name: req.params.setting
       },
-      base_url: '/system'
+      base_url: '/system',
+      single  : true
     });
   }
   catch (error) {
