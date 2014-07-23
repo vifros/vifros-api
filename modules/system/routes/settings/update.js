@@ -14,7 +14,14 @@ module.exports = function (req, res) {
     });
   }
   catch (error) {
-    res.send(500); // Internal Server Error.
+    res.json(500, {
+      errors: [
+        {
+          code : 'internal_server_error',
+          title: 'Internal Server Error.'
+        }
+      ]
+    }); // Internal Server Error.
   }
 };
 
@@ -53,7 +60,7 @@ function cb_update(setting, cb) {
             cb_parallel(null);
           });
         }
-        // TODO: It should be replaced also the /etc/hosts file but this task is cumbersome. Maybe does not worth the effort?
+        // TODO: It should be replaced also the /etc/hosts file but this task is cumbersome.
       ], function (error) {
         if (error) {
           cb(error);

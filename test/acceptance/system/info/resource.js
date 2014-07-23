@@ -24,6 +24,18 @@ describe('/api/system/info/:name', function () {
           .get('/system/info/unknown')
           .set('Accept', 'application/vnd.api+json')
           .expect('Content-Type', 'application/vnd.api+json')
+          .expect(function (res) {
+            var body = JSON.parse(res.text);
+
+            body.should.have.property('errors');
+            body.errors.should.be.an.Array.of.length(1);
+            body.errors[0].should.have.properties([
+              'code',
+              'title'
+            ]);
+            body.errors[0].code.should.be.a.String.equal('not_found');
+            body.errors[0].title.should.be.a.String.equal('Not found.');
+          })
           .expect(404, done);
       });
     });

@@ -5,9 +5,7 @@ var Schema = mongoose.Schema;
  * Schema definition.
  */
 var SettingSchema = new Schema({
-  /*
-   * Read-only.
-   */
+  // Read-only.
   module     : {
     type    : String,
     required: true,

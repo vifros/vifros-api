@@ -14,6 +14,13 @@ module.exports = function (req, res) {
     });
   }
   catch (error) {
-    res.send(500); // Internal Server Error.
+    res.json(500, {
+      errors: [
+        {
+          code : 'internal_server_error',
+          title: 'Internal Server Error.'
+        }
+      ]
+    }); // Internal Server Error.
   }
 };

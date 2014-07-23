@@ -10,11 +10,7 @@ module.exports = function (req, res) {
     links   : {
       tunables: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/tunables' + '/' + '{tunables.path}'
     },
-    tunables: []
-  };
-
-  var json_api_errors = {
-    errors: []
+    tunables: {}
   };
 
   Tunable.findOne({
@@ -29,28 +25,40 @@ module.exports = function (req, res) {
         ]
       });
 
-      res.send(500); // Internal Server Error.
-
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
       return;
     }
 
-    if (doc) {
-      /*
-       * Build JSON API response.
-       */
-      var buffer = doc.toObject();
-      buffer.id = doc._id;
-
-      delete buffer._id;
-      delete buffer.__v;
-
-      json_api_body.tunables.push(buffer);
-
-      res.json(200, json_api_body); // OK.
-
+    if (!doc) {
+      res.json(404, {
+        errors: [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      }); // Not found.
       return;
     }
 
-    res.send(404); // Not found.
+    /*
+     * Build JSON API response.
+     */
+    var buffer = doc.toObject();
+    buffer.id = doc._id;
+
+    delete buffer._id;
+    delete buffer.__v;
+
+    json_api_body.tunables = buffer;
+
+    res.json(200, json_api_body); // OK.
   });
 };

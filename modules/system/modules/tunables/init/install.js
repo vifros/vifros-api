@@ -21,7 +21,6 @@ module.exports = function (cb_init) {
     Tunable.createFromObjectToOS(item, function (error) {
       if (error) {
         cb_each(error);
-
         return;
       }
 
@@ -31,7 +30,6 @@ module.exports = function (cb_init) {
       tunable.save(function (error) {
         if (error) {
           cb_each(error);
-
           return;
         }
 
@@ -48,7 +46,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -69,7 +66,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
