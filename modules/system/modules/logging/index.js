@@ -11,10 +11,11 @@ exports.setRoutes = function (app) {
     .get(require('./routes/logs/index'));
 
   app.route(config.get('api:prefix') + '/system/logging/logs/:log')
-    .get(require('./routes/logs/show'));
+    .get(require('./routes/logs/show'))
+    .delete(require('./routes/logs/delete'));
 
   /*
-   * System. Logging. Settings.
+   * TODO: System. Logging. Settings.
    */
   app.route(config.get('api:prefix') + '/system/logging/settings')
     .get(require('./routes/settings/index'));

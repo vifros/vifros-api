@@ -25,7 +25,10 @@ var LogSchema = new Schema({
     ],
     required: true
   },
-  message  : String
+  message  : {
+    type    : String,
+    required: true
+  }
 });
 
 exports.Log = mongoose.model('Log', LogSchema);
