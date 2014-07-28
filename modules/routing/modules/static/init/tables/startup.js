@@ -1,7 +1,7 @@
 var ip_routing_tables = require('iproute').utils.routing_tables;
 
-var logger = require('../../../../../../common/logger').logger;
-var log_tags = require('../../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 

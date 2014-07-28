@@ -21,4 +21,5 @@
 
 - Add acceptance tests.
 
-- Change errors to the new way. Add json errors even to 404 & 500.
+- Change errors to the new way. Add json errors even to 404 & 500. Change `log.error`
+  to log all the error data.

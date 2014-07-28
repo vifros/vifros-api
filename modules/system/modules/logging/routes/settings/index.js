@@ -1,25 +1,26 @@
-var settings_index = require('../../../../../common/settings/routes/index');
+var config = require('../../../../../../config');
+
 
 module.exports = function (req, res) {
-  try {
-    /*
-     * Delegate the responsibility to send the response to this method.
-     */
-    settings_index(req, res, {
-      filter  : {
-        module: 'system/logging/settings'
+  var json_api_body = {
+    links   : {
+      settings: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/logging/settings/{settings.name}'
+    },
+    settings: [
+      {
+        name : 'transport_console',
+        value: config.get('logging:transports:console')
       },
-      base_url: '/system/logging'
-    });
-  }
-  catch (error) {
-    res.json(500, {
-      errors: [
-        {
-          code : 'internal_server_error',
-          title: 'Internal Server Error.'
-        }
-      ]
-    }); // Internal Server Error.
-  }
+      {
+        name : 'transport_file',
+        value: config.get('logging:transports:file')
+      },
+      {
+        name : 'transport_mongodb',
+        value: config.get('logging:transports:mongodb')
+      }
+    ]
+  };
+
+  res.json(200, json_api_body); // OK.
 };

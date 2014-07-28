@@ -3,8 +3,8 @@ var config = require('../../../../../config');
 var Address = require('../../common/addresses/models/address').Address;
 var Loopback = require('../models/loopback').Loopback;
 
-var logger = require('../../../../../common/logger').logger;
-var log_tags = require('../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 module.exports = function (req, res) {
   /*

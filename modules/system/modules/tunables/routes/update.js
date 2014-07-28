@@ -1,8 +1,8 @@
 var lodash = require('lodash');
 
-var logger = require('../../../../../common/logger').logger;
-var log_tags = require('../../../../../common/logger').tags;
-var log_codes = require('../../../../../common/logger').codes;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
+var log_codes = logger.codes;
 
 var Tunable = require('../models/tunable').Tunable;
 

@@ -2,9 +2,9 @@ var lodash = require('lodash');
 
 var Setting = require('../models/setting').Setting;
 
-var logger = require('../../../../common/logger').logger;
-var log_tags = require('../../../../common/logger').tags;
-var log_codes = require('../../../../common/logger').codes;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
+var log_codes = logger.codes;
 
 module.exports = function (req, res, options) {
   if (!req.is('application/vnd.api+json')) {

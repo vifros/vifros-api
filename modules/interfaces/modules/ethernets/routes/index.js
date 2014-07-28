@@ -5,8 +5,8 @@ var config = require('../../../../../config');
 var Address = require('../../common/addresses/models/address').Address;
 var Ethernet = require('../models/ethernet').Ethernet;
 
-var logger = require('../../../../../common/logger').logger;
-var log_tags = require('../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 var jsonapi = require('../../../../../utils/jsonapi');
 

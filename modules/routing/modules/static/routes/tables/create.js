@@ -2,9 +2,9 @@ var routing_tables = require('iproute').utils.routing_tables;
 
 var config = require('../../../../../../config');
 
-var logger = require('../../../../../../common/logger').logger;
-var log_tags = require('../../../../../../common/logger').tags;
-var log_codes = require('../../../../../../common/logger').codes;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
+var log_codes = logger.codes;
 
 var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 

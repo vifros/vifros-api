@@ -2,8 +2,8 @@ var iproute = require('iproute');
 var link_types = iproute.link.utils.types;
 var ip_monitor = iproute.monitor();
 
-var logger = require('../../../../../common/logger').logger;
-var log_tags = require('../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 /*
  * Adds a monitor to update the operational state of devices.

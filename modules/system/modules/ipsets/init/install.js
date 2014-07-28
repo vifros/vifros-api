@@ -2,8 +2,8 @@ var async = require('async');
 
 var ipset = require('netfilter').ipset;
 
-var logger = require('../../../../../common/logger').logger;
-var log_tags = require('../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 var Setting = require('../../../../common/settings/models/setting').Setting;
 var setting_statuses = require('../../../../common/settings/models/setting').statuses;

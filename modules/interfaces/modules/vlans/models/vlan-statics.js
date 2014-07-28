@@ -9,8 +9,8 @@ var ip_monitor = iproute.monitor();
 
 var Address = require('../../common/addresses/models/address').Address;
 
-var logger = require('../../../../../common/logger').logger;
-var log_tags = require('../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 /*
  * Removes all filtered VLANs from DB and OS.

@@ -1,7 +1,7 @@
 var async = require('async');
 
-var logger = require('../../../../../common/logger').logger;
-var log_tags = require('../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 var Tunable = require('../models/tunable').Tunable;
 

@@ -22,5 +22,5 @@ exports.setRoutes = function (app) {
 
   app.route(config.get('api:prefix') + '/system/logging/settings/:setting')
     .get(require('./routes/settings/show'))
-    .patch(require('./routes/settings/patch'));
+    .put(require('./routes/settings/update'));
 };

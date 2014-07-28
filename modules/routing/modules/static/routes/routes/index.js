@@ -6,8 +6,8 @@ var lodash = require('lodash');
 var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 var StaticRoutingRoute = require('../../models/route').StaticRoutingRoute;
 
-var logger = require('../../../../../../common/logger').logger;
-var log_tags = require('../../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 var jsonapi = require('../../../../../../utils/jsonapi');
 

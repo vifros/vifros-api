@@ -13,6 +13,5 @@ nconf
 var environment = nconf.get('NODE:ENV') || 'development';
 
 nconf.file(environment, path.dirname(require.main.filename) + '/config/' + environment + '.json');
-nconf.file('default', 'default.json');
 
 module.exports = nconf;

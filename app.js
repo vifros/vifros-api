@@ -5,8 +5,15 @@ var express = require('express');
 var errorHandler = require('errorhandler');
 
 var config = require('./config');
+
 var logger = require('./common/logger').logger;
 var log_tags = require('./common/logger').tags;
+var log_codes = require('./common/logger').codes;
+
+global['vifros'] = {};
+global.vifros.logger = logger;
+global.vifros.logger.tags = log_tags;
+global.vifros.logger.codes = log_codes;
 
 var app = express();
 
@@ -105,6 +112,8 @@ require('./init')(app, function cbOnAppInit(error) {
  * http://shapeshed.com/uncaught-exceptions-in-node/
  */
 process.on('uncaughtException', function cbOnUncaughtException(error) {
+  console.log(error)
+  console.log(error.stack)
   logger.error(error, {
     module: 'core',
     tags  : [

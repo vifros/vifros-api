@@ -7,10 +7,10 @@ var api = supertest(url);
 
 describe('/api/system/logging/logs/:log', function () {
   describe('when OPTIONS', function () {
-    describe('and `:log` is anything', function () {
+    describe('and `:log` is `53ca88f0e4d463e01a14cz1e`', function () {
       it('should return methods GET,DELETE', function (done) {
         api
-          .options('/system/logging/logs/anything')
+          .options('/system/logging/logs/53ca88f0e4d463e01a14cz1e')
           .expect('Allow', 'GET,DELETE')
           .expect(200, done);
       });
@@ -18,10 +18,10 @@ describe('/api/system/logging/logs/:log', function () {
   });
 
   describe('when GET', function () {
-    describe('and `:log` is `unknown` (an invalid key)', function () {
+    describe('and `:log` is `53ca88f0e4d463e01a14cz1e` (an invalid key)', function () {
       it('should return a 404 error', function (done) {
         api
-          .get('/system/logging/logs/unknown')
+          .get('/system/logging/logs/53ca88f0e4d463e01a14cz1e')
           .set('Accept', 'application/vnd.api+json')
           .expect('Content-Type', 'application/vnd.api+json')
           .expect(function (res) {
@@ -42,10 +42,10 @@ describe('/api/system/logging/logs/:log', function () {
   });
 
   describe('when DELETE', function () {
-    describe('and `:log` is `unknown` (an invalid key)', function () {
+    describe('and `:log` is `53ca88f0e4d463e01a14cz1e` (an invalid key)', function () {
       it('should return a 404 error', function (done) {
         api
-          .delete('/system/logging/logs/unknown')
+          .delete('/system/logging/logs/53ca88f0e4d463e01a14cz1e')
           .expect(function (res) {
             var body = JSON.parse(res.text);
 

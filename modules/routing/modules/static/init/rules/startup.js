@@ -2,8 +2,8 @@ var async = require('async');
 
 var ip_rule = require('iproute').rule;
 
-var logger = require('../../../../../../common/logger').logger;
-var log_tags = require('../../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 var StaticRoutingRule = require('../../models/rule').StaticRoutingRule;
 

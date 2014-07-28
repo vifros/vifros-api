@@ -3,8 +3,8 @@ var async = require('async');
 var config = require('../../../../../../../../config');
 var jsonapi = require('../../../../../../../../utils/jsonapi');
 
-var logger = require('../../../../../../../../common/logger').logger;
-var log_tags = require('../../../../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 var NATRule = require('../../../../models/rule').NATRule;
 

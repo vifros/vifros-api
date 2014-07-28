@@ -1,25 +1,52 @@
-var settings_index = require('../../../../../common/settings/routes/index');
+var config = require('../../../../../../config');
 
 module.exports = function (req, res) {
-  try {
-    /*
-     * Delegate the responsibility to send the response to this method.
-     */
-    settings_index(req, res, {
-      filter  : {
-        _id: req.params.setting
-      },
-      base_url: '/system/logging'
-    });
-  }
-  catch (error) {
-    res.json(500, {
-      errors: [
-        {
-          code : 'internal_server_error',
-          title: 'Internal Server Error.'
-        }
-      ]
-    }); // Internal Server Error.
+  var json_api_body = {
+    links   : {
+      settings: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/logging/settings/{settings.name}'
+    },
+    settings: {}
+  };
+
+  var buffer = {
+    name : req.params.setting,
+    value: null
+  };
+
+  switch (req.params.setting) {
+    case 'transport_console':
+      buffer.value = config.get('logging:transports:console');
+
+      json_api_body.settings = buffer;
+
+      res.json(200, json_api_body); // OK.
+      break;
+
+    case 'transport_file':
+      buffer.value = config.get('logging:transports:file');
+
+      json_api_body.settings = buffer;
+
+      res.json(200, json_api_body); // OK.
+      break;
+
+    case 'transport_mongodb':
+      buffer.value = config.get('logging:transports:mongodb');
+
+      json_api_body.settings = buffer;
+
+      res.json(200, json_api_body); // OK.
+      break;
+
+    default:
+      res.json(404, {
+        errors: [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      }); // Not found.
+      break;
   }
 };

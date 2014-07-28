@@ -4,8 +4,8 @@ var ip_link = require('iproute').link;
 var link_vl_types = ip_link.utils.vl_types;
 var link_statuses = ip_link.utils.statuses;
 
-var logger = require('../../../../../common/logger').logger;
-var log_tags = require('../../../../../common/logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 var Address = require('../../common/addresses/models/address').Address;
 var VLAN = require('../models/vlan').VLAN;

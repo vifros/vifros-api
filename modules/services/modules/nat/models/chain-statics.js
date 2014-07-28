@@ -2,7 +2,7 @@ var async = require('async');
 var ip_link = require('iproute').link;
 var iptables = require('netfilter').iptables;
 
-var log_codes = require('../../../../../common/logger').codes;
+var log_codes = global.vifros.logger.codes;
 
 /**
  * Removes chain/s from OS.

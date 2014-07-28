@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
 var config = require('../config');
-var logger = require('./logger').logger;
-var log_tags = require('./logger').tags;
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
 
 /*
  * Build the connection string.
