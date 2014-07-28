@@ -15,7 +15,7 @@ exports.setRoutes = function (app) {
     .delete(require('./routes/logs/delete'));
 
   /*
-   * TODO: System. Logging. Settings.
+   * System. Logging. Settings.
    */
   app.route(config.get('api:prefix') + '/system/logging/settings')
     .get(require('./routes/settings/index'));
