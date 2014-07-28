@@ -13,8 +13,6 @@
 
 - Auth
 
-- Add `/logs/settings`.
-
 - Add options to select from HTTP or HTTPS. Set HTTPS as the default.
 
 - Use `apidocjs` to generate API docs?
