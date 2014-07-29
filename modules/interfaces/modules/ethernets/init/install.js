@@ -29,7 +29,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -38,7 +37,6 @@ module.exports = function (cb_init) {
         || item.hasOwnProperty('vl_type')) { // Due virtual links specifics they are handled on they own modules.
 
         cb_each(null);
-
         return;
       }
 
@@ -62,7 +60,6 @@ module.exports = function (cb_init) {
       ethernet.save(function (error) {
         if (error) {
           cb_each(error);
-
           return;
         }
 
@@ -76,7 +73,6 @@ module.exports = function (cb_init) {
         }, function (error) {
           if (error) {
             cb_each(error);
-
             return;
           }
 
@@ -93,7 +89,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -114,7 +109,6 @@ module.exports = function (cb_init) {
           });
 
           cb_init(error);
-
           return;
         }
 

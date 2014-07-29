@@ -10,8 +10,14 @@ var Address = require('../models/address').Address;
 
 module.exports = function (req, res, options) {
   if (!req.is('application/vnd.api+json')) {
-    res.send(415); // Unsupported Media Type.
-
+    res.json(415, {
+      errors: [
+        {
+          code : 'unsupported_media_type',
+          title: 'Unsupported Media Type.'
+        }
+      ]
+    }); // Unsupported Media Type.
     return;
   }
 
@@ -19,7 +25,7 @@ module.exports = function (req, res, options) {
     links    : {
       addresses: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces' + options.base_url + '/addresses/{addresses.address}'
     },
-    addresses: []
+    addresses: {}
   };
 
   var json_api_errors = {
@@ -31,7 +37,7 @@ module.exports = function (req, res, options) {
    */
   var failed_required_fields = [];
 
-  if (typeof req.body.addresses[0].address == 'undefined') {
+  if (typeof req.body.addresses.address == 'undefined') {
     failed_required_fields.push('address');
   }
 
@@ -42,21 +48,20 @@ module.exports = function (req, res, options) {
          i++) {
 
       json_api_errors.errors.push({
-        code   : log_codes.required_field.code,
-        field  : '/addresses/0/' + failed_required_fields[i],
-        message: log_codes.required_field.message
+        code : log_codes.required_field.code,
+        path : failed_required_fields[i],
+        title: log_codes.required_field.message
       });
     }
 
     res.json(400, json_api_errors); // Bad Request.
-
     return;
   }
 
   /*
    * Add the needed key aliases.
    */
-  var doc_req = req.body.addresses[0];
+  var doc_req = req.body.addresses;
 
   doc_req['dev'] = doc_req['interface'] = options.interface;
   doc_req['local'] = doc_req.address;
@@ -72,8 +77,14 @@ module.exports = function (req, res, options) {
         ]
       });
 
-      res.send(500); // Internal Server Error.
-
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
       return;
     }
 
@@ -90,12 +101,18 @@ module.exports = function (req, res, options) {
           ]
         });
 
-        res.send(500); // Internal Server Error.
-
+        res.json(500, {
+          errors: [
+            {
+              code : 'internal_server_error',
+              title: 'Internal Server Error.'
+            }
+          ]
+        }); // Internal Server Error.
         return;
       }
 
-      var item_to_send = req.body.addresses[0];
+      var item_to_send = req.body.addresses;
 
       /*
        * Clean unneeded alias.
@@ -111,8 +128,8 @@ module.exports = function (req, res, options) {
       /*
        * Build JSON API response.
        */
-      json_api_body.addresses = [];
-      json_api_body.addresses.push(item_to_send);
+      json_api_body.addresses = {};
+      json_api_body.addresses = item_to_send;
 
       res.json(200, json_api_body); // OK.
     });

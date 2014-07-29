@@ -25,7 +25,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -34,7 +33,6 @@ module.exports = function (cb_init) {
         || item.hasOwnProperty('vl_type')) { // Due virtual links specifics they are handled on they own modules.
 
         cb_each(null);
-
         return;
       }
 
@@ -46,7 +44,6 @@ module.exports = function (cb_init) {
       }, function (error, doc) {
         if (error) {
           cb_each(error);
-
           return;
         }
 
@@ -68,7 +65,6 @@ module.exports = function (cb_init) {
           ip_link.set(item_to_exec, function (error) {
             if (error) {
               cb_each(error);
-
               return;
             }
 
@@ -81,7 +77,6 @@ module.exports = function (cb_init) {
             }, function (error, links) {
               if (error) {
                 cb_each(error);
-
                 return;
               }
 
@@ -90,7 +85,6 @@ module.exports = function (cb_init) {
               doc.save(function (error) {
                 if (error) {
                   cb_each(error);
-
                   return;
                 }
 
@@ -104,7 +98,6 @@ module.exports = function (cb_init) {
                 }, function (error) {
                   if (error) {
                     cb_each(error);
-
                     return;
                   }
 
@@ -113,7 +106,6 @@ module.exports = function (cb_init) {
               });
             });
           });
-
           return;
         }
 
@@ -132,7 +124,6 @@ module.exports = function (cb_init) {
         ethernet.save(function (error) {
           if (error) {
             cb_each(error);
-
             return;
           }
 
@@ -146,7 +137,6 @@ module.exports = function (cb_init) {
           }, function (error) {
             if (error) {
               cb_init(error);
-
               return;
             }
 
@@ -164,7 +154,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -179,7 +168,6 @@ module.exports = function (cb_init) {
           });
 
           cb_init(error);
-
           return;
         }
 
@@ -206,13 +194,11 @@ module.exports = function (cb_init) {
               item.save(function (error) {
                 if (error) {
                   cb_each(error);
-
                   return;
                 }
 
                 cb_each(null);
               });
-
               return;
             }
 
@@ -227,7 +213,6 @@ module.exports = function (cb_init) {
               });
 
               cb_init(error);
-
               return;
             }
 
@@ -240,7 +225,6 @@ module.exports = function (cb_init) {
 
             cb_init(null);
           });
-
           return;
         }
         /*

@@ -50,7 +50,17 @@ module.exports = function (req, res) {
       return;
     }
 
+    json_api_body['meta'] = {
+      logs: {
+        total : null, // Below will be reseted to the correct value
+        limit : Number(query_options.limit),
+        offset: Number(query_options.skip)
+      }
+    };
+
     if (!docs.length) {
+      json_api_body.meta.logs.total = 0;
+
       res.json(200, json_api_body); // OK.
       return;
     }
@@ -83,13 +93,7 @@ module.exports = function (req, res) {
             return;
           }
 
-          json_api_body['meta'] = {
-            logs: {
-              total : count,
-              limit : Number(query_options.limit),
-              offset: Number(query_options.skip)
-            }
-          };
+          json_api_body.meta.logs.total = count;
 
           cb_parallel(null);
         });

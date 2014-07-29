@@ -14,80 +14,78 @@ exports.purgeFromOSandDB = function (options, cb) {
         server_code: 500, // Internal Server Error.
         errors     : [
           {
-            code   : error.name,
-            field  : '',
-            message: error.message
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
           }
         ]
       });
-
       return;
     }
 
-    if (docs && docs.length) {
-      /*
-       * Remove the addresses from OS.
-       */
-      async.each(docs, function (item, cb_each) {
-        // These options are enough to delete an address, and since they are required is safe to use them directly.
-        ip_address.delete({
-          dev  : item.interface,
-          local: item.address
-        }, function (error) {
+    if (!docs.length) {
+      cb({
+        server_code: 404, // Not found.
+        errors     : [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      });
+      return;
+    }
+
+    /*
+     * Remove the addresses from OS.
+     */
+    async.each(docs, function (item, cb_each) {
+      // These options are enough to delete an address, and since they are required is safe to use them directly.
+      ip_address.delete({
+        dev  : item.interface,
+        local: item.address
+      }, function (error) {
+        if (error) {
+          cb_each({
+            server_code: 500, // Internal Server Error.
+            errors     : [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          });
+          return;
+        }
+
+        /*
+         * Delete addresses in DB.
+         */
+        self.findByIdAndRemove(item._id, function (error) {
           if (error) {
             cb_each({
               server_code: 500, // Internal Server Error.
               errors     : [
                 {
-                  code   : 'iproute',
-                  field  : '',
-                  message: error
+                  code : 'internal_server_error',
+                  title: 'Internal Server Error.'
                 }
               ]
             });
-
             return;
           }
 
-          /*
-           * Delete addresses in DB.
-           */
-          self.findByIdAndRemove(item._id, function (error) {
-            if (error) {
-              cb_each({
-                server_code: 500, // Internal Server Error.
-                errors     : [
-                  {
-                    code   : error.name,
-                    field  : '',
-                    message: error.message
-                  }
-                ]
-              });
-
-              return;
-            }
-
-            cb_each(null);
-          });
-        });
-      }, function (error) {
-        if (error) {
-          cb(error);
-
-          return;
-        }
-
-        cb(null, {
-          server_code: 204 // No Content.
+          cb_each(null);
         });
       });
+    }, function (error) {
+      if (error) {
+        cb(error);
+        return;
+      }
 
-      return;
-    }
-
-    cb(null, {
-      server_code: 404 // Not found.
+      cb(null, {
+        server_code: 204 // No Content.
+      });
     });
   });
 };
@@ -101,6 +99,7 @@ exports.createFromOStoDB = function (options, cb) {
   var filter = {};
   if (options
     && typeof options.filter != 'undefined') {
+
     filter = options.filter;
   }
 
@@ -117,7 +116,6 @@ exports.createFromOStoDB = function (options, cb) {
   ip_address.show(filter, function (error, addresses) {
     if (error) {
       cb(error);
-
       return;
     }
 
@@ -137,7 +135,6 @@ exports.createFromOStoDB = function (options, cb) {
            * Is not an IP address so continue.
            */
           cb_each_2(null);
-
           return;
         }
 
@@ -149,7 +146,6 @@ exports.createFromOStoDB = function (options, cb) {
         address.save(function (error) {
           if (error) {
             cb_each_2(error);
-
             return;
           }
 
@@ -158,7 +154,6 @@ exports.createFromOStoDB = function (options, cb) {
       }, function (error) {
         if (error) {
           cb_each(error);
-
           return;
         }
 
@@ -167,7 +162,6 @@ exports.createFromOStoDB = function (options, cb) {
     }, function (error) {
       if (error) {
         cb(error);
-
         return;
       }
 
@@ -191,7 +185,6 @@ exports.createFromDBtoOS = function (options, cb) {
   self.find(filter, function (error, docs) {
     if (error) {
       cb(error);
-
       return;
     }
 
@@ -204,7 +197,6 @@ exports.createFromDBtoOS = function (options, cb) {
       }, function (error) {
         if (error) {
           cb(error);
-
           return;
         }
 
@@ -221,7 +213,6 @@ exports.createFromDBtoOS = function (options, cb) {
           ip_address.add(item, function (error) {
             if (error) {
               cb_each(error);
-
               return;
             }
 
@@ -230,14 +221,12 @@ exports.createFromDBtoOS = function (options, cb) {
         }, function (error) {
           if (error) {
             cb(error);
-
             return;
           }
 
           cb(null);
         });
       });
-
       return;
     }
 
@@ -249,7 +238,6 @@ exports.createFromDBtoOS = function (options, cb) {
     }, function (error) {
       if (error) {
         cb(error);
-
         return;
       }
 
