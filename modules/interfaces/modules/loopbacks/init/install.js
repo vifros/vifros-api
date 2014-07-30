@@ -29,14 +29,12 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
     async.each(links, function (item, cb_each) {
       if (item.type != link_types.loopback) {
         cb_each(null);
-
         return;
       }
 
@@ -47,7 +45,9 @@ module.exports = function (cb_init) {
        */
       item.status = {
         operational: item.state,
-        admin      : (item.state == link_statuses.UP || item.state == link_statuses.DOWN) ? item.state : link_statuses.UP
+        admin      : (item.state == link_statuses.UP || item.state == link_statuses.DOWN)
+          ? item.state
+          : link_statuses.UP
       };
 
       var loopback = new Loopback(item);
@@ -58,7 +58,6 @@ module.exports = function (cb_init) {
       loopback.save(function (error) {
         if (error) {
           cb_each(error);
-
           return;
         }
 
@@ -72,7 +71,6 @@ module.exports = function (cb_init) {
         }, function (error) {
           if (error) {
             cb_each(error);
-
             return;
           }
 
@@ -89,7 +87,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -110,7 +107,6 @@ module.exports = function (cb_init) {
           });
 
           cb_init(error);
-
           return;
         }
 

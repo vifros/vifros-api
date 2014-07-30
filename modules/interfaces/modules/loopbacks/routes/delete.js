@@ -25,8 +25,26 @@ module.exports = function (req, res) {
         ]
       });
 
-      res.send(500); // Internal Server Error.
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
+      return;
+    }
 
+    if (!doc) {
+      res.json(404, {
+        errors: [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      }); // Not Found.
       return;
     }
 
@@ -40,13 +58,19 @@ module.exports = function (req, res) {
       });
 
       json_api_errors.errors.push({
-        code   : log_codes.json_patch_error.code.delete_present_interface_error,
-        field  : '/loopbacks/0/status/operational',
-        message: 'Only not present interfaces can be deleted.'
+        code : log_codes.json_patch_error.code.delete_present_interface_error,
+        path : 'status.operational',
+        title: 'Only not present interfaces can be deleted.'
       });
 
-      res.json(403, json_api_errors); // Forbidden.
-
+      res.json(403, {
+        errors: [
+          {
+            code : 'forbidden',
+            title: 'forbidden Server Error.'
+          }
+        ]
+      }); // Forbidden.
       return;
     }
 
@@ -63,8 +87,14 @@ module.exports = function (req, res) {
           ]
         });
 
-        res.send(500); // Internal Server Error.
-
+        res.json(500, {
+          errors: [
+            {
+              code : 'internal_server_error',
+              title: 'Internal Server Error.'
+            }
+          ]
+        }); // Internal Server Error.
         return;
       }
 
@@ -83,8 +113,14 @@ module.exports = function (req, res) {
             ]
           });
 
-          res.send(500); // Internal Server Error.
-
+          res.json(500, {
+            errors: [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          }); // Internal Server Error.
           return;
         }
 

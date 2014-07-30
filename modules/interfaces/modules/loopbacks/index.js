@@ -8,7 +8,7 @@ exports.setRoutes = function (app) {
 
   app.route(config.get('api:prefix') + '/interfaces/loopbacks/:loopback')
     .get(require('./routes/show'))
-    .patch(require('./routes/patch'))
+    .put(require('./routes/update'))
     .delete(require('./routes/delete'));
 
   /*
@@ -21,5 +21,5 @@ exports.setRoutes = function (app) {
   app.route(config.get('api:prefix') + '/interfaces/loopbacks/:loopback/addresses/:address')
     .get(require('./routes/addresses/show'))
     .delete(require('../common/addresses/routes/delete'))
-    .patch(require('../common/addresses/routes/patch'));
+    .put(require('../common/addresses/routes/update'));
 };

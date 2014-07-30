@@ -17,12 +17,11 @@ module.exports = function (cb_init) {
         module: 'interfaces/loopbacks',
         tags  : [
           log_tags.init,
-          log_tags.db,
+          log_tags.db
         ]
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -33,7 +32,6 @@ module.exports = function (cb_init) {
       startup(function (error) {
         if (error) {
           cb_init(error);
-
           return;
         }
 
@@ -43,14 +41,12 @@ module.exports = function (cb_init) {
         Loopback.setMonitor(function (error) {
           if (error) {
             cb_init(error);
-
             return;
           }
 
           cb_init(null);
         });
       });
-
       return;
     }
 
@@ -60,7 +56,6 @@ module.exports = function (cb_init) {
     install(function (error) {
       if (error) {
         cb_init(error);
-
         return;
       }
 
@@ -70,7 +65,6 @@ module.exports = function (cb_init) {
       Loopback.setMonitor(function (error) {
         if (error) {
           cb_init(error);
-
           return;
         }
 

@@ -4,6 +4,7 @@ var ip_monitor = iproute.monitor();
 
 var logger = global.vifros.logger;
 var log_tags = logger.tags;
+var log_codes = logger.codes;
 
 /*
  * Adds a monitor to update the operational state of devices.
@@ -26,7 +27,7 @@ exports.setMonitor = function (cb) {
     if (link.type == link_types.loopback
       && link.state) {
 
-      // Is an ethernet and has a valid state so update it.
+      // Is a loopback and has a valid state so update it.
       self.findOne({
         name: link.name
       }, function (error, doc) {
@@ -49,4 +50,40 @@ exports.setMonitor = function (cb) {
   });
 
   cb(null);
+};
+
+/**
+ * Validate an loopback doc to be updated.
+ * Returns an errors array suitable for JSON API responses.
+ *
+ * @param   {object}      object
+ * @param   {function}    cb
+ */
+exports.validate = function validate(object, cb) {
+  var errors = [];
+
+  if (object.status) {
+    if (object.status.admin
+      && (object.status.admin.toLowerCase() != 'up'
+      && object.status.admin.toLowerCase() != 'down')) {
+
+      errors.push({
+        code : log_codes.invalid_value.code,
+        path : 'status.admin',
+        title: log_codes.invalid_value.message
+      });
+    }
+  }
+
+  if (object.mac
+    && !(/^([0-9a-f]{2}([:-]|$)){6}$/i.test(object.mac))) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'mac',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  cb(null, errors);
 };

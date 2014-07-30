@@ -25,14 +25,12 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
     async.each(links, function (item, cb_each) {
       if (item.type != link_types.loopback) {
         cb_each(null);
-
         return;
       }
 
@@ -44,7 +42,6 @@ module.exports = function (cb_init) {
       }, function (error, doc) {
         if (error) {
           cb_each(error);
-
           return;
         }
 
@@ -66,7 +63,6 @@ module.exports = function (cb_init) {
           ip_link.set(item_to_exec, function (error) {
             if (error) {
               cb_each(error);
-
               return;
             }
 
@@ -79,7 +75,6 @@ module.exports = function (cb_init) {
             }, function (error, links) {
               if (error) {
                 cb_each(error);
-
                 return;
               }
 
@@ -88,7 +83,6 @@ module.exports = function (cb_init) {
               doc.save(function (error) {
                 if (error) {
                   cb_each(error);
-
                   return;
                 }
 
@@ -102,7 +96,6 @@ module.exports = function (cb_init) {
                 }, function (error) {
                   if (error) {
                     cb_each(error);
-
                     return;
                   }
 
@@ -111,45 +104,43 @@ module.exports = function (cb_init) {
               });
             });
           });
+          return;
         }
-        else {
+
+        /*
+         * A: Is in OS and not in DB.
+         * Add it to DB.
+         *
+         * Compatibilize names.
+         */
+        item.status = {
+          operational: item.state
+        };
+
+        var loopback = new Loopback(item);
+
+        loopback.save(function (error) {
+          if (error) {
+            cb_each(error);
+            return;
+          }
+
           /*
-           * A: Is in OS and not in DB.
-           * Add it to DB.
-           *
-           * Compatibilize names.
+           * Detect OS addresses and insert them to DB.
            */
-          item.status = {
-            operational: item.state
-          };
-
-          var loopback = new Loopback(item);
-
-          loopback.save(function (error) {
+          Address.createFromOStoDB({
+            filter: {
+              interface: item.name
+            }
+          }, function (error) {
             if (error) {
-              cb_each(error);
-
+              cb_init(error);
               return;
             }
 
-            /*
-             * Detect OS addresses and insert them to DB.
-             */
-            Address.createFromOStoDB({
-              filter: {
-                interface: item.name
-              }
-            }, function (error) {
-              if (error) {
-                cb_init(error);
-
-                return;
-              }
-
-              cb_init(error);
-            });
+            cb_init(error);
           });
-        }
+        });
       });
     }, function (error) {
       if (error) {
@@ -161,7 +152,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -176,7 +166,6 @@ module.exports = function (cb_init) {
           });
 
           cb_init(error);
-
           return;
         }
 
@@ -203,13 +192,11 @@ module.exports = function (cb_init) {
               item.save(function (error) {
                 if (error) {
                   cb_each(error);
-
                   return;
                 }
 
                 cb_each(null);
               });
-
               return;
             }
 
@@ -224,7 +211,6 @@ module.exports = function (cb_init) {
               });
 
               cb_init(error);
-
               return;
             }
 
@@ -237,10 +223,8 @@ module.exports = function (cb_init) {
 
             cb_init(null);
           });
-
           return;
         }
-
         /*
          * D: Is neither in OS or DB.
          * Do nothing.

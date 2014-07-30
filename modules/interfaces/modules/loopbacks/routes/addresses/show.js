@@ -1,15 +1,9 @@
 var logger = global.vifros.logger;
 var log_tags = logger.tags;
 
-var Loopback = require('../../models/loopback').Loopback;
-
 var addresses_index = require('../../../common/addresses/routes/index');
 
 module.exports = function (req, res) {
-  var json_api_errors = {
-    errors: []
-  };
-
   try {
     /*
      * Delegate the responsibility to send the response to this method.
@@ -19,7 +13,8 @@ module.exports = function (req, res) {
         interface: req.params.loopback,
         address  : req.params.address
       },
-      base_url: '/loopbacks/' + req.params.loopback
+      base_url: '/loopbacks/' + req.params.loopback,
+      single  : true
     });
   }
   catch (error) {
@@ -31,6 +26,13 @@ module.exports = function (req, res) {
       ]
     });
 
-    res.send(500); // Internal Server Error.
+    res.json(500, {
+      errors: [
+        {
+          code : 'internal_server_error',
+          title: 'Internal Server Error.'
+        }
+      ]
+    }); // Internal Server Error.
   }
 };

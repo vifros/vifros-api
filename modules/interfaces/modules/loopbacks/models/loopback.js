@@ -19,7 +19,8 @@ var LoopbackSchema = new Schema({
       default : link_statuses.UP,
       required: true
     },
-    operational: { // Readonly from user perspective.
+    // Readonly.
+    operational: {
       type: String,
       enum: [
         link_statuses.UP,
@@ -29,7 +30,8 @@ var LoopbackSchema = new Schema({
       ]
     }
   },
-  name       : { // Readonly after initially set.
+  // Readonly.
+  name       : {
     type    : String,
     unique  : true,
     required: true
@@ -46,5 +48,6 @@ var LoopbackSchema = new Schema({
  * Static definitions.
  */
 LoopbackSchema.statics.setMonitor = statics.setMonitor;
+LoopbackSchema.statics.validate = statics.validate;
 
 exports.Loopback = mongoose.model('Loopback', LoopbackSchema);
