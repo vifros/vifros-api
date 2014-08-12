@@ -5,9 +5,20 @@ module.exports = function (req, res) {
     errors: []
   };
 
+  var iface;
+  for (var param in req.params) {
+    if (req.params.hasOwnProperty(param)
+      && param != 'address') {
+
+      iface = req.params[param];
+      break;
+    }
+  }
+
   Address.purgeFromOSandDB({
     filter: {
-      address: req.params.address
+      address  : req.params.address,
+      interface: iface
     }
   }, function (error, ret) {
     if (error) {

@@ -5,11 +5,45 @@ var config = require('../../../../../config/test.json').api;
 var url = config.protocol + '://' + config.host + ':' + config.port + config.prefix;
 var api = supertest(url);
 
-describe('/api/interfaces/loopbacks/lo/addresses', function () {
+describe('/api/interfaces/vlans/eth0.57/addresses', function () {
+  before(function (done) {
+    // Create the resource.
+    api
+      .post('/interfaces/vlans')
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .send(JSON.stringify({
+        vlans: {
+          interface: 'eth0',
+          tag      : '57'
+        }
+      }))
+      .expect(200, done);
+  });
+
+  // Remove the resource.
+  after(function (done) {
+    // Delete the resource.
+    api
+      .delete('/interfaces/vlans/eth0.57')
+      .expect(204, done);
+  });
+
+  describe('when OPTIONS', function () {
+    describe('and `:address` is anything', function () {
+      it('should return methods GET,DELETE,PUT', function (done) {
+        api
+          .options('/interfaces/vlans/eth0.57/addresses/anything')
+          .expect('Allow', 'GET,DELETE,PUT')
+          .expect(200, done);
+      });
+    });
+  });
+
   describe('when OPTIONS', function () {
     it('should return methods GET,POST', function (done) {
       api
-        .options('/interfaces/loopbacks/lo/addresses')
+        .options('/interfaces/vlans/eth0.57/addresses')
         .expect('Allow', 'GET,POST')
         .expect(200, done);
     });
@@ -18,7 +52,7 @@ describe('/api/interfaces/loopbacks/lo/addresses', function () {
   describe('when GET', function () {
     it('should return a valid JSON-API response', function (done) {
       api
-        .get('/interfaces/loopbacks/lo/addresses')
+        .get('/interfaces/vlans/eth0.57/addresses')
         .set('Accept', 'application/vnd.api+json')
         .expect('Content-Type', 'application/vnd.api+json')
         .expect(function (res) {
@@ -36,7 +70,7 @@ describe('/api/interfaces/loopbacks/lo/addresses', function () {
 
     it('should return a valid `addresses` collection response', function (done) {
       api
-        .get('/interfaces/loopbacks/lo/addresses')
+        .get('/interfaces/vlans/eth0.57/addresses')
         .set('Accept', 'application/vnd.api+json')
         .expect('Content-Type', 'application/vnd.api+json')
         .expect(function (res) {
@@ -51,7 +85,7 @@ describe('/api/interfaces/loopbacks/lo/addresses', function () {
 
     it('should reflect the proper pagination object by default', function (done) {
       api
-        .get('/interfaces/loopbacks/lo/addresses')
+        .get('/interfaces/vlans/eth0.57/addresses')
         .set('Accept', 'application/vnd.api+json')
         .expect('Content-Type', 'application/vnd.api+json')
         .expect(function (res) {
@@ -74,7 +108,7 @@ describe('/api/interfaces/loopbacks/lo/addresses', function () {
     describe('and limit:2, offset:1', function () {
       it('should reflect the proper pagination object', function (done) {
         api
-          .get('/interfaces/loopbacks/lo/addresses')
+          .get('/interfaces/vlans/eth0.57/addresses')
           .query({
             limit : 2,
             offset: 1
@@ -104,7 +138,7 @@ describe('/api/interfaces/loopbacks/lo/addresses', function () {
     describe('and missing data required fields', function () {
       it('should return a 400 error', function (done) {
         api
-          .post('/interfaces/loopbacks/lo/addresses')
+          .post('/interfaces/vlans/eth0.57/addresses')
           .set('Accept', 'application/vnd.api+json')
           .set('Content-Type', 'application/vnd.api+json')
           .send(JSON.stringify({
@@ -126,13 +160,13 @@ describe('/api/interfaces/loopbacks/lo/addresses', function () {
       after(function (done) {
         // Delete the resource.
         api
-          .delete('/interfaces/loopbacks/lo/addresses/20.20.20.20%2F24')
+          .delete('/interfaces/vlans/eth0.57/addresses/20.20.20.20%2F24')
           .expect(204, done);
       });
 
       it('and return a valid JSON-API response', function (done) {
         api
-          .post('/interfaces/loopbacks/lo/addresses')
+          .post('/interfaces/vlans/eth0.57/addresses')
           .set('Accept', 'application/vnd.api+json')
           .set('Content-Type', 'application/vnd.api+json')
           .send(JSON.stringify({

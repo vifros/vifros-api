@@ -6,9 +6,20 @@ var VLAN = require('../../models/vlan').VLAN;
 var addresses_index = require('../../../common/addresses/routes/index');
 
 module.exports = function (req, res) {
-  var json_api_errors = {
-    errors: []
-  };
+  var vlan_interface = req.params.vlan.split('.')[0];
+  var vlan_tag = req.params.vlan.split('.')[1];
+
+  if (req.params.vlan.split('.').length != 2) {
+    res.json(404, {
+      errors: [
+        {
+          code : 'not_found',
+          title: 'Not found.'
+        }
+      ]
+    }); // Not found.
+    return;
+  }
 
   try {
     /*
@@ -16,10 +27,11 @@ module.exports = function (req, res) {
      */
     addresses_index(req, res, {
       filter  : {
-        interface: req.params.vlan_interface + '.' + req.params.vlan_tag,
+        interface: vlan_interface + '.' + vlan_tag,
         address  : req.params.address
       },
-      base_url: '/vlans/' + req.params.vlan_interface + '.' + req.params.vlan_tag
+      base_url: '/vlans/' + vlan_interface + '.' + vlan_tag,
+      single  : true
     });
   }
   catch (error) {
@@ -31,6 +43,13 @@ module.exports = function (req, res) {
       ]
     });
 
-    res.send(500); // Internal Server Error.
+    res.json(500, {
+      errors: [
+        {
+          code : 'internal_server_error',
+          title: 'Internal Server Error.'
+        }
+      ]
+    }); // Internal Server Error.
   }
 };

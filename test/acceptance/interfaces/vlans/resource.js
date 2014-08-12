@@ -5,12 +5,12 @@ var config = require('../../../../config/test.json').api;
 var url = config.protocol + '://' + config.host + ':' + config.port + config.prefix;
 var api = supertest(url);
 
-describe('/api/system/tunables/:tunable', function () {
+describe('/api/interfaces/vlans/:vlan', function () {
   describe('when OPTIONS', function () {
-    describe('and `:tunable` is anything', function () {
+    describe('and `:vlan` is anything', function () {
       it('should return methods GET,PUT,DELETE', function (done) {
         api
-          .options('/system/tunables/anything')
+          .options('/interfaces/vlans/anything')
           .expect('Allow', 'GET,PUT,DELETE')
           .expect(200, done);
       });
@@ -18,10 +18,10 @@ describe('/api/system/tunables/:tunable', function () {
   });
 
   describe('when GET', function () {
-    describe('and `:tunable` is `unknown` (an invalid key)', function () {
+    describe('and `:vlan` is `unknown` (an invalid key)', function () {
       it('should return a 404 error', function (done) {
         api
-          .get('/system/tunables/unknown')
+          .get('/interfaces/vlans/unknown')
           .set('Accept', 'application/vnd.api+json')
           .expect('Content-Type', 'application/vnd.api+json')
           .expect(function (res) {
@@ -40,10 +40,33 @@ describe('/api/system/tunables/:tunable', function () {
       });
     });
 
-    describe('and `:tunable` is `net.ipv4.neigh.default.gc_thresh2`', function () {
+    describe('and `:vlan` is `eth0.51`', function () {
+      before(function (done) {
+        // Create the resource.
+        api
+          .post('/interfaces/vlans')
+          .set('Accept', 'application/vnd.api+json')
+          .set('Content-Type', 'application/vnd.api+json')
+          .send(JSON.stringify({
+            vlans: {
+              interface: 'eth0',
+              tag      : 51
+            }
+          }))
+          .expect(200, done);
+      });
+
+      // Remove the resource.
+      after(function (done) {
+        // Delete the resource.
+        api
+          .delete('/interfaces/vlans/eth0.51')
+          .expect(204, done);
+      });
+
       it('should return a valid JSON-API response', function (done) {
         api
-          .get('/system/tunables/net.ipv4.neigh.default.gc_thresh2')
+          .get('/interfaces/vlans/eth0.51')
           .set('Accept', 'application/vnd.api+json')
           .expect('Content-Type', 'application/vnd.api+json')
           .expect(function (res) {
@@ -59,25 +82,23 @@ describe('/api/system/tunables/:tunable', function () {
           .expect(200, done);
       });
 
-      it('should return a valid `tunables/net.ipv4.neigh.default.gc_thresh2` resource response', function (done) {
+      it('should return a valid `vlans/eth0.51` resource response', function (done) {
         api
-          .get('/system/tunables/net.ipv4.neigh.default.gc_thresh2')
+          .get('/interfaces/vlans/eth0.51')
           .set('Accept', 'application/vnd.api+json')
           .expect('Content-Type', 'application/vnd.api+json')
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('tunables');
-            body.should.have.property('tunables');
-            body.tunables.should.be.an.Object.and.not.an.Array;
-            body.tunables.should.have.properties([
-              'path',
-              'value',
-              'id'
+            body.links.should.have.property('vlans');
+            body.should.have.property('vlans');
+            body.vlans.should.be.an.Object.and.not.an.Array;
+            body.vlans.should.have.properties([
+              'interface',
+              'tag'
             ]);
-            body.tunables.path.should.be.equal('net.ipv4.neigh.default.gc_thresh2');
-            body.tunables.value.should.be.a.String;
-            body.tunables.id.should.be.a.String;
+            body.vlans.interface.should.be.equal('eth0');
+            body.vlans.tag.should.be.equal(51);
           })
           .expect(200, done);
       });
@@ -88,7 +109,7 @@ describe('/api/system/tunables/:tunable', function () {
     describe('and `Content-Type` is `application/json` (an invalid Content-Type)', function () {
       it('should return a 415 error', function (done) {
         api
-          .put('/system/tunables/unknown')
+          .put('/interfaces/vlans/unknown')
           .set('Accept', 'application/vnd.api+json')
           .set('Content-Type', 'application/json')
           .expect('Content-Type', 'application/vnd.api+json')
@@ -96,10 +117,10 @@ describe('/api/system/tunables/:tunable', function () {
       });
     });
 
-    describe('and `:tunable` is `unknown` (an invalid key)', function () {
+    describe('and `:vlan` is `unknown` (an invalid key)', function () {
       it('should return a 404 error', function (done) {
         api
-          .put('/system/tunables/unknown')
+          .put('/interfaces/vlans/unknown')
           .set('Content-Type', 'application/vnd.api+json')
           .set('Accept', 'application/vnd.api+json')
           .send('{}')
@@ -119,41 +140,63 @@ describe('/api/system/tunables/:tunable', function () {
       });
     });
 
-    describe('and `:tunable` is a valid key', function () {
+    describe('and `:vlan` is a valid key', function () {
+      beforeEach(function (done) {
+        // Create the resource.
+        api
+          .post('/interfaces/vlans')
+          .set('Accept', 'application/vnd.api+json')
+          .set('Content-Type', 'application/vnd.api+json')
+          .send(JSON.stringify({
+            vlans: {
+              interface: 'eth0',
+              tag      : '55'
+            }
+          }))
+          .expect(200, done);
+      });
+
+      // Remove the resource.
+      afterEach(function (done) {
+        // Delete the resource.
+        api
+          .delete('/interfaces/vlans/eth0.55')
+          .expect(204, done);
+      });
+
       describe('and tried to modify the read-only values', function () {
         it('should return a 400 error and an error collection stating the errors', function (done) {
           api
-            .put('/system/tunables/net.ipv4.neigh.default.gc_thresh3')
+            .put('/interfaces/vlans/eth0.55')
             .set('Content-Type', 'application/vnd.api+json')
             .set('Accept', 'application/vnd.api+json')
             .send(JSON.stringify({
-              tunables: {
-                path: 'some_path'
+              vlans: {
+                interface: 'eth1',
+                tag      : 34
               }
             }))
             .expect(function (res) {
               var body = JSON.parse(res.text);
 
               body.should.have.property('errors');
-              body.errors.should.be.an.Array.of.length(1);
+              body.errors.should.be.an.Array.of.length(2);
             })
             .expect(400, done);
         });
       });
 
-      describe('and tried to update valid `net.ipv4.neigh.default.gc_thresh3` values (`value` and `description`)', function () {
+      describe('and tried to update valid `vlan` values (`description`)', function () {
         it('should return a 204 response and update the values', function (done) {
           var now = Date.now();
-          var new_value = 35000 + Math.round(Math.random() * 100);
 
           // Updates the values.
           api
-            .put('/system/tunables/net.ipv4.neigh.default.gc_thresh3')
+            .put('/interfaces/vlans/eth0.55')
             .set('Content-Type', 'application/vnd.api+json')
             .set('Accept', 'application/vnd.api+json')
             .send(JSON.stringify({
-              tunables: {
-                value      : new_value,
+              vlans: {
                 description: 'a_description_' + now
               }
             })
@@ -167,16 +210,15 @@ describe('/api/system/tunables/:tunable', function () {
 
               // Check the modified values.
               api
-                .get('/system/tunables/net.ipv4.neigh.default.gc_thresh3')
+                .get('/interfaces/vlans/eth0.55')
                 .set('Accept', 'application/vnd.api+json')
                 .expect('Content-Type', 'application/vnd.api+json')
                 .expect(function (res) {
                   var body = JSON.parse(res.text);
 
                   // Body tests.
-                  body.should.have.property('tunables');
-                  body.tunables.should.have.properties({
-                    value      : new_value,
+                  body.should.have.property('vlans');
+                  body.vlans.should.have.properties({
                     description: 'a_description_' + now
                   });
                 })
@@ -188,10 +230,10 @@ describe('/api/system/tunables/:tunable', function () {
   });
 
   describe('when DELETE', function () {
-    describe('and `:tunable` is `unknown` (an invalid key)', function () {
+    describe('and `:vlan` is `unknown` (an invalid key)', function () {
       it('should return a 404 error', function (done) {
         api
-          .delete('/system/tunables/unknown')
+          .delete('/interfaces/vlans/unknown')
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
@@ -208,18 +250,17 @@ describe('/api/system/tunables/:tunable', function () {
       });
     });
 
-    describe('and `path` is `net.ipv4.neigh.default.gc_thresh3` (a valid tunable)', function () {
-      after(function (done) {
-        // Re-create the resource.
+    describe('and `vlan` is `eth0.52` (a valid vlan)', function () {
+      before(function (done) {
+        // Create the resource.
         api
-          .post('/system/tunables')
+          .post('/interfaces/vlans')
           .set('Accept', 'application/vnd.api+json')
           .set('Content-Type', 'application/vnd.api+json')
           .send(JSON.stringify({
-            tunables: {
-              path       : 'net.ipv4.neigh.default.gc_thresh3',
-              value      : '35034',
-              description: 'Is the maximum No. of ARP entries which can be kept in table.'
+            vlans: {
+              interface: 'eth0',
+              tag      : 52
             }
           }))
           .expect(200, done);
@@ -227,7 +268,7 @@ describe('/api/system/tunables/:tunable', function () {
 
       it('should return a 204 response', function (done) {
         api
-          .delete('/system/tunables/net.ipv4.neigh.default.gc_thresh3')
+          .delete('/interfaces/vlans/eth0.52')
           .expect(204)
           .end(function (error) {
             if (error) {
@@ -237,7 +278,7 @@ describe('/api/system/tunables/:tunable', function () {
 
             // Checks if the resource was really deleted.
             api
-              .get('/system/tunables/net.ipv4.neigh.default.gc_thresh3')
+              .get('/interfaces/vlans/eth0.52')
               .set('Accept', 'application/vnd.api+json')
               .expect('Content-Type', 'application/vnd.api+json')
               .expect(function (res) {

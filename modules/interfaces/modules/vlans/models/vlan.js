@@ -19,7 +19,8 @@ var VLANSchema = new Schema({
       default : link_statuses.UP,
       required: true
     },
-    operational: { // Readonly from user perspective.
+    // Readonly.
+    operational: {
       type: String,
       enum: [
         link_statuses.UP,
@@ -30,11 +31,13 @@ var VLANSchema = new Schema({
       ]
     }
   },
-  interface  : { // Readonly after initially set.
+  // Readonly.
+  interface  : {
     type    : String,
     required: true
   },
-  tag        : { // Readonly after initially set.
+  // Readonly.
+  tag        : {
     type    : Number,
     min     : 0,
     max     : 4095,
@@ -49,5 +52,6 @@ var VLANSchema = new Schema({
  */
 VLANSchema.statics.purgeFromOSandDB = statics.purgeFromOSandDB;
 VLANSchema.statics.setMonitor = statics.setMonitor;
+VLANSchema.statics.validate = statics.validate;
 
 exports.VLAN = mongoose.model('VLAN', VLANSchema);

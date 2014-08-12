@@ -11,170 +11,160 @@ var Address = require('../../common/addresses/models/address').Address;
 
 var logger = global.vifros.logger;
 var log_tags = logger.tags;
+var log_codes = logger.codes;
 
 /*
  * Removes all filtered VLANs from DB and OS.
  */
 exports.purgeFromOSandDB = function (options, cb) {
-  var self = this;
-
   this.find(options.filter, function (error, docs) {
     if (error) {
       cb({
         server_code: 500, // Internal Server Error.
         errors     : [
           {
-            code   : error.name,
-            field  : '',
-            message: error.message
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
           }
         ]
       });
-
       return;
     }
 
-    if (docs && docs.length) {
+    if (!docs.length) {
+      cb({
+        server_code: 404, // Not found.
+        errors     : [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      });
+      return;
+    }
+
+    /*
+     * Remove the VLANs from OS.
+     */
+    async.each(docs, function (item, cb_each) {
       /*
-       * Remove the VLANs from OS.
+       * Check if they are present in OS or not.
        */
-      async.each(docs, function (item, cb_each) {
+      if (item.status.operational == link_statuses.NOTPRESENT) {
         /*
-         * Check if they are present in OS or not.
+         * Only remove it from DB and its related addresses.
          */
-        if (item.status.operational == link_statuses.NOTPRESENT) {
-          /*
-           * Only remove it from DB and its related addresses.
-           */
-          item.remove(function (error) {
-            if (error) {
-              cb_each({
-                server_code: 500, // Internal Server Error.
-                errors     : [
-                  {
-                    code   : '',
-                    field  : '',
-                    message: error.message
-                  }
-                ]
-              });
-
-              return;
-            }
-
-            /*
-             * Delete associated addresses in DB.
-             * There is no need to delete them from OS since it is automatically done.
-             */
-            Address.remove({
-              interface: item.interface + '.' + item.tag
-            }, function (error) {
-              if (error) {
-                cb_each({
-                  server_code: 500, // Internal Server Error.
-                  errors     : [
-                    {
-                      code   : error.name,
-                      field  : '',
-                      message: error.message
-                    }
-                  ]
-                });
-
-                return;
-              }
-
-              cb_each(null);
-            });
-          });
-
-          return;
-        }
-
-        /*
-         * Is present in OS.
-         */
-        ip_link.delete({
-          // These options are enough to delete the interface and since they are required is safe to use them directly.
-          dev: item.interface + '.' + item.tag
-        }, function (error) {
+        item.remove(function (error) {
           if (error) {
             cb_each({
               server_code: 500, // Internal Server Error.
               errors     : [
                 {
-                  code   : 'iproute',
-                  field  : '',
-                  message: error
+                  code : 'not_found',
+                  title: 'Not found.'
                 }
               ]
             });
-
             return;
           }
 
           /*
-           * Delete the VLAN in DB.
+           * Delete associated addresses in DB.
+           * There is no need to delete them from OS since it is automatically done.
            */
-          item.remove(function (error) {
+          Address.remove({
+            interface: item.interface + '.' + item.tag
+          }, function (error) {
             if (error) {
               cb_each({
                 server_code: 500, // Internal Server Error.
                 errors     : [
                   {
-                    code   : error.name,
-                    field  : '',
-                    message: error.message
+                    code : 'not_found',
+                    title: 'Not found.'
                   }
                 ]
               });
-
               return;
             }
 
-            /*
-             * Delete associated addresses in DB.
-             * There is no need to delete them from OS since it is automatically done.
-             */
-            Address.remove({
-              interface: item.interface + '.' + item.tag
-            }, function (error) {
-              if (error) {
-                cb_each({
-                  server_code: 500, // Internal Server Error.
-                  errors     : [
-                    {
-                      code   : error.name,
-                      field  : '',
-                      message: error.message
-                    }
-                  ]
-                });
-
-                return;
-              }
-
-              cb_each(null);
-            });
+            cb_each(null);
           });
         });
+        return;
+      }
+
+      /*
+       * Is present in OS.
+       */
+      ip_link.delete({
+        // These options are enough to delete the interface and since they are required is safe to use them directly.
+        dev: item.interface + '.' + item.tag
       }, function (error) {
         if (error) {
-          cb(error);
-
+          cb_each({
+            server_code: 500, // Internal Server Error.
+            errors     : [
+              {
+                code : 'not_found',
+                title: 'Not found.'
+              }
+            ]
+          });
           return;
         }
 
-        cb(null, {
-          server_code: 204 // No Content.
+        /*
+         * Delete the VLAN in DB.
+         */
+        item.remove(function (error) {
+          if (error) {
+            cb_each({
+              server_code: 500, // Internal Server Error.
+              errors     : [
+                {
+                  code : 'not_found',
+                  title: 'Not found.'
+                }
+              ]
+            });
+            return;
+          }
+
+          /*
+           * Delete associated addresses in DB.
+           * There is no need to delete them from OS since it is automatically done.
+           */
+          Address.remove({
+            interface: item.interface + '.' + item.tag
+          }, function (error) {
+            if (error) {
+              cb_each({
+                server_code: 500, // Internal Server Error.
+                errors     : [
+                  {
+                    code : 'not_found',
+                    title: 'Not found.'
+                  }
+                ]
+              });
+              return;
+            }
+
+            cb_each(null);
+          });
         });
       });
+    }, function (error) {
+      if (error) {
+        cb(error);
+        return;
+      }
 
-      return;
-    }
-
-    cb(null, {
-      server_code: 404 // Not found.
+      cb(null, {
+        server_code: 204 // No Content.
+      });
     });
   });
 };
@@ -227,4 +217,40 @@ exports.setMonitor = function (cb) {
   );
 
   cb(null);
+};
+
+/**
+ * Validate a doc to be updated.
+ * Returns an errors array suitable for JSON API responses.
+ *
+ * @param   {object}      object
+ * @param   {function}    cb
+ */
+exports.validate = function validate(object, cb) {
+  var errors = [];
+
+  if (object.status) {
+    if (object.status.admin
+      && (object.status.admin.toLowerCase() != 'up'
+      && object.status.admin.toLowerCase() != 'down')) {
+
+      errors.push({
+        code : log_codes.invalid_value.code,
+        path : 'status.admin',
+        title: log_codes.invalid_value.message
+      });
+    }
+  }
+
+  if (object.tag
+    && (object.tag < 0 || object.tag > 4095)) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'tag',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  cb(null, errors);
 };

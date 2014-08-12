@@ -20,8 +20,19 @@ module.exports = function (req, res) {
     errors: []
   };
 
+  var iface;
+  for (var param in req.params) {
+    if (req.params.hasOwnProperty(param)
+      && param != 'address') {
+
+      iface = req.params[param];
+      break;
+    }
+  }
+
   Address.findOne({
-    address: req.params.address
+    address  : req.params.address,
+    interface: iface
   }, function (error, doc) {
     if (error) {
       logger.error(error.message, {

@@ -1,45 +1,35 @@
-var ip_link = require('iproute').link;
-var link_statuses = ip_link.utils.statuses;
-
-var Address = require('../../common/addresses/models/address').Address;
 var VLAN = require('../models/vlan').VLAN;
-
-var logger = global.vifros.logger;
-var log_tags = logger.tags;
 
 module.exports = function (req, res) {
   var json_api_errors = {
     errors: []
   };
 
+  var vlan_interface = req.params.vlan.split('.')[0];
+  var vlan_tag = req.params.vlan.split('.')[1];
+
+  if (req.params.vlan.split('.').length != 2) {
+    res.json(404, {
+      errors: [
+        {
+          code : 'not_found',
+          title: 'Not found.'
+        }
+      ]
+    }); // Not found.
+    return;
+  }
+
   VLAN.purgeFromOSandDB({
     filter: {
-      interface: req.params.vlan_interface,
-      tag      : req.params.vlan_tag
+      interface: vlan_interface,
+      tag      : vlan_tag
     }
   }, function (error, ret) {
     if (error) {
-      for (var i = 0, j = ret.errors.length;
-           i < j;
-           i++) {
+      json_api_errors.errors = error.errors;
 
-        var errors = {};
-
-        if (ret.errors[i].code) {
-          errors.code = ret.errors[i].code;
-        }
-        if (ret.errors[i].field) {
-          errors.field = ret.errors[i].field;
-        }
-        if (ret.errors[i].message) {
-          errors.message = ret.errors[i].message;
-        }
-
-        json_api_errors.errors.push(errors);
-      }
-
-      res.json(ret.server_code, json_api_errors);
-
+      res.json(error.server_code, json_api_errors);
       return;
     }
 

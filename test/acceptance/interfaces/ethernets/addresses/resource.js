@@ -246,21 +246,21 @@ describe('/api/interfaces/ethernets/eth0/addresses/:address', function () {
     });
 
     describe('and `address` is `8.8.8.8/24` (a valid address)', function () {
-      it('should return a 204 response', function (done) {
-        after(function (done) {
-          // Re-create the resource.
-          api
-            .post('/interfaces/ethernets/eth0/addresses')
-            .set('Accept', 'application/vnd.api+json')
-            .set('Content-Type', 'application/vnd.api+json')
-            .send(JSON.stringify({
-              addresses: {
-                address: '8.8.8.8/24'
-              }
-            }))
-            .expect(200, done);
-        });
+      after(function (done) {
+        // Re-create the resource.
+        api
+          .post('/interfaces/ethernets/eth0/addresses')
+          .set('Accept', 'application/vnd.api+json')
+          .set('Content-Type', 'application/vnd.api+json')
+          .send(JSON.stringify({
+            addresses: {
+              address: '8.8.8.8/24'
+            }
+          }))
+          .expect(200, done);
+      });
 
+      it('should return a 204 response', function (done) {
         api
           .delete('/interfaces/ethernets/eth0/addresses/8.8.8.8%2F24')
           .expect(204)

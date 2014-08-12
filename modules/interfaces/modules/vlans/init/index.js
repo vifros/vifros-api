@@ -23,7 +23,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -34,7 +33,6 @@ module.exports = function (cb_init) {
       startup(function (error) {
         if (error) {
           cb_init(error);
-
           return;
         }
 
@@ -44,14 +42,12 @@ module.exports = function (cb_init) {
         VLAN.setMonitor(function (error) {
           if (error) {
             cb_init(error);
-
             return;
           }
 
           cb_init(null);
         });
       });
-
       return;
     }
 
@@ -76,7 +72,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -93,7 +88,6 @@ module.exports = function (cb_init) {
       VLAN.setMonitor(function (error) {
         if (error) {
           cb_init(error);
-
           return;
         }
 

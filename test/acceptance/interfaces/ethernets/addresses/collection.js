@@ -123,14 +123,14 @@ describe('/api/interfaces/ethernets/eth0/addresses', function () {
     });
 
     describe('and trying to create a valid address', function () {
-      it('and return a valid JSON-API response', function (done) {
-        after(function (done) {
-          // Delete the resource.
-          api
-            .delete('/interfaces/ethernets/eth0/addresses/5.5.5.5%2F24')
-            .expect(204, done);
-        });
+      after(function (done) {
+        // Delete the resource.
+        api
+          .delete('/interfaces/ethernets/eth0/addresses/5.5.5.5%2F24')
+          .expect(204, done);
+      });
 
+      it('and return a valid JSON-API response', function (done) {
         api
           .post('/interfaces/ethernets/eth0/addresses')
           .set('Accept', 'application/vnd.api+json')

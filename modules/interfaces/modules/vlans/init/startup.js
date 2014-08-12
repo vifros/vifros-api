@@ -22,7 +22,6 @@ module.exports = function (cb_init) {
       ip_link.show(function (error, links) {
         if (error) {
           cb_waterfall(error);
-
           return;
         }
 
@@ -31,7 +30,6 @@ module.exports = function (cb_init) {
             || item.vl_type != link_vl_types.vlan) {
 
             cb_each(null);
-
             return;
           }
 
@@ -51,7 +49,6 @@ module.exports = function (cb_init) {
               });
 
               cb_each(error);
-
               return;
             }
 
@@ -60,7 +57,6 @@ module.exports = function (cb_init) {
         }, function (error) {
           if (error) {
             cb_waterfall(error);
-
             return;
           }
 
@@ -85,7 +81,6 @@ module.exports = function (cb_init) {
           });
 
           cb_waterfall(error);
-
           return;
         }
 
@@ -109,13 +104,11 @@ module.exports = function (cb_init) {
                   });
 
                   cb_each(error);
-
                   return;
                 }
 
                 cb_each(null);
               });
-
               return;
             }
 
@@ -143,7 +136,6 @@ module.exports = function (cb_init) {
                 });
 
                 cb_each(error);
-
                 return;
               }
 
@@ -164,7 +156,6 @@ module.exports = function (cb_init) {
                   });
 
                   cb_each(error);
-
                   return;
                 }
 
@@ -173,7 +164,6 @@ module.exports = function (cb_init) {
                 item.save(function (error) {
                   if (error) {
                     cb_each(error);
-
                     return;
                   }
 
@@ -187,7 +177,6 @@ module.exports = function (cb_init) {
                   }, function (error) {
                     if (error) {
                       cb_each(error);
-
                       return;
                     }
 
@@ -199,13 +188,11 @@ module.exports = function (cb_init) {
           }, function (error) {
             if (error) {
               cb_waterfall(error);
-
               return;
             }
 
             cb_waterfall(null);
           });
-
           return;
         }
 
@@ -222,7 +209,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 

@@ -246,21 +246,21 @@ describe('/api/interfaces/loopbacks/lo/addresses/:address', function () {
     });
 
     describe('and `address` is `23.23.23.23/24` (a valid address)', function () {
-      it('should return a 204 response', function (done) {
-        after(function (done) {
-          // Re-create the resource.
-          api
-            .post('/interfaces/loopbacks/lo/addresses')
-            .set('Accept', 'application/vnd.api+json')
-            .set('Content-Type', 'application/vnd.api+json')
-            .send(JSON.stringify({
-              addresses: {
-                address: '23.23.23.23/24'
-              }
-            }))
-            .expect(200, done);
-        });
+      after(function (done) {
+        // Re-create the resource.
+        api
+          .post('/interfaces/loopbacks/lo/addresses')
+          .set('Accept', 'application/vnd.api+json')
+          .set('Content-Type', 'application/vnd.api+json')
+          .send(JSON.stringify({
+            addresses: {
+              address: '23.23.23.23/24'
+            }
+          }))
+          .expect(200, done);
+      });
 
+      it('should return a 204 response', function (done) {
         api
           .delete('/interfaces/loopbacks/lo/addresses/23.23.23.23%2F24')
           .expect(204)

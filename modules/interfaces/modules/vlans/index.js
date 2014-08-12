@@ -7,20 +7,20 @@ exports.setRoutes = function (app) {
     .get(require('./routes/index'))
     .post(require('./routes/create'));
 
-  app.route(config.get('api:prefix') + '/interfaces/vlans/:vlan_interface.:vlan_tag')
+  app.route(config.get('api:prefix') + '/interfaces/vlans/:vlan')
     .get(require('./routes/show'))
-    .patch(require('./routes/patch'))
+    .put(require('./routes/update'))
     .delete(require('./routes/delete'));
 
   /*
    * Interfaces. VLANs. Addresses.
    */
-  app.route(config.get('api:prefix') + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses')
+  app.route(config.get('api:prefix') + '/interfaces/vlans/:vlan/addresses')
     .get(require('./routes/addresses/index'))
     .post(require('./routes/addresses/create'));
 
-  app.route(config.get('api:prefix') + '/interfaces/vlans/:vlan_interface.:vlan_tag/addresses/:address')
+  app.route(config.get('api:prefix') + '/interfaces/vlans/:vlan/addresses/:address')
     .get(require('./routes/addresses/show'))
     .delete(require('../common/addresses/routes/delete'))
-    .patch(require('../common/addresses/routes/patch'));
+    .put(require('../common/addresses/routes/update'));
 };
