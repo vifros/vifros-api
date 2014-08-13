@@ -10,8 +10,14 @@ var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 
 module.exports = function (req, res) {
   if (!req.is('application/vnd.api+json')) {
-    res.send(415); // Unsupported Media Type.
-
+    res.json(415, {
+      errors: [
+        {
+          code : 'unsupported_media_type',
+          title: 'Unsupported Media Type.'
+        }
+      ]
+    }); // Unsupported Media Type.
     return;
   }
 
@@ -19,7 +25,7 @@ module.exports = function (req, res) {
     links : {
       tables: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/{tables.id}'
     },
-    tables: []
+    tables: {}
   };
 
   var json_api_errors = {
@@ -31,10 +37,10 @@ module.exports = function (req, res) {
    */
   var failed_required_fields = [];
 
-  if (typeof req.body.tables[0].id == 'undefined') {
+  if (typeof req.body.tables.id == 'undefined') {
     failed_required_fields.push('id');
   }
-  if (typeof req.body.tables[0].name == 'undefined') {
+  if (typeof req.body.tables.name == 'undefined') {
     failed_required_fields.push('name');
   }
 
@@ -45,14 +51,13 @@ module.exports = function (req, res) {
          i++) {
 
       json_api_errors.errors.push({
-        code   : log_codes.required_field.code,
-        field  : '/tables/0/' + failed_required_fields[i],
-        message: log_codes.required_field.message
+        code : log_codes.required_field.code,
+        path : failed_required_fields[i],
+        title: log_codes.required_field.message
       });
     }
 
     res.json(400, json_api_errors); // Bad Request.
-
     return;
   }
 
@@ -62,10 +67,10 @@ module.exports = function (req, res) {
   StaticRoutingTable.findOne({
     $or: [
       {
-        id: req.body.tables[0].id
+        id: req.body.tables.id
       },
       {
-        name: req.body.tables[0].name
+        name: req.body.tables.name
       }
     ]
   }, function (error, doc) {
@@ -78,8 +83,14 @@ module.exports = function (req, res) {
         ]
       });
 
-      res.send(500); // Internal Server Error.
-
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
       return;
     }
 
@@ -88,23 +99,22 @@ module.exports = function (req, res) {
        * There is already a table, so throw an error.
        */
       json_api_errors.errors.push({
-        code   : log_codes.already_present.code,
-        field  : '/tables/0/id',
-        message: log_codes.already_present.message
+        code : log_codes.already_present.code,
+        path : 'id',
+        title: log_codes.already_present.message
       });
 
       json_api_errors.errors.push({
-        code   : log_codes.already_present.code,
-        field  : '/tables/0/name',
-        message: log_codes.already_present.message
+        code : log_codes.already_present.code,
+        path : 'name',
+        title: log_codes.already_present.message
       });
 
-      res.json(500, json_api_errors); // Internal Server Error.
-
+      res.json(400, json_api_errors); // Bad Request.
       return;
     }
 
-    var table = new StaticRoutingTable(req.body.tables[0]);
+    var table = new StaticRoutingTable(req.body.tables);
 
     routing_tables.add(table, function (error) {
       if (error) {
@@ -116,8 +126,14 @@ module.exports = function (req, res) {
           ]
         });
 
-        res.send(500); // Internal Server Error.
-
+        res.json(500, {
+          errors: [
+            {
+              code : 'internal_server_error',
+              title: 'Internal Server Error.'
+            }
+          ]
+        }); // Internal Server Error.
         return;
       }
 
@@ -134,12 +150,18 @@ module.exports = function (req, res) {
             ]
           });
 
-          res.send(500); // Internal Server Error.
-
+          res.json(500, {
+            errors: [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          }); // Internal Server Error.
           return;
         }
 
-        var item_to_send = req.body.tables[0];
+        var item_to_send = req.body.tables;
 
         item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/' + table.id;
 
@@ -148,8 +170,7 @@ module.exports = function (req, res) {
         /*
          * Build JSON API response.
          */
-        json_api_body.tables = [];
-        json_api_body.tables.push(item_to_send);
+        json_api_body.tables = item_to_send;
 
         res.json(200, json_api_body); // OK.
       });

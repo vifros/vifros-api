@@ -10,7 +10,7 @@ module.exports = function (req, res) {
     links : {
       tables: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/{tables.id}'
     },
-    tables: []
+    tables: {}
   };
 
   StaticRoutingTable.findOne({
@@ -25,27 +25,39 @@ module.exports = function (req, res) {
         ]
       });
 
-      res.send(500); // Internal Server Error.
-
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
       return;
     }
 
-    if (doc) {
-      /*
-       * Build JSON API response.
-       */
-      var buffer = doc.toObject();
-
-      delete buffer._id;
-      delete buffer.__v;
-
-      json_api_body.tables.push(buffer);
-
-      res.json(200, json_api_body); // OK.
-
+    if (!doc) {
+      res.json(404, {
+        errors: [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      }); // Not found.
       return;
     }
 
-    res.send(404); // Not found.
+    /*
+     * Build JSON API response.
+     */
+    var buffer = doc.toObject();
+
+    delete buffer._id;
+    delete buffer.__v;
+
+    json_api_body.tables = buffer;
+
+    res.json(200, json_api_body); // OK.
   });
 };

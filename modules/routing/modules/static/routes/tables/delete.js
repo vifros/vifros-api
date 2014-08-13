@@ -23,12 +23,11 @@ module.exports = function (req, res) {
     || req.params.table == '255') {
 
     json_api_errors.errors.push({
-      code   : log_codes.readonly_resource.code,
-      message: log_codes.readonly_resource.message
+      code : log_codes.readonly_resource.code,
+      title: log_codes.readonly_resource.message
     });
 
     res.json(403, json_api_errors); // Forbidden.
-
     return;
   }
 
@@ -44,124 +43,132 @@ module.exports = function (req, res) {
         ]
       });
 
-      res.send(500); // Internal Server Error.
-
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
       return;
     }
 
-    if (doc) {
+    if (!doc) {
+      res.json(404, {
+        errors: [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      }); // Not found.
+      return;
+    }
+
+    /*
+     * Remove the table from OS.
+     */
+    routing_tables.delete(doc, function (error) {
+      if (error) {
+        logger.error(error.message, {
+          module: 'routing/static/tables',
+          tags  : [
+            log_tags.api_request,
+            log_tags.os
+          ]
+        });
+
+        res.json(500, {
+          errors: [
+            {
+              code : 'internal_server_error',
+              title: 'Internal Server Error.'
+            }
+          ]
+        }); // Internal Server Error.
+        return;
+      }
+
       /*
-       * Remove the table from OS.
+       * Delete table in DB.
        */
-      routing_tables.delete(doc, function (error) {
+      StaticRoutingTable.findOneAndRemove({
+        id: req.params.table
+      }, function (error) {
         if (error) {
           logger.error(error.message, {
             module: 'routing/static/tables',
             tags  : [
               log_tags.api_request,
-              log_tags.os
+              log_tags.db
             ]
           });
 
-          res.send(500); // Internal Server Error.
-
+          res.json(500, {
+            errors: [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          }); // Internal Server Error.
           return;
         }
 
         /*
-         * Delete table in DB.
+         * Remove all related resources.
          */
-        StaticRoutingTable.findOneAndRemove({
-          id: req.params.table
-        }, function (error) {
-          if (error) {
-            logger.error(error.message, {
-              module: 'routing/static/tables',
-              tags  : [
-                log_tags.api_request,
-                log_tags.db
-              ]
+        async.parallel([
+          function (cb_parallel) {
+            /*
+             * Delete static routes.
+             */
+            StaticRoutingRoute.purgeFromOSandDB({
+              filter: {
+                table: req.params.table
+              }
+            }, function (error) {
+              if (error
+                && (error.server_code && error.server_code != 404)) {
+
+                cb_parallel(error);
+                return;
+              }
+
+              cb_parallel(null);
             });
+          },
+          function (cb_parallel) {
+            /*
+             * Delete rules.
+             */
+            StaticRoutingRule.purgeFromOSandDB({
+              filter: {
+                table: req.params.table
+              }
+            }, function (error) {
+              if (error
+                && (error.server_code && error.server_code != 404)) {
 
-            res.send(500); // Internal Server Error.
+                cb_parallel(error);
+                return;
+              }
 
+              cb_parallel(null);
+            });
+          }
+        ], function (error) {
+          if (error) {
+            json_api_errors.errors = error.errors;
+
+            res.json(error.server_code, json_api_errors);
             return;
           }
 
-          /*
-           * Remove all related resources.
-           */
-          async.parallel([
-            function (cb_parallel) {
-              /*
-               * Delete static routes.
-               */
-              StaticRoutingRoute.purgeFromOSandDB({
-                filter: {
-                  table: req.params.table
-                }
-              }, function (error) {
-                if (error) {
-                  cb_parallel(error);
-
-                  return;
-                }
-
-                cb_parallel(null);
-              });
-            },
-            function (cb_parallel) {
-              /*
-               * Delete rules.
-               */
-              StaticRoutingRule.purgeFromOSandDB({
-                filter: {
-                  table: req.params.table
-                }
-              }, function (error) {
-                if (error) {
-                  logger.error(error.message, {
-                    module: 'routing/static/tables',
-                    tags  : [
-                      log_tags.api_request,
-                      log_tags.db
-                    ]
-                  });
-
-                  cb_parallel(error);
-
-                  return;
-                }
-
-                cb_parallel(null);
-              });
-            }
-          ], function (error) {
-            if (error) {
-              for (var i = 0, j = error.errors.length;
-                   i < j;
-                   i++) {
-
-                json_api_errors.errors.push({
-                  code   : error.errors[i].code,
-                  field  : error.errors[i].field,
-                  message: error.errors[i].message
-                });
-              }
-
-              res.json(error.server_code, json_api_errors);
-
-              return;
-            }
-
-            res.send(204); // No Content.
-          });
+          res.send(204); // No Content.
         });
       });
-
-      return;
-    }
-
-    res.send(404); // Not found.
+    });
   });
 };

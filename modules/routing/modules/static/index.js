@@ -16,7 +16,7 @@ exports.setRoutes = function (app) {
   app.route(config.get('api:prefix') + '/routing/static/tables/:table')
     .get(require('./routes/tables/show'))
     .delete(require('./routes/tables/delete'))
-    .patch(require('./routes/tables/patch'));
+    .put(require('./routes/tables/update'));
 
   /*
    * Routing. Static. Tables. Routes.

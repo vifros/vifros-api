@@ -14,76 +14,74 @@ exports.purgeFromOSandDB = function (options, cb) {
         server_code: 500, // Internal Server Error.
         errors     : [
           {
-            code   : error.name,
-            field  : '',
-            message: error.message
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
           }
         ]
       });
-
       return;
     }
 
-    if (docs && docs.length) {
-      /*
-       * Remove the route from OS.
-       */
-      async.each(docs, function (item, cb_each) {
-        ip_route.delete(item, function (error) {
+    if (!docs.length) {
+      cb({
+        server_code: 404, // Not found.
+        errors     : [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      });
+      return;
+    }
+
+    /*
+     * Remove the route from OS.
+     */
+    async.each(docs, function (item, cb_each) {
+      ip_route.delete(item, function (error) {
+        if (error) {
+          cb_each({
+            server_code: 500, // Internal Server Error.
+            errors     : [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          });
+          return;
+        }
+
+        /*
+         * Delete routes in DB.
+         */
+        self.findByIdAndRemove(item._id, function (error) {
           if (error) {
             cb_each({
               server_code: 500, // Internal Server Error.
               errors     : [
                 {
-                  code   : 'iproute',
-                  field  : '',
-                  message: error
+                  code : 'internal_server_error',
+                  title: 'Internal Server Error.'
                 }
               ]
             });
-
             return;
           }
 
-          /*
-           * Delete routes in DB.
-           */
-          self.findByIdAndRemove(item._id, function (error) {
-            if (error) {
-              cb_each({
-                server_code: 500, // Internal Server Error.
-                errors     : [
-                  {
-                    code   : error.name,
-                    field  : '',
-                    message: error.message
-                  }
-                ]
-              });
-
-              return;
-            }
-
-            cb_each(null);
-          });
-        });
-      }, function (error) {
-        if (error) {
-          cb(error);
-
-          return;
-        }
-
-        cb(null, {
-          server_code: 204 // No Content.
+          cb_each(null);
         });
       });
+    }, function (error) {
+      if (error) {
+        cb(error);
+        return;
+      }
 
-      return;
-    }
-
-    cb(null, {
-      server_code: 404 // Not found.
+      cb(null, {
+        server_code: 204 // No Content.
+      });
     });
   });
 };
