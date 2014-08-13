@@ -20,7 +20,6 @@ module.exports = function (cb_init) {
       }, function (error, doc) {
         if (error) {
           cb_parallel(error);
-
           return;
         }
 
@@ -28,12 +27,11 @@ module.exports = function (cb_init) {
           ip_forward.v4.disable(function (error) {
             if (error) {
               cb_parallel(error);
+              return;
             }
-            else {
-              cb_parallel(null);
-            }
-          });
 
+            cb_parallel(null);
+          });
           return;
         }
 
@@ -41,13 +39,11 @@ module.exports = function (cb_init) {
           ip_forward.v4.enable(function (error) {
             if (error) {
               cb_parallel(error);
-
               return;
             }
 
             cb_parallel(null);
           });
-
           return;
         }
 
@@ -61,7 +57,6 @@ module.exports = function (cb_init) {
       }, function (error, doc) {
         if (error) {
           cb_parallel(error);
-
           return;
         }
 
@@ -69,13 +64,11 @@ module.exports = function (cb_init) {
           ip_forward.v6.disable(function (error) {
             if (error) {
               cb_parallel(error);
-
               return;
             }
 
             cb_parallel(null);
           });
-
           return;
         }
 
@@ -83,13 +76,11 @@ module.exports = function (cb_init) {
           ip_forward.v6.enable(function (error) {
             if (error) {
               cb_parallel(error);
-
               return;
             }
 
             cb_parallel(null);
           });
-
           return;
         }
 
@@ -107,7 +98,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 

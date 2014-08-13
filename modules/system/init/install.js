@@ -27,7 +27,6 @@ module.exports = function (cb_init) {
         }
 
         var resolv_conf = file_content.split('\n');
-
         var domain = '';
         var nameservers = [];
 

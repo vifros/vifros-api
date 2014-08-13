@@ -9,10 +9,18 @@ module.exports = function (req, res) {
       filter  : {
         name: req.params.setting
       },
-      base_url: '/routing'
+      base_url: '/routing',
+      single  : true
     });
   }
   catch (error) {
-    res.send(500); // Internal Server Error.
+    res.json(500, {
+      errors: [
+        {
+          code : 'internal_server_error',
+          title: 'Internal Server Error.'
+        }
+      ]
+    }); // Internal Server Error.
   }
 };
