@@ -2,6 +2,10 @@ var async = require('async');
 
 var ip_rule = require('iproute').rule;
 
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
+var log_codes = logger.codes;
+
 /*
  * Removes all filtered rules from DB and OS.
  */
@@ -100,4 +104,37 @@ exports.purgeFromOSandDB = function (options, cb) {
       });
     });
   });
+};
+
+/**
+ * Validate a rule doc.
+ * Returns an errors array suitable for JSON API responses.
+ *
+ * @param   {object}      object
+ * @param   {function}    cb
+ */
+exports.validate = function validate(object, cb) {
+  var errors = [];
+
+  if (object.priority
+    && (object.priority < 0 || object.priority > 32767)) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'priority',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  if (object.table
+    && (object.table < 0 || object.table > 2147483648)) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'table',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  cb(null, errors);
 };

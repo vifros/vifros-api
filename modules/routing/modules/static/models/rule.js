@@ -53,5 +53,6 @@ var StaticRoutingRuleSchema = new Schema({
  * Static definitions.
  */
 StaticRoutingRuleSchema.statics.purgeFromOSandDB = statics.purgeFromOSandDB;
+StaticRoutingRuleSchema.statics.validate = statics.validate;
 
 exports.StaticRoutingRule = mongoose.model('StaticRoutingRule', StaticRoutingRuleSchema);
