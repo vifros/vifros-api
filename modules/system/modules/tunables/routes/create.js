@@ -86,7 +86,7 @@ module.exports = function (req, res, options) {
     }
 
     if (doc) {
-      // There was already ab object with that data.
+      // There was already an object with that data.
       json_api_errors.errors.push({
         code : log_codes.already_present.code,
         path : 'path',

@@ -20,7 +20,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -35,7 +34,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -52,7 +50,6 @@ module.exports = function (cb_init) {
             });
 
             cb_init(error);
-
             return;
           }
 
@@ -65,7 +62,6 @@ module.exports = function (cb_init) {
 
           cb_init(null);
         });
-
         return;
       }
 

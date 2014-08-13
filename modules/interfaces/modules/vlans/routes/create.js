@@ -70,7 +70,6 @@ module.exports = function (req, res) {
   }
 
   var doc_req = req.body.vlans;
-
   var vlan = new VLAN(doc_req);
 
   ip_link.add({

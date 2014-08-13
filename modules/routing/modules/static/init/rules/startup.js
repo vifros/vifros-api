@@ -23,7 +23,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -41,7 +40,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -50,7 +48,6 @@ module.exports = function (cb_init) {
           // The priority 0 rule never gets deleted from OS so pass from it.
           if (item.priority == 0) {
             cb_each(null);
-
             return;
           }
 
@@ -58,7 +55,6 @@ module.exports = function (cb_init) {
           ip_rule.add(item, function (error) {
             if (error) {
               cb_each(error);
-
               return;
             }
 
@@ -74,7 +70,6 @@ module.exports = function (cb_init) {
             });
 
             cb_init(error);
-
             return;
           }
 
@@ -87,7 +82,6 @@ module.exports = function (cb_init) {
 
           cb_init(null);
         });
-
         return;
       }
 

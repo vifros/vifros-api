@@ -40,5 +40,5 @@ exports.setRoutes = function (app) {
   app.route(config.get('api:prefix') + '/routing/static/rules/:rule')
     .get(require('./routes/rules/show'))
     .delete(require('./routes/rules/delete'))
-    .patch(require('./routes/rules/patch'));
+    .put(require('./routes/rules/update'));
 };

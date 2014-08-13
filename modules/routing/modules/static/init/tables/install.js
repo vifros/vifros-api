@@ -28,7 +28,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -46,7 +45,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -60,7 +58,6 @@ module.exports = function (cb_init) {
         table.save(function (error) {
           if (error) {
             cb_each(error);
-
             return;
           }
 
@@ -77,7 +74,6 @@ module.exports = function (cb_init) {
           });
 
           cb_init(error);
-
           return;
         }
         var setting = new Setting({
@@ -97,7 +93,6 @@ module.exports = function (cb_init) {
             });
 
             cb_init(error);
-
             return;
           }
 

@@ -14,94 +14,90 @@ exports.purgeFromOSandDB = function (options, cb) {
         server_code: 500, // Internal Server Error.
         errors     : [
           {
-            code   : error.name,
-            field  : '',
-            message: error.message
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
           }
         ]
       });
-
       return;
     }
 
-    if (docs && docs.length) {
+    if (!docs.length) {
+      cb({
+        server_code: 404, // Not found.
+        errors     : [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      });
+      return;
+    }
+
+    /*
+     * Remove the rule from OS.
+     */
+    async.each(docs, function (item, cb_each) {
+      if (item.priority == '0') {
+        cb_each({
+          server_code: 403, // Forbidden.
+          errors     : [
+            {
+              code : 'readonly_field',
+              title: 'The rule is readonly and can not be deleted.'
+            }
+          ]
+        });
+        return;
+      }
+
       /*
        * Remove the rule from OS.
        */
-      async.each(docs, function (item, cb_each) {
-        if (item.priority == '0') {
+      ip_rule.delete(item, function (error) {
+        if (error) {
           cb_each({
-            server_code: 403, // Forbidden.
+            server_code: 500, // Internal Server Error.
             errors     : [
               {
-                code   : 'readonly_field',
-                field  : '',
-                message: 'The rule is readonly and can not be deleted.'
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
               }
             ]
           });
-
           return;
         }
 
         /*
-         * Remove the rule from OS.
+         * Delete rule in DB.
          */
-        ip_rule.delete(item, function (error) {
+        self.findByIdAndRemove(item._id, function (error) {
           if (error) {
             cb_each({
               server_code: 500, // Internal Server Error.
               errors     : [
                 {
-                  code   : 'iproute',
-                  field  : '',
-                  message: error
+                  code : 'internal_server_error',
+                  title: 'Internal Server Error.'
                 }
               ]
             });
-
             return;
           }
 
-          /*
-           * Delete rule in DB.
-           */
-          self.findByIdAndRemove(item._id, function (error) {
-            if (error) {
-              cb_each({
-                server_code: 500, // Internal Server Error.
-                errors     : [
-                  {
-                    code   : error.name,
-                    field  : '',
-                    message: error.message
-                  }
-                ]
-              });
-
-              return;
-            }
-
-            cb_each(null);
-          });
-        });
-      }, function (error) {
-        if (error) {
-          cb(error);
-
-          return;
-        }
-
-        cb(null, {
-          server_code: 204 // No Content.
+          cb_each(null);
         });
       });
+    }, function (error) {
+      if (error) {
+        cb(error);
+        return;
+      }
 
-      return;
-    }
-
-    cb(null, {
-      server_code: 404 // Not found.
+      cb(null, {
+        server_code: 204 // No Content.
+      });
     });
   });
 };

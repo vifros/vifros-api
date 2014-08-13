@@ -21,7 +21,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -30,7 +29,6 @@ module.exports = function (cb_init) {
        * Already initialized.
        */
       startup(cb_init);
-
       return;
     }
 
@@ -55,7 +53,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 

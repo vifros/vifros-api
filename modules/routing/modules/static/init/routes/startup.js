@@ -22,7 +22,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -32,7 +31,6 @@ module.exports = function (cb_init) {
         ip_route.replace(item, function (error) {
           if (error) {
             cb_each(error);
-
             return;
           }
 
@@ -48,7 +46,6 @@ module.exports = function (cb_init) {
           });
 
           cb_init(error);
-
           return;
         }
 
@@ -61,7 +58,6 @@ module.exports = function (cb_init) {
 
         cb_init(null);
       });
-
       return;
     }
 

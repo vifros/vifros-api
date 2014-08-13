@@ -5,48 +5,16 @@ var config = require('../../../../../../config');
 var logger = global.vifros.logger;
 var log_tags = logger.tags;
 
-var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 var StaticRoutingRule = require('../../models/rule').StaticRoutingRule;
 
 var jsonapi = require('../../../../../../utils/jsonapi');
 
 module.exports = function (req, res) {
-  var requested_docs_to_include = req.query.include;
-  var is_tables_requested = false;
-
-  /*
-   * Check if tables documents were requested too.
-   */
-  if (typeof requested_docs_to_include != 'undefined'
-    && requested_docs_to_include.split(',').indexOf('tables') != -1) {
-
-    is_tables_requested = true;
-  }
-
   var json_api_body = {
     links: {
-      rules        : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/{rules.priority}',
-      'rules.table': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/{rules.table}'
+      rules: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/{rules.priority}'
     },
     rules: []
-  };
-
-  /*
-   * Add linked data if was requested to response.
-   */
-  if (is_tables_requested) {
-    json_api_body.links['rules.table'] = {
-      href: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/{rules.table}',
-      type: 'tables'
-    };
-
-    json_api_body['linked'] = {
-      tables: []
-    };
-  }
-
-  var json_api_errors = {
-    errors: []
   };
 
   var query_filter = jsonapi.buildQueryFilterFromReq({
@@ -71,137 +39,86 @@ module.exports = function (req, res) {
         ]
       });
 
-      res.send(500); // Internal Server Error.
-
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
       return;
     }
 
-    if (docs && docs.length) {
-      if (is_tables_requested) {
-        var related_table_ids = [];
+    json_api_body['meta'] = {
+      rules: {
+        total : null, // Below will be reseted to the correct value
+        limit : Number(query_options.limit),
+        offset: Number(query_options.skip)
       }
+    };
 
+    if (!docs.length) {
+      json_api_body.meta.rules.total = 0;
 
-      async.parallel([
-        function (cb_parallel) {
-          async.each(docs, function (item, cb_each) {
-            var buffer = item.toObject();
-            buffer.id = item._id;
+      res.json(200, json_api_body); // OK.
+      return;
+    }
 
-            delete buffer._id;
-            delete buffer.__v;
+    async.parallel([
+      function (cb_parallel) {
+        async.each(docs, function (item, cb_each) {
+          var buffer = item.toObject();
+          buffer.id = item._id;
 
-            if (is_tables_requested
-              && related_table_ids.indexOf(buffer.table) == -1) {
+          delete buffer._id;
+          delete buffer.__v;
 
-              related_table_ids.push(buffer.table);
-            }
+          json_api_body.rules.push(buffer);
 
-            json_api_body.rules.push(buffer);
-
-            cb_each(null);
-          }, function (error) {
-            if (error) {
-              cb_parallel(error);
-
-              return;
-            }
-
-            cb_parallel(null);
-          });
-        },
-        function (cb_parallel) {
-          StaticRoutingRule.count(query_filter, function (error, count) {
-            if (error) {
-              cb_parallel(error);
-
-              return;
-            }
-
-            json_api_body['meta'] = {
-              rules: {
-                total : count,
-                limit : Number(query_options.limit),
-                offset: Number(query_options.skip)
-              }
-            };
-
-            cb_parallel(null);
-          });
-        }
-      ], function (error) {
-        if (error) {
-          logger.error(error, {
-            module: 'routing/static/rules',
-            tags  : [
-              log_tags.api_request
-            ]
-          });
-
-          res.send(500); // Internal Server Error.
-
-          return;
-        }
-
-        if (is_tables_requested) {
-          /*
-           * Now process the related tables.
-           */
-          // Rebuild `or` array to find in one query.
-          var or_tables_arr = [];
-
-          for (var i = 0, j = related_table_ids.length;
-               i < j;
-               i++) {
-
-            or_tables_arr.push({
-              'id': related_table_ids[i]
-            });
+          cb_each(null);
+        }, function (error) {
+          if (error) {
+            cb_parallel(error);
+            return;
           }
 
-          StaticRoutingTable.find({
-            $or: or_tables_arr
-          }, function (error, docs) {
-            if (error) {
-              logger.error(error.message, {
-                module: 'routing/static/rules',
-                tags  : [
-                  log_tags.api_request,
-                  log_tags.db
-                ]
-              });
+          cb_parallel(null);
+        });
+      },
+      function (cb_parallel) {
+        StaticRoutingRule.count(query_filter, function (error, count) {
+          if (error) {
+            cb_parallel(error);
+            return;
+          }
 
-              res.send(500); // Internal Server Error.
+          json_api_body.meta.rules.total = count;
 
-              return;
+          cb_parallel(null);
+        });
+      }
+    ], function (error) {
+      if (error) {
+        logger.error(error, {
+          module: 'routing/static/rules',
+          tags  : [
+            log_tags.api_request
+          ]
+        });
+
+        res.json(500, {
+          errors: [
+            {
+              code : 'internal_server_error',
+              title: 'Internal Server Error.'
             }
+          ]
+        }); // Internal Server Error.
+        return;
+      }
 
-            if (docs && docs.length) {
-              for (var i = 0, j = docs.length;
-                   i < j;
-                   i++) {
-
-                var buffer_tables = docs[i].toObject();
-
-                delete buffer_tables._id;
-                delete buffer_tables.__v;
-
-                json_api_body.linked.tables.push(buffer_tables);
-              }
-            }
-
-            res.json(200, json_api_body); // OK.
-          });
-
-          return;
-        }
-
-        res.json(200, json_api_body); // OK.
-      });
-
-      return;
-    }
-
-    res.send(404); // Not found.
+      res.json(200, json_api_body); // OK.
+    });
   });
 };

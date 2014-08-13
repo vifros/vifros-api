@@ -10,10 +10,9 @@ module.exports = function (cb_init) {
       rules(cb_parallel);
     },
     function (cb_parallel) {
-      tables(function(error) {
+      tables(function (error) {
         if (error) {
           cb_parallel(error);
-
           return;
         }
 
@@ -23,7 +22,6 @@ module.exports = function (cb_init) {
   ], function (error) {
     if (error) {
       cb_init(error);
-
       return;
     }
 

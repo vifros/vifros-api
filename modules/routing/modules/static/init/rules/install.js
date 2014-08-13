@@ -28,7 +28,6 @@ module.exports = function (cb_init) {
       });
 
       cb_init(error);
-
       return;
     }
 
@@ -43,7 +42,6 @@ module.exports = function (cb_init) {
         ip_rule.add(item, function (error) {
           if (error) {
             cb_each(error);
-
             return;
           }
 
@@ -53,14 +51,12 @@ module.exports = function (cb_init) {
           rule.save(function (error) {
             if (error) {
               cb_each(error);
-
               return;
             }
 
             cb_each(null);
           });
         });
-
         return;
       }
 
@@ -70,7 +66,6 @@ module.exports = function (cb_init) {
       rule.save(function (error) {
         if (error) {
           cb_each(error);
-
           return;
         }
 
@@ -86,7 +81,6 @@ module.exports = function (cb_init) {
         });
 
         cb_init(error);
-
         return;
       }
 
@@ -107,7 +101,6 @@ module.exports = function (cb_init) {
           });
 
           cb_init(error);
-
           return;
         }
 

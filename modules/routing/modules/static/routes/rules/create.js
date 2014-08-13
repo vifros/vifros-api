@@ -11,8 +11,14 @@ var StaticRoutingRule = require('../../models/rule').StaticRoutingRule;
 
 module.exports = function (req, res) {
   if (!req.is('application/vnd.api+json')) {
-    res.send(415); // Unsupported Media Type.
-
+    res.json(415, {
+      errors: [
+        {
+          code : 'unsupported_media_type',
+          title: 'Unsupported Media Type.'
+        }
+      ]
+    }); // Unsupported Media Type.
     return;
   }
 
@@ -20,7 +26,7 @@ module.exports = function (req, res) {
     links: {
       rules: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/{rules.priority}'
     },
-    rules: []
+    rules: {}
   };
 
   var json_api_errors = {
@@ -32,13 +38,13 @@ module.exports = function (req, res) {
    */
   var failed_required_fields = [];
 
-  if (typeof req.body.rules[0].type == 'undefined') {
+  if (typeof req.body.rules.type == 'undefined') {
     failed_required_fields.push('type');
   }
-  if (typeof req.body.rules[0].priority == 'undefined') {
+  if (typeof req.body.rules.priority == 'undefined') {
     failed_required_fields.push('priority');
   }
-  if (typeof req.body.rules[0].table == 'undefined') {
+  if (typeof req.body.rules.table == 'undefined') {
     failed_required_fields.push('table');
   }
 
@@ -49,14 +55,13 @@ module.exports = function (req, res) {
          i++) {
 
       json_api_errors.errors.push({
-        code   : log_codes.required_field.code,
-        field  : '/rules/0/' + failed_required_fields[i],
-        message: log_codes.required_field.message
+        code : log_codes.required_field.code,
+        path : failed_required_fields[i],
+        title: log_codes.required_field.message
       });
     }
 
     res.json(400, json_api_errors); // Bad Request.
-
     return;
   }
 
@@ -64,7 +69,7 @@ module.exports = function (req, res) {
    * Check if the table exists.
    */
   StaticRoutingTable.findOne({
-    id: req.body.rules[0].table
+    id: req.body.rules.table
   }, function (error, doc) {
     if (error) {
       logger.error(error.message, {
@@ -75,109 +80,120 @@ module.exports = function (req, res) {
         ]
       });
 
-      res.send(500); // Internal Server Error.
-
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
       return;
     }
 
-    if (doc) {
-      /*
-       * Check if there is already a rule with the same priority.
-       */
-      StaticRoutingRule.findOne({
-        priority: req.body.rules[0].priority
-      }, function (error, doc) {
+    if (!doc) {
+      json_api_errors.errors.push({
+        code : log_codes.related_resource_not_found.code,
+        path : 'table',
+        title: log_codes.related_resource_not_found.message.replace('%s', 'table')
+      });
+
+      res.json(400, json_api_errors); // Bad Request.
+    }
+
+    /*
+     * Check if there is already a rule with the same priority.
+     */
+    StaticRoutingRule.findOne({
+      priority: req.body.rules.priority
+    }, function (error, doc) {
+      if (error) {
+        logger.error(error.message, {
+          module: 'routing/static/rules',
+          tags  : [
+            log_tags.api_request,
+            log_tags.db
+          ]
+        });
+
+        res.json(500, {
+          errors: [
+            {
+              code : 'internal_server_error',
+              title: 'Internal Server Error.'
+            }
+          ]
+        }); // Internal Server Error.
+        return;
+      }
+
+      if (doc) {
+        // There was already an object with that data.
+        json_api_errors.errors.push({
+          code   : log_codes.already_present.code,
+          field  : 'priority',
+          message: log_codes.already_present.message
+        });
+
+        res.json(400, json_api_errors); // Bad Request.
+        return;
+      }
+
+      var rule = new StaticRoutingRule(req.body.rules);
+
+      ip_rule.add(rule, function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'routing/static/rules',
             tags  : [
               log_tags.api_request,
-              log_tags.db
+              log_tags.os
             ]
           });
 
           res.send(500); // Internal Server Error.
-
           return;
         }
 
-        if (doc) {
-          /*
-           * There is already a table, so throw an error.
-           */
-          json_api_errors.errors.push({
-            code   : log_codes.already_present.code,
-            field  : '/rules/0/priority',
-            message: log_codes.already_present.message
-          });
-
-          res.json(500, json_api_errors); // Internal Server Error.
-
-          return;
-        }
-
-        var rule = new StaticRoutingRule(req.body.rules[0]);
-
-        ip_rule.add(rule, function (error) {
+        /*
+         * Save changes to database.
+         */
+        rule.save(function (error) {
           if (error) {
-            logger.error(error, {
+            logger.error(error.message, {
               module: 'routing/static/rules',
               tags  : [
                 log_tags.api_request,
-                log_tags.os
+                log_tags.db
               ]
             });
 
-            res.send(500); // Internal Server Error.
-
+            res.json(500, {
+              errors: [
+                {
+                  code : 'internal_server_error',
+                  title: 'Internal Server Error.'
+                }
+              ]
+            }); // Internal Server Error.
             return;
           }
 
+          var item_to_send = req.body.rules;
+
+          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/' + rule.priority;
+          item_to_send.id = rule._id;
+
+          res.location(item_to_send.href);
+
           /*
-           * Save changes to database.
+           * Build JSON API response.
            */
-          rule.save(function (error) {
-            if (error) {
-              logger.error(error.message, {
-                module: 'routing/static/rules',
-                tags  : [
-                  log_tags.api_request,
-                  log_tags.db
-                ]
-              });
+          json_api_body.rules = item_to_send;
 
-              res.send(500); // Internal Server Error.
-
-              return;
-            }
-
-            var item_to_send = req.body.rules[0];
-
-            item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/' + rule.priority;
-            item_to_send.id = rule._id;
-
-            res.location(item_to_send.href);
-
-            /*
-             * Build JSON API response.
-             */
-            json_api_body.rules = [];
-            json_api_body.rules.push(item_to_send);
-
-            res.json(200, json_api_body); // OK.
-          });
+          res.json(200, json_api_body); // OK.
         });
       });
-
-      return;
-    }
-
-    json_api_errors.errors.push({
-      code   : log_codes.related_resource_not_found.code,
-      field  : '/rule/0/table',
-      message: log_codes.related_resource_not_found.message.replace('%s', 'table')
     });
-
-    res.json(500, json_api_errors); // Internal Server Error.
   });
 };
