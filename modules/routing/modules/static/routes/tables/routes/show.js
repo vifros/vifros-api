@@ -1,8 +1,6 @@
 var logger = global.vifros.logger;
 var log_tags = logger.tags;
 
-var StaticRoutingTable = require('../../../models/table').StaticRoutingTable;
-
 var routes_index = require('../../routes/index');
 
 module.exports = function (req, res) {
@@ -14,7 +12,8 @@ module.exports = function (req, res) {
       filter  : {
         _id: req.params.route
       },
-      base_url: '/tables/' + req.params.table
+      base_url: '/tables/' + req.params.table,
+      single  : true
     });
   }
   catch (error) {
@@ -26,6 +25,13 @@ module.exports = function (req, res) {
       ]
     });
 
-    res.send(500); // Internal Server Error.
+    res.json(500, {
+      errors: [
+        {
+          code : 'internal_server_error',
+          title: 'Internal Server Error.'
+        }
+      ]
+    }); // Internal Server Error.
   }
 };

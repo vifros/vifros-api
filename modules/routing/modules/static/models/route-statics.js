@@ -2,6 +2,10 @@ var async = require('async');
 
 var ip_route = require('iproute').route;
 
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
+var log_codes = logger.codes;
+
 /*
  * Removes all filtered routes from DB and OS.
  */
@@ -84,4 +88,37 @@ exports.purgeFromOSandDB = function (options, cb) {
       });
     });
   });
+};
+
+/**
+ * Validate a route doc.
+ * Returns an errors array suitable for JSON API responses.
+ *
+ * @param   {object}      object
+ * @param   {function}    cb
+ */
+exports.validate = function validate(object, cb) {
+  var errors = [];
+
+  if (object.preference
+    && (object.preference < 0 || object.preference > 4294967296)) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'preference',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  if (object.table
+    && (object.table < 0 || object.table > 2147483648)) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'table',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  cb(null, errors);
 };

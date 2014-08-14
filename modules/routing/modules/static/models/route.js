@@ -7,6 +7,7 @@ var statics = require('./route-statics');
  * Schema definition.
  */
 var StaticRoutingRouteSchema = new Schema({
+  // Read-only.
   to         : {
     type    : String,
     unique  : true,
@@ -64,5 +65,6 @@ var StaticRoutingRouteSchema = new Schema({
  * Static definitions.
  */
 StaticRoutingRouteSchema.statics.purgeFromOSandDB = statics.purgeFromOSandDB;
+StaticRoutingRouteSchema.statics.validate = statics.validate;
 
 exports.StaticRoutingRoute = mongoose.model('StaticRoutingRoute', StaticRoutingRouteSchema);

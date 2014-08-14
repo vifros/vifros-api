@@ -18,38 +18,57 @@ module.exports = function (req, res) {
         ]
       });
 
-      res.send(500); // Internal Server Error.
-
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
       return;
     }
 
-    if (doc) {
-      try {
-        /*
-         * Delegate the responsibility to send the response to this method.
-         */
-        routes_index(req, res, {
-          filter  : {
-            table: req.params.table
-          },
-          base_url: '/tables/' + req.params.table
-        });
-      }
-      catch (error) {
-        logger.error(error.message, {
-          module: 'routing/static/tables',
-          tags  : [
-            log_tags.api_request,
-            log_tags.cross_rel
-          ]
-        });
-
-        res.send(500); // Internal Server Error.
-      }
-
+    if (!doc) {
+      res.json(404, {
+        errors: [
+          {
+            code : 'not_found',
+            title: 'Not found.'
+          }
+        ]
+      }); // Not Found.
       return;
     }
 
-    res.send(404); // Not found.
+    try {
+      /*
+       * Delegate the responsibility to send the response to this method.
+       */
+      routes_index(req, res, {
+        filter  : {
+          table: req.params.table
+        },
+        base_url: '/tables/' + req.params.table
+      });
+    }
+    catch (error) {
+      logger.error(error.message, {
+        module: 'routing/static/tables',
+        tags  : [
+          log_tags.api_request,
+          log_tags.cross_rel
+        ]
+      });
+
+      res.json(500, {
+        errors: [
+          {
+            code : 'internal_server_error',
+            title: 'Internal Server Error.'
+          }
+        ]
+      }); // Internal Server Error.
+    }
   });
 };
