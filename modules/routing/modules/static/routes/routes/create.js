@@ -110,7 +110,8 @@ module.exports = function (req, res, options) {
      * Check if there is already a route with the same to.
      */
     StaticRoutingRoute.findOne({
-      to: req.body.routes.to
+      to   : req.body.routes.to,
+      table: req.params.table
     }, function (error, doc) {
       if (error) {
         logger.error(error.message, {

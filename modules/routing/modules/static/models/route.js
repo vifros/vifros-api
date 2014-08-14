@@ -10,7 +10,6 @@ var StaticRoutingRouteSchema = new Schema({
   // Read-only.
   to         : {
     type    : String,
-    unique  : true,
     required: true
   },
   type       : {

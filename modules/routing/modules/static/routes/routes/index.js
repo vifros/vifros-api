@@ -123,7 +123,7 @@ module.exports = function (req, res, options) {
         });
       },
       function (cb_parallel) {
-        StaticRoutingRoute.count(query_filter, filter, function (error, count) {
+        StaticRoutingRoute.count(query_filter, function (error, count) {
           if (error) {
             cb_parallel(error);
             return;
