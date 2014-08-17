@@ -1,3 +1,6 @@
+- Document the API using swagger.
+
+- Give meaningful default values to all fields so API always returns all fields.
 
 - NAT
 	- source
@@ -15,8 +18,6 @@
 - Auth
 
 - Add options to select from HTTP or HTTPS. Set HTTPS as the default.
-
-- Use `apidocjs` to generate API docs?
 
 - Add acceptance tests.
 
