@@ -10,7 +10,8 @@ var TunableSchema = new Schema({
   // Read-only.
   path       : {
     type    : String,
-    required: true
+    required: true,
+    unique  : true
   },
   value      : {
     type    : String,

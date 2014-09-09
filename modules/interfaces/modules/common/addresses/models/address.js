@@ -1,3 +1,5 @@
+var address_scopes = require('iproute').address.utils.scopes;
+
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -22,7 +24,16 @@ var AddressSchema = new Schema({
   // Read-only.
   broadcast  : String,
   // Read-only.
-  scope      : String,
+  scope      : {
+    type: String,
+    enum: [
+      address_scopes.host,
+      address_scopes.link,
+      address_scopes.global,
+      address_scopes.nowhere,
+      address_scopes.site
+    ]
+  },
   description: String
 });
 

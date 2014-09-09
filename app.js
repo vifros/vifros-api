@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
+var path = require('path');
 var http = require('http'); // TODO: At some point change the protocol to HTTPS. or give the two options?
 var express = require('express');
 var errorHandler = require('errorhandler');
+var cors = require('cors');
 
 var config = require('./config');
 
@@ -23,8 +25,10 @@ app.set('port', config.get('api:port')
   || 3000);
 
 // TODO: At some point move this to the POST/PUT calls themselves?
+app.use(cors());
 app.use(require('body-parser').json({type: 'application/vnd.api+json'}));
 app.use(require('method-override')());
+app.use(express.static('api', __dirname + '/public'));
 
 // Log API requests.
 app.use(function (req, res, next) {
@@ -112,8 +116,6 @@ require('./init')(app, function cbOnAppInit(error) {
  * http://shapeshed.com/uncaught-exceptions-in-node/
  */
 process.on('uncaughtException', function cbOnUncaughtException(error) {
-  console.log(error)
-  console.log(error.stack)
   logger.error(error, {
     module: 'core',
     tags  : [

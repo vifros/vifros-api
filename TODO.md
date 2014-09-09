@@ -1,6 +1,7 @@
-- Document the API using swagger.
+- Document the API using custom UI using an API schema.
+	- produces/consumes
 
-- Give meaningful default values to all fields so API always returns all fields.
+- Give meaningful default values to all fields so API always returns uniform resources?
 
 - NAT
 	- source
@@ -19,7 +20,7 @@
 
 - Add options to select from HTTP or HTTPS. Set HTTPS as the default.
 
-- Add acceptance tests.
+- Add acceptance tests. Make them dynamic base on the API schema?
 
 - Change errors to the new way. Add json errors even to 404 & 500. Change `log.error`
   to log all the error data.
