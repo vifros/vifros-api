@@ -8,7 +8,6 @@ var log_tags = logger.tags;
  * Build the connection string.
  */
 var url = 'mongodb://';
-
 if (config.get('database:username')) {
   url += config.get('database:username');
 

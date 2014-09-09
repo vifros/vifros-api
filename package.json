@@ -10,7 +10,6 @@
   "dependencies"   : {
     "express"        : "4.*",
     "body-parser"    : "*",
-    "cors"           : "*",
     "errorhandler"   : "*",
     "method-override": "*",
     "async"          : "*",
