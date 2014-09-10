@@ -146,8 +146,7 @@ module.exports = function (req, res, options) {
 
         var item_to_send = req.body.tunables;
 
-        item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/tunables/' + tunable._id;
-        item_to_send.id = tunable._id;
+        item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/tunables/' + tunable.path;
 
         res.location(item_to_send.href);
 
