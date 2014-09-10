@@ -1,3 +1,4 @@
+var async = require('async');
 var lodash = require('lodash');
 
 var Setting = require('../models/setting').Setting;
@@ -27,7 +28,7 @@ module.exports = function (req, res, options) {
     name: req.params.setting
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'common/settings',
         tags  : [
           log_tags.api_request,
@@ -100,37 +101,36 @@ module.exports = function (req, res, options) {
       }
     }
 
-    /*
-     * Cross relationships functionality execution.
-     * If this is used it means that changing this setting have side effects.
-     */
-    if (options && options.cb_update) {
-      options.cb_update(doc, function (error) {
-        if (error) {
-          logger.error(error, {
-            module: 'common/settings',
-            tags  : [
-              log_tags.cross_rel
-            ]
+    async.series([
+      function (cb_series) {
+        /*
+         * Validate settings values.
+         */
+        if (options && options.cb_validate) {
+          options.cb_validate(doc, function (api_errors) {
+            if (api_errors) {
+              res.json(400, api_errors); // Bad Request.
+              return;
+            }
+            cb_series(null);
           });
-
-          res.json(500, {
-            errors: [
-              {
-                code : 'internal_server_error',
-                title: 'Internal Server Error.'
-              }
-            ]
-          }); // Internal Server Error.
           return;
         }
-
-        doc.update(req.body.settings, function (error) {
+        cb_series(null);
+      }
+    ], function () { // The past functions won't never throw an error.
+      /*
+       * Cross relationships functionality execution.
+       * If this is used it means that changing this setting have side effects,
+       * as mostly will be.
+       */
+      if (options && options.cb_update) {
+        options.cb_update(doc, function (error) {
           if (error) {
-            logger.error(error.message, {
+            logger.error(error, {
               module: 'common/settings',
               tags  : [
-                log_tags.api_request
+                log_tags.cross_rel
               ]
             });
 
@@ -145,33 +145,54 @@ module.exports = function (req, res, options) {
             return;
           }
 
-          res.send(204); // No Content.
-        });
-      });
-      return;
-    }
+          doc.update(req.body.settings, function (error) {
+            if (error) {
+              logger.error(error, {
+                module: 'common/settings',
+                tags  : [
+                  log_tags.api_request
+                ]
+              });
 
-    doc.update(req.body.settings, function (error) {
-      if (error) {
-        logger.error(error.message, {
-          module: 'common/settings',
-          tags  : [
-            log_tags.api_request
-          ]
-        });
-
-        res.json(500, {
-          errors: [
-            {
-              code : 'internal_server_error',
-              title: 'Internal Server Error.'
+              res.json(500, {
+                errors: [
+                  {
+                    code : 'internal_server_error',
+                    title: 'Internal Server Error.'
+                  }
+                ]
+              }); // Internal Server Error.
+              return;
             }
-          ]
-        }); // Internal Server Error.
+
+            res.send(204); // No Content.
+          });
+        });
         return;
       }
 
-      res.send(204); // No Content.
+      doc.update(req.body.settings, function (error) {
+        if (error) {
+          logger.error(error, {
+            module: 'common/settings',
+            tags  : [
+              log_tags.api_request
+            ]
+          });
+
+          res.json(500, {
+            errors: [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          }); // Internal Server Error.
+          return;
+        }
+
+        res.send(204); // No Content.
+      });
     });
   });
 };

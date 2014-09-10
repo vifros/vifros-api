@@ -1,3 +1,6 @@
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
+
 var settings_index = require('../../../common/settings/routes/index');
 
 module.exports = function (req, res) {
@@ -14,6 +17,13 @@ module.exports = function (req, res) {
     });
   }
   catch (error) {
+    logger.error(error, {
+      module: 'system/settings',
+      tags  : [
+        log_tags.api_request
+      ]
+    });
+
     res.json(500, {
       errors: [
         {

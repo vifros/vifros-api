@@ -1,6 +1,11 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
 var async = require('async');
+var validator = require('validator');
+
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
+var log_codes = logger.codes;
 
 var settings_update = require('../../../common/settings/routes/update');
 
@@ -10,10 +15,18 @@ module.exports = function (req, res) {
      * Delegate the responsibility to send the response to this method.
      */
     settings_update(req, res, {
-      cb_update: cb_update
+      cb_update  : cb_update,
+      cb_validate: cb_validate
     });
   }
   catch (error) {
+    logger.error(error, {
+      module: 'system/settings',
+      tags  : [
+        log_tags.api_request
+      ]
+    });
+
     res.json(500, {
       errors: [
         {
@@ -207,5 +220,53 @@ function cb_update(setting, cb) {
     default:
       cb(null);
       break;
+  }
+}
+
+/*
+ * Function for settings validation.
+ */
+function cb_validate(object, cb) {
+  var errors = [];
+
+  if (object.name == 'nameservers') {
+    if (!object.value instanceof Array) {
+      errors.push({
+        code : log_codes.invalid_value.code,
+        path : 'nameservers',
+        title: log_codes.invalid_value.message
+      });
+    }
+
+    for (var i = 0, j = object.value.length;
+         i < j;
+         i++) {
+
+      if (!validator.isIP(object.value[i])) {
+        errors.push({
+          code : log_codes.invalid_value.code,
+          path : 'nameservers',
+          title: log_codes.invalid_value.message
+        });
+        break;
+      }
+    }
+  }
+
+  if (object.name == 'domain'
+    && !validator.isFQDN(object.value)) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'domain',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  if (errors.length) {
+    cb(errors);
+  }
+  else {
+    cb(null);
   }
 }

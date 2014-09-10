@@ -11,7 +11,10 @@ var SettingSchema = new Schema({
     required: true,
     select  : false
   },
-  // Read-only.
+  /*
+   * Read-only.
+   * Unique per module basis. Already guaranteed by not allowing to create new settings.
+   */
   name       : {
     type    : String,
     required: true

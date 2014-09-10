@@ -32,11 +32,8 @@ module.exports = function (req, res, options) {
     model        : Setting
   });
 
-  var query_options = jsonapi.buildQueryOptionsFromReq({
-    req          : req,
-    resource_name: 'settings',
-    model        : Setting
-  });
+  // It doesn't need `query_options` support, just the basic filtering.
+  var query_options = {};
 
   var filter = {};
   if (is_public_call && typeof options.filter != 'undefined') {
@@ -52,7 +49,7 @@ module.exports = function (req, res, options) {
 
   Setting.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'common/settings',
         tags  : [
           log_tags.api_request,
@@ -87,7 +84,6 @@ module.exports = function (req, res, options) {
       function (cb_parallel) {
         async.each(docs, function (item, cb_each) {
           var buffer = item.toObject();
-          buffer.id = item._id;
 
           delete buffer._id;
           delete buffer.__v;
@@ -115,20 +111,10 @@ module.exports = function (req, res, options) {
             name: 'status'
           }
         ];
-        Setting.count(query_filter, function (error, count) {
+        Setting.count(query_filter, function (error) {
             if (error) {
               cb_parallel(error);
               return;
-            }
-
-            if (!options.single) {
-              json_api_body['meta'] = {
-                settings: {
-                  total : count,
-                  limit : Number(query_options.limit),
-                  offset: Number(query_options.skip)
-                }
-              };
             }
 
             cb_parallel(null);

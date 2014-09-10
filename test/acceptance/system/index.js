@@ -16,7 +16,7 @@ describe('/api/system', function () {
   });
 
   describe('when GET', function () {
-    it('should return a valid JSON-API response', function (done) {
+    it('should return a valid JSON-API response with the respective level menu items', function (done) {
       api
         .get('/system')
         .set('Accept', 'application/vnd.api+json')
@@ -30,6 +30,13 @@ describe('/api/system', function () {
           // Body tests.
           body.should.have.property('links');
           body.links.should.not.be.empty;
+          body.links.should.have.properties([
+            'logging',
+            'tunables',
+            'settings',
+            'info',
+            'ipsets'
+          ]);
         })
         .expect(200, done);
     });

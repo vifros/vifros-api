@@ -1,3 +1,4 @@
+// TODO: Remove this file and its dependencies when all settings are moved to `update`.
 var jsonpatch = require('json-patch');
 
 var Setting = require('../models/setting').Setting;
