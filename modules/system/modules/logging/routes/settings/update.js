@@ -117,7 +117,7 @@ module.exports = function (req, res) {
     logger.remove(winston.transports[transport_id]);
   }
   catch (error) {
-    // TODO: Silently don't do anything with this error.
+    // TODO: Drop it silently, don't do anything with this error.
   }
 
   if (new_config.enabled) {
