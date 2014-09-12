@@ -16,7 +16,7 @@ describe('/api/interfaces', function () {
   });
 
   describe('when GET', function () {
-    it('should return a valid JSON-API response', function (done) {
+    it('should return a valid JSON-API response with the respective level menu items', function (done) {
       api
         .get('/interfaces')
         .set('Accept', 'application/vnd.api+json')
@@ -30,6 +30,11 @@ describe('/api/interfaces', function () {
           // Body tests.
           body.should.have.property('links');
           body.links.should.not.be.empty;
+          body.links.should.have.properties([
+            'ethernets',
+            'loopbacks',
+            'vlans'
+          ]);
         })
         .expect(200, done);
     });

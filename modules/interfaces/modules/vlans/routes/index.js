@@ -70,7 +70,6 @@ module.exports = function (req, res) {
       function (cb_parallel) {
         async.each(docs, function (item, cb_each) {
           var buffer_vlan = item.toObject();
-          buffer_vlan.id = item._id;
 
           delete buffer_vlan._id;
           delete buffer_vlan.__v;

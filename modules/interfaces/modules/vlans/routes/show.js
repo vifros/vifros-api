@@ -69,7 +69,6 @@ module.exports = function (req, res) {
      * Build JSON API response.
      */
     var buffer = doc.toObject();
-    buffer.id = doc._id;
 
     delete buffer._id;
     delete buffer.__v;

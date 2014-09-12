@@ -181,8 +181,7 @@ describe('/api/system/tunables', function () {
               value: '1'
             });
             body.tunables.should.have.properties([
-              'href',
-              'id'
+              'href'
             ]);
             body.tunables.href.should.be.equal(res.header.location);
           })

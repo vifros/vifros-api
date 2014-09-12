@@ -158,8 +158,7 @@ describe('/api/interfaces/vlans', function () {
               tag      : '50'
             });
             body.vlans.should.have.properties([
-              'href',
-              'id'
+              'href'
             ]);
             body.vlans.href.should.be.equal(res.header.location);
           })

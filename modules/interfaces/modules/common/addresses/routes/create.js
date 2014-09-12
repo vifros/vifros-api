@@ -121,7 +121,6 @@ module.exports = function (req, res, options) {
       delete item_to_send.local;
 
       item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces' + options.base_url + '/addresses/' + encodeURIComponent(address.address);
-      item_to_send.id = address._id;
 
       res.location(item_to_send.href);
 

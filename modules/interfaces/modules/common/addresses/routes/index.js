@@ -45,6 +45,7 @@ module.exports = function (req, res, options) {
   }
 
   query_filter = lodash.merge(query_filter, filter);
+  query_options.select = '-interface';
 
   Address.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
@@ -70,7 +71,7 @@ module.exports = function (req, res, options) {
     if (!options.single) {
       json_api_body['meta'] = {
         addresses: {
-          total : null, // Below will be reseted to the correct value
+          total : null, // Below will be reseated to the correct value
           limit : Number(query_options.limit),
           offset: Number(query_options.skip)
         }
@@ -99,7 +100,6 @@ module.exports = function (req, res, options) {
       function (cb_parallel) {
         async.each(docs, function (item, cb_each) {
           var buffer = item.toObject();
-          buffer.id = item._id;
 
           delete buffer._id;
           delete buffer.__v;

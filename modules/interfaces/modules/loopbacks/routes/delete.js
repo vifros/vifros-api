@@ -49,16 +49,8 @@ module.exports = function (req, res) {
     }
 
     if (doc.status.operational != link_statuses.NOTPRESENT) {
-      logger.error('Only interfaces with status NOT_PRESENT can be deleted.', {
-        module: 'interfaces/loopbacks',
-        tags  : [
-          log_tags.api_request,
-          log_tags.validation
-        ]
-      });
-
       json_api_errors.errors.push({
-        code : log_codes.json_patch_error.code.delete_present_interface_error,
+        code : log_codes.delete_present_interface_error.code,
         path : 'status.operational',
         title: 'Only not present interfaces can be deleted.'
       });

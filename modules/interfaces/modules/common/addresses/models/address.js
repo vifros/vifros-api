@@ -9,21 +9,16 @@ var statics = require('./address-statics');
  * Schema definition.
  */
 var AddressSchema = new Schema({
-  // Read-only.
   interface  : {
     type    : String,
     required: true
   },
-  // Read-only.
   address    : {
     type    : String,
     required: true
   },
-  // Read-only.
   peer       : String, // Used for pointopoint interfaces.
-  // Read-only.
   broadcast  : String,
-  // Read-only.
   scope      : {
     type: String,
     enum: [

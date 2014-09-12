@@ -74,14 +74,12 @@ describe('/api/interfaces/ethernets/:ethernet', function () {
               'name',
               'mac',
               'mtu',
-              'status',
-              'id'
+              'status'
             ]);
             body.ethernets.name.should.be.equal('eth1');
             body.ethernets.mac.should.be.a.String;
             body.ethernets.mtu.should.be.a.Number;
             body.ethernets.status.should.be.an.Object;
-            body.ethernets.id.should.be.a.String;
           })
           .expect(200, done);
       });

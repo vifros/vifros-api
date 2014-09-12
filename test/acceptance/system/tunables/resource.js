@@ -72,12 +72,10 @@ describe('/api/system/tunables/:tunable', function () {
             body.tunables.should.be.an.Object.and.not.an.Array;
             body.tunables.should.have.properties([
               'path',
-              'value',
-              'id'
+              'value'
             ]);
             body.tunables.path.should.be.equal('net.ipv4.neigh.default.gc_thresh2');
             body.tunables.value.should.be.a.String;
-            body.tunables.id.should.be.a.String;
           })
           .expect(200, done);
       });

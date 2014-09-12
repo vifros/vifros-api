@@ -156,8 +156,7 @@ describe('/api/interfaces/ethernets/eth0/addresses', function () {
               address: '5.5.5.5/24'
             });
             body.addresses.should.have.properties([
-              'href',
-              'id'
+              'href'
             ]);
             body.addresses.href.should.be.equal(res.header.location);
           })

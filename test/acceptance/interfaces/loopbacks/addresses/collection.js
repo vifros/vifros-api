@@ -156,8 +156,7 @@ describe('/api/interfaces/loopbacks/lo/addresses', function () {
               address: '20.20.20.20/24'
             });
             body.addresses.should.have.properties([
-              'href',
-              'id'
+              'href'
             ]);
             body.addresses.href.should.be.equal(res.header.location);
           })

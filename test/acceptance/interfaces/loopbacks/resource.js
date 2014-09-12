@@ -74,14 +74,12 @@ describe('/api/interfaces/loopbacks/:loopback', function () {
               'name',
               'mac',
               'mtu',
-              'status',
-              'id'
+              'status'
             ]);
             body.loopbacks.name.should.be.equal('lo');
             body.loopbacks.mac.should.be.a.String;
             body.loopbacks.mtu.should.be.a.Number;
             body.loopbacks.status.should.be.an.Object;
-            body.loopbacks.id.should.be.a.String;
           })
           .expect(200, done);
       });

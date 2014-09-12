@@ -53,7 +53,7 @@ module.exports = function (req, res) {
 
     json_api_body['meta'] = {
       ethernets: {
-        total : null, // Below will be reseted to the correct value
+        total : null, // Below will be reseated to the correct value.
         limit : Number(query_options.limit),
         offset: Number(query_options.skip)
       }
@@ -70,7 +70,6 @@ module.exports = function (req, res) {
       function (cb_parallel) {
         async.each(docs, function (item, cb_each) {
           var buffer_ethernet = item.toObject();
-          buffer_ethernet.id = item._id;
 
           delete buffer_ethernet._id;
           delete buffer_ethernet.__v;
