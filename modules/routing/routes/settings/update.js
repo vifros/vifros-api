@@ -1,5 +1,9 @@
 var ip_forward = require('iproute').utils.ip_forward;
 
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
+var log_codes = logger.codes;
+
 var settings_update = require('../../../common/settings/routes/update');
 
 module.exports = function (req, res) {
@@ -8,10 +12,18 @@ module.exports = function (req, res) {
      * Delegate the responsibility to send the response to this method.
      */
     settings_update(req, res, {
-      cb_update: cb_update
+      cb_update  : cb_update,
+      cb_validate: cb_validate
     });
   }
   catch (error) {
+    logger.error(error, {
+      module: 'system/settings',
+      tags  : [
+        log_tags.api_request
+      ]
+    });
+
     res.json(500, {
       errors: [
         {
@@ -93,5 +105,33 @@ function cb_update(setting, cb) {
     default:
       cb(null);
       break;
+  }
+}
+
+/*
+ * Function for settings validation.
+ */
+function cb_validate(object, cb) {
+  var errors = [];
+
+  if (object.name == 'ip_forward_v4'
+    || object.name == 'ip_forward_v6') {
+
+    if (object.value != 0
+      && object.value != 1) {
+
+      errors.push({
+        code : log_codes.invalid_value.code,
+        path : object.name,
+        title: log_codes.invalid_value.message
+      });
+    }
+  }
+
+  if (errors.length) {
+    cb(errors);
+  }
+  else {
+    cb(null);
   }
 }
