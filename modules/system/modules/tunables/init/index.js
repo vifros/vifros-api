@@ -12,7 +12,7 @@ module.exports = function (cb_init) {
     name  : 'status'
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'system/tunables',
         tags  : [
           log_tags.init,

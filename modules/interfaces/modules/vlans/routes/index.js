@@ -32,7 +32,7 @@ module.exports = function (req, res) {
 
   VLAN.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'interfaces/vlans',
         tags  : [
           log_tags.api_request,

@@ -17,7 +17,7 @@ module.exports = function (req, res) {
     path: req.params.tunable
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'system/tunables',
         tags  : [
           log_tags.api_request,

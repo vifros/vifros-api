@@ -35,7 +35,7 @@ module.exports = function (req, res) {
     interface: iface
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'interfaces/addresses',
         tags  : [
           log_tags.api_request,
@@ -100,7 +100,7 @@ module.exports = function (req, res) {
     // The description is the only allowed mutable field to be changed.
     doc.update(req.body.addresses, function (error) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'interfaces/addresses',
           tags  : [
             log_tags.api_request,

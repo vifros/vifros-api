@@ -127,7 +127,7 @@ module.exports = function (req, res) {
   config.set('logging:transports:' + req.params.setting.split('_')[1], new_config);
   config.save(function (error) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'system/logging/settings',
         tags  : [
           log_tags.api_request,

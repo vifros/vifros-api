@@ -35,7 +35,7 @@ module.exports = function (req, res) {
     id: req.params.table
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/tables',
         tags  : [
           log_tags.api_request,
@@ -71,7 +71,7 @@ module.exports = function (req, res) {
      */
     routing_tables.delete(doc, function (error) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'routing/static/tables',
           tags  : [
             log_tags.api_request,
@@ -97,7 +97,7 @@ module.exports = function (req, res) {
         id: req.params.table
       }, function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'routing/static/tables',
             tags  : [
               log_tags.api_request,

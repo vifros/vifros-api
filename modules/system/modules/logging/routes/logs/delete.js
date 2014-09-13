@@ -6,7 +6,7 @@ var Log = require('../../models/log').Log;
 module.exports = function (req, res) {
   Log.findById(req.params.log, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'system/logging/logs',
         tags  : [
           log_tags.api_request,
@@ -39,7 +39,7 @@ module.exports = function (req, res) {
 
     doc.remove(function (error) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'system/logging/logs',
           tags  : [
             log_tags.api_request,

@@ -49,7 +49,7 @@ module.exports = function (req, res, options) {
 
   Address.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'interfaces/addresses',
         tags  : [
           log_tags.api_request,
@@ -137,7 +137,7 @@ module.exports = function (req, res, options) {
       }
     ], function (error) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'interfaces/addresses',
           tags  : [
             log_tags.api_request

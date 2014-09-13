@@ -14,7 +14,7 @@ module.exports = function (req, res) {
     name: req.params.chain
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'services/nat/source/chains',
         tags  : [
           log_tags.api_request,

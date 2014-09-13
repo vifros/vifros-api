@@ -31,7 +31,7 @@ module.exports = function (req, res) {
 
   StaticRoutingRule.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/rules',
         tags  : [
           log_tags.api_request,

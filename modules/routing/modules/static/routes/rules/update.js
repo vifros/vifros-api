@@ -24,7 +24,7 @@ module.exports = function (req, res) {
     priority: req.params.rule
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/rules',
         tags  : [
           log_tags.api_request,
@@ -98,7 +98,7 @@ module.exports = function (req, res) {
     // The description is the only allowed mutable field to be changed.
     doc.update(req.body.rules, function (error) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'routing/static/rules',
           tags  : [
             log_tags.api_request,

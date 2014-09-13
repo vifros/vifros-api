@@ -92,7 +92,7 @@ module.exports = function (cb_init) {
 
       setting.save(function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'routing/static/rules',
             tags  : [
               log_tags.init,

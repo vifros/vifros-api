@@ -76,7 +76,7 @@ module.exports = function (req, res, options) {
     table: req.params.table
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/routes',
         tags  : [
           log_tags.api_request
@@ -170,7 +170,7 @@ module.exports = function (req, res, options) {
          */
         route.save(function (error) {
           if (error) {
-            logger.error(error.message, {
+            logger.error(error, {
               module: 'routing/static/routes',
               tags  : [
                 log_tags.api_request,

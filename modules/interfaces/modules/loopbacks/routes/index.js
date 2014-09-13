@@ -32,7 +32,7 @@ module.exports = function (req, res) {
 
   Loopback.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'interfaces/loopbacks',
         tags  : [
           log_tags.api_request,

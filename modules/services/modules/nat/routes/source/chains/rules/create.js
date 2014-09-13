@@ -30,7 +30,7 @@ module.exports = function (req, res) {
     name: req.params.chain
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'services/nat/source/rules',
         tags  : [
           log_tags.api_request,
@@ -92,7 +92,7 @@ module.exports = function (req, res) {
        */
       rule.save(function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'services/nat/source/rules',
             tags  : [
               log_tags.api_request,

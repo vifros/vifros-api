@@ -72,7 +72,7 @@ module.exports = function (req, res) {
     id: req.body.rules.table
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/rules',
         tags  : [
           log_tags.api_request,
@@ -108,7 +108,7 @@ module.exports = function (req, res) {
       priority: req.body.rules.priority
     }, function (error, doc) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'routing/static/rules',
           tags  : [
             log_tags.api_request,
@@ -188,7 +188,7 @@ module.exports = function (req, res) {
            */
           rule.save(function (error) {
             if (error) {
-              logger.error(error.message, {
+              logger.error(error, {
                 module: 'routing/static/rules',
                 tags  : [
                   log_tags.api_request,

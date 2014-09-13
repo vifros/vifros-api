@@ -15,7 +15,7 @@ module.exports = function (req, res) {
 
   NATRule.findById(req.params.rule, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'services/nat/source/rules',
         tags  : [
           log_tags.api_request,

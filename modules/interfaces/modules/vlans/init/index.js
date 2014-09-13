@@ -14,7 +14,7 @@ module.exports = function (cb_init) {
     name  : 'status'
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'interfaces/vlans',
         tags  : [
           log_tags.init,

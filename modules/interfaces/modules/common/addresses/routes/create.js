@@ -93,7 +93,7 @@ module.exports = function (req, res, options) {
      */
     address.save(function (error) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'interfaces/addresses',
           tags  : [
             log_tags.api_request,

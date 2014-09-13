@@ -57,7 +57,7 @@ module.exports = function (cb_init) {
 
     setting.save(function (error) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'system/tunables',
           tags  : [
             log_tags.init,

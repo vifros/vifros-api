@@ -22,8 +22,5 @@
 
 - Add acceptance tests. Make them dynamic base on the API schema?
 
-- Change errors to the new way. Add json errors even to 404 & 500. Change `log.error`
-  to log all the error data.
-
 - Logging: For logging purposes only log the entire error message instead and return
  more meaningful error messages or keep the current 500 way?

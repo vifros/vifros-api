@@ -18,7 +18,7 @@ module.exports = function (req, res) {
     priority: req.params.rule
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/rules',
         tags  : [
           log_tags.api_request,

@@ -10,7 +10,7 @@ module.exports = function (req, res) {
     id: req.params.table
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/tables/routes',
         tags  : [
           log_tags.api_request,
@@ -53,7 +53,7 @@ module.exports = function (req, res) {
       });
     }
     catch (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/tables/routes',
         tags  : [
           log_tags.api_request,

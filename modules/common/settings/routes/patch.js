@@ -22,7 +22,7 @@ module.exports = function (req, res, options) {
     name: req.params.setting
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'common/settings',
         tags  : [
           log_tags.api_request,
@@ -77,7 +77,7 @@ module.exports = function (req, res, options) {
       jsonpatch.apply(doc_patch, req.body);
     }
     catch (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'common/settings',
         tags  : [
           log_tags.api_request
@@ -170,7 +170,7 @@ module.exports = function (req, res, options) {
           }, doc_patch.settings[0],
           function (error) {
             if (error) {
-              logger.error(error.message, {
+              logger.error(error, {
                 module: 'common/settings',
                 tags  : [
                   log_tags.api_request
@@ -194,7 +194,7 @@ module.exports = function (req, res, options) {
       }, doc_patch.settings[0],
       function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'common/settings',
             tags  : [
               log_tags.api_request

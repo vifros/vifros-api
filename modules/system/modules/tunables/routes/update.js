@@ -24,7 +24,7 @@ module.exports = function (req, res) {
     path: req.params.tunable
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'system/tunables',
         tags  : [
           log_tags.api_request,
@@ -101,7 +101,7 @@ module.exports = function (req, res) {
       // If only the description was changed, only save it to DB without touching the OS.
       doc.update(req.body.tunables, function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'system/tunables',
             tags  : [
               log_tags.api_request,
@@ -148,7 +148,7 @@ module.exports = function (req, res) {
 
       doc.update(req.body.tunables, function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'system/tunables',
             tags  : [
               log_tags.api_request,

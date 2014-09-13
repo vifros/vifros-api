@@ -19,7 +19,7 @@ module.exports = function (req, res) {
     name: req.params.ipset
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'system/ipsets',
         tags  : [
           log_tags.api_request,
@@ -57,7 +57,7 @@ module.exports = function (req, res) {
         ipset: doc.name
       }, function (error, doc_option) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'system/ipsets',
             tags  : [
               log_tags.api_request,

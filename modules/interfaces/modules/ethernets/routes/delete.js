@@ -17,7 +17,7 @@ module.exports = function (req, res) {
     name: req.params.ethernet
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'interfaces/ethernets',
         tags  : [
           log_tags.api_request,
@@ -71,7 +71,7 @@ module.exports = function (req, res) {
      */
     doc.remove(function (error) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'interfaces/ethernets',
           tags  : [
             log_tags.api_request,
@@ -97,7 +97,7 @@ module.exports = function (req, res) {
         interface: doc.name
       }, function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'interfaces/ethernets',
             tags  : [
               log_tags.api_request,

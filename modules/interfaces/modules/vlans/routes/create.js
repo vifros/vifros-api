@@ -249,7 +249,7 @@ module.exports = function (req, res) {
          */
         vlan.save(function (error) {
           if (error) {
-            logger.error(error.message, {
+            logger.error(error, {
               module: 'interfaces/vlans',
               tags  : [
                 log_tags.api_request,

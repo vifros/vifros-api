@@ -34,7 +34,7 @@ module.exports = function (req, res) {
     tag      : vlan_tag
   }, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'interfaces/vlans',
         tags  : [
           log_tags.api_request,

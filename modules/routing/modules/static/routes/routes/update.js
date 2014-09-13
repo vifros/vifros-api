@@ -24,7 +24,7 @@ module.exports = function (req, res) {
 
   StaticRoutingRoute.findById(req.params.route, function (error, doc) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/routes',
         tags  : [
           log_tags.api_request,
@@ -121,7 +121,7 @@ module.exports = function (req, res) {
 
         doc.update(req.body.routes, function (error) {
           if (error) {
-            logger.error(error.message, {
+            logger.error(error, {
               module: 'routing/static/routes',
               tags  : [
                 log_tags.api_request,
@@ -172,7 +172,7 @@ module.exports = function (req, res) {
         // Save changes to DB.
         doc.update(req.body.routes, function (error) {
           if (error) {
-            logger.error(error.message, {
+            logger.error(error, {
               module: 'routing/static/routes',
               tags  : [
                 log_tags.api_request,

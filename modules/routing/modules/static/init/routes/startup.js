@@ -13,7 +13,7 @@ module.exports = function (cb_init) {
    */
   StaticRoutingRoute.find({}, function (error, docs) {
     if (error) {
-      logger.error(error.message, {
+      logger.error(error, {
         module: 'routing/static/routes',
         tags  : [
           log_tags.init,
