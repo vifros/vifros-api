@@ -1,3 +1,4 @@
+var async = require('async');
 var ip_address = require('iproute').address;
 
 var logger = global.vifros.logger;
@@ -66,38 +67,102 @@ module.exports = function (req, res, options) {
   doc_req['dev'] = doc_req['interface'] = options.interface;
   doc_req['local'] = doc_req.address;
 
-  var address = new Address(doc_req);
+  async.series([
+    function (cb_series) {
+      Address.findOne({
+        interface: doc_req.interface,
+        address  : doc_req.address
+      }, function (error, doc) {
+        if (error) {
+          logger.error(error, {
+            module: 'interfaces/addresses',
+            tags  : [
+              log_tags.api_request,
+              log_tags.db
+            ]
+          });
 
-  ip_address.add(doc_req, function (error) {
-    if (error) {
-      logger.error(error, {
-        module: 'interfaces/addresses',
-        tags  : [
-          log_tags.api_request
-        ]
+          res.json(500, {
+            errors: [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          }); // Internal Server Error.
+
+          cb_series(error);
+          return;
+        }
+
+        if (doc) {
+          // There is already an Address so not add another one with same params.
+          res.json(400, {
+            errors: [
+              {
+                code : log_codes.already_present.code,
+                path : 'address',
+                title: log_codes.already_present.message
+              }
+            ]
+          }); // Not found.
+
+          cb_series(doc);
+          return;
+        }
+        cb_series(null);
       });
+    },
+    function (cb_series) {
+      // Run the field validations.
+      Address.validate(doc_req, function (error, api_errors) {
+        if (error) {
+          logger.error(error, {
+            module: 'interfaces/addresses',
+            tags  : [
+              log_tags.api_request,
+              log_tags.db
+            ]
+          });
 
-      res.json(500, {
-        errors: [
-          {
-            code : 'internal_server_error',
-            title: 'Internal Server Error.'
-          }
-        ]
-      }); // Internal Server Error.
+          res.json(500, {
+            errors: [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          }); // Internal Server Error.
+
+          cb_series(error);
+          return;
+        }
+
+        if (api_errors.length) {
+          res.json(400, {
+            errors: api_errors
+          }); // Bad Request.
+
+          cb_series(error);
+          return;
+        }
+
+        cb_series(null);
+      });
+    }
+  ], function (error) {
+    if (error) {
+      // Only return since the error was already handled upstream.
       return;
     }
 
-    /*
-     * Save changes to database.
-     */
-    address.save(function (error) {
+    var address = new Address(doc_req);
+    ip_address.add(doc_req, function (error) {
       if (error) {
         logger.error(error, {
           module: 'interfaces/addresses',
           tags  : [
-            log_tags.api_request,
-            log_tags.db
+            log_tags.api_request
           ]
         });
 
@@ -112,25 +177,51 @@ module.exports = function (req, res, options) {
         return;
       }
 
-      var item_to_send = req.body.addresses;
-
       /*
-       * Clean unneeded alias.
+       * Save changes to database.
        */
-      delete item_to_send.dev;
-      delete item_to_send.local;
+      address.save(function (error) {
+        if (error) {
+          logger.error(error, {
+            module: 'interfaces/addresses',
+            tags  : [
+              log_tags.api_request,
+              log_tags.db
+            ]
+          });
 
-      item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces' + options.base_url + '/addresses/' + encodeURIComponent(address.address);
+          res.json(500, {
+            errors: [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          }); // Internal Server Error.
+          return;
+        }
 
-      res.location(item_to_send.href);
+        var item_to_send = req.body.addresses;
 
-      /*
-       * Build JSON API response.
-       */
-      json_api_body.addresses = {};
-      json_api_body.addresses = item_to_send;
+        /*
+         * Clean unneeded alias.
+         */
+        delete item_to_send.dev;
+        delete item_to_send.local;
+        delete item_to_send.interface;
 
-      res.json(200, json_api_body); // OK.
+        item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces' + options.base_url + '/addresses/' + encodeURIComponent(address.address);
+
+        res.location(item_to_send.href);
+
+        /*
+         * Build JSON API response.
+         */
+        json_api_body.addresses = {};
+        json_api_body.addresses = item_to_send;
+
+        res.json(200, json_api_body); // OK.
+      });
     });
   });
 };

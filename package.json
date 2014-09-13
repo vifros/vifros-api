@@ -19,6 +19,7 @@
     "winston-mongodb": "*",
     "iproute"        : "*",
     "netfilter"      : "*",
+    "netmask"        : "*",
     "nconf"          : "~0.6.9"
   },
   "devDependencies": {

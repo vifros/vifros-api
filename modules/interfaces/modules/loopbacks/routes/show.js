@@ -18,7 +18,7 @@ module.exports = function (req, res) {
     name: req.params.loopback
   }, function (error, doc) {
     if (error) {
-      logger.error(error.name, {
+      logger.error(error, {
         module: 'interfaces/loopbacks',
         tags  : [
           log_tags.api_request,

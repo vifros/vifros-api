@@ -18,7 +18,7 @@ module.exports = function (req, res) {
     });
   }
   catch (error) {
-    logger.error(error.name, {
+    logger.error(error, {
       module: 'interfaces/ethernets',
       tags  : [
         log_tags.api_request,

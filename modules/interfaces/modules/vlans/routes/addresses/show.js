@@ -35,7 +35,7 @@ module.exports = function (req, res) {
     });
   }
   catch (error) {
-    logger.error(error.name, {
+    logger.error(error, {
       module: 'interfaces/vlans',
       tags  : [
         log_tags.api_request,

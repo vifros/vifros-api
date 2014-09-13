@@ -1,6 +1,12 @@
 var async = require('async');
+var Netmask = require('netmask').Netmask
 
 var ip_address = require('iproute').address;
+var address_scopes = ip_address.utils.scopes;
+
+var logger = global.vifros.logger;
+var log_tags = logger.tags;
+var log_codes = logger.codes;
 
 /*
  * Removes all filtered addresses from DB and OS.
@@ -244,4 +250,91 @@ exports.createFromDBtoOS = function (options, cb) {
       cb(null);
     });
   });
+};
+
+/**
+ * Validate a doc to be updated.
+ * Returns an errors array suitable for JSON API responses.
+ *
+ * @param   {object}      object
+ * @param   {function}    cb
+ */
+exports.validate = function validate(object, cb) {
+  var errors = [];
+
+  /*
+   * address.
+   */
+  if (object.address) {
+    try {
+      var netmask_address = new Netmask(object.address);
+    }
+    catch (e) {
+      errors.push({
+        code : log_codes.invalid_value.code,
+        path : 'address',
+        title: log_codes.invalid_value.message
+      });
+    }
+
+    if (object.peer
+      && object.address.split('/').length > 1) {
+
+      errors.push({
+        code : log_codes.invalid_value.code,
+        path : 'address',
+        title: log_codes.invalid_value.message + ' Can\'t have a network prefix if "peer" is provided.'
+      });
+    }
+  }
+
+  /*
+   * peer.
+   */
+  if (object.peer) {
+    try {
+      var netmask_peer = new Netmask(object.peer);
+    }
+    catch (e) {
+      errors.push({
+        code : log_codes.invalid_value.code,
+        path : 'peer',
+        title: log_codes.invalid_value.message
+      });
+    }
+  }
+
+  /*
+   * broadcast.
+   */
+  if (object.broadcast
+    && object.broadcast != '+'
+    && object.broadcast != '-') {
+
+    try {
+      var netmask_broadcast = new Netmask(object.broadcast);
+    }
+    catch (e) {
+      errors.push({
+        code : log_codes.invalid_value.code,
+        path : 'broadcast',
+        title: log_codes.invalid_value.message
+      });
+    }
+  }
+
+  /*
+   * scope.
+   */
+  if (object.scope
+    && !address_scopes.hasOwnProperty(object.scope)) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'scope',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  cb(null, errors);
 };
