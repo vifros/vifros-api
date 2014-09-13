@@ -63,8 +63,11 @@ function cb_update(setting, cb) {
           });
         },
         function (cb_parallel) {
-          // Update hostname in /proc/sys/kernel/hostname.
-          exec('sysctl -w kernel.hostname=' + setting.value, function (error, stdout, stderror) {
+          /*
+           * This command updates the hostname in /proc/sys/kernel/hostname and in
+           * other places needed by the kernel, but only lasts until the next reboot.
+           */
+          exec('hostname ' + setting.value, function (error, stdout, stderror) {
             if (error) {
               cb_parallel(stderror.replace(/\n/g, ''));
               return;
@@ -229,6 +232,9 @@ function cb_update(setting, cb) {
 function cb_validate(object, cb) {
   var errors = [];
 
+  /*
+   * nameservers.
+   */
   if (object.name == 'nameservers') {
     if (!object.value instanceof Array) {
       errors.push({
@@ -253,6 +259,24 @@ function cb_validate(object, cb) {
     }
   }
 
+  /*
+   * hostname.
+   */
+  if (object.name == 'hostname'
+    && !validator.isFQDN(object.value, {
+    require_tld: false
+  })) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'hostname',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  /*
+   * domain.
+   */
   if (object.name == 'domain'
     && !validator.isFQDN(object.value)) {
 

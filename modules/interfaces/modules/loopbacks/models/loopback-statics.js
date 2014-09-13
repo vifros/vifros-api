@@ -62,6 +62,9 @@ exports.setMonitor = function (cb) {
 exports.validate = function validate(object, cb) {
   var errors = [];
 
+  /*
+   * status.admin.
+   */
   if (object.status
     && object.status.admin
     && (object.status.admin.toLowerCase() != 'up'
@@ -74,6 +77,9 @@ exports.validate = function validate(object, cb) {
     });
   }
 
+  /*
+   * mac.
+   */
   if (object.mac
     && !(/^([0-9a-f]{2}([:-]|$)){6}$/i.test(object.mac))) {
 
@@ -84,6 +90,9 @@ exports.validate = function validate(object, cb) {
     });
   }
 
+  /*
+   * mtu.
+   */
   if (object.mtu
     && object.mtu < 0) {
 

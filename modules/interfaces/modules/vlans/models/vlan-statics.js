@@ -229,6 +229,9 @@ exports.setMonitor = function (cb) {
 exports.validate = function validate(object, cb) {
   var errors = [];
 
+  /*
+   * status.admin.
+   */
   if (object.status
     && object.status.admin
     && (object.status.admin.toLowerCase() != 'up'
@@ -241,6 +244,9 @@ exports.validate = function validate(object, cb) {
     });
   }
 
+  /*
+   * tag.
+   */
   if (object.tag
     && (object.tag < 0 || object.tag > 4095)) {
 
