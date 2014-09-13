@@ -13,7 +13,6 @@
     "errorhandler"   : "*",
     "method-override": "*",
     "async"          : "*",
-    "jsonpatch"      : "*",
     "lodash"         : "*",
     "mongoose"       : "*",
     "winston"        : "*",
