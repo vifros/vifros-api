@@ -160,8 +160,7 @@ describe('/api/routing/static/rules', function () {
               table   : 254
             });
             body.rules.should.have.properties([
-              'href',
-              'id'
+              'href'
             ]);
             body.rules.href.should.be.equal(res.header.location);
           })

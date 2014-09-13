@@ -139,59 +139,87 @@ module.exports = function (req, res) {
         return;
       }
 
-      var rule = new StaticRoutingRule(req.body.rules);
-
-      ip_rule.add(rule, function (error) {
+      // Run the field validations.
+      StaticRoutingRule.validate(req.body.rules, function (error, api_errors) {
         if (error) {
           logger.error(error, {
             module: 'routing/static/rules',
             tags  : [
               log_tags.api_request,
-              log_tags.os
+              log_tags.db
             ]
           });
 
-          res.send(500); // Internal Server Error.
+          res.json(500, {
+            errors: [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          }); // Internal Server Error.
           return;
         }
 
-        /*
-         * Save changes to database.
-         */
-        rule.save(function (error) {
+        if (api_errors.length) {
+          res.json(400, {
+            errors: api_errors
+          }); // Bad Request.
+          return;
+        }
+
+        var rule = new StaticRoutingRule(req.body.rules);
+        ip_rule.add(rule, function (error) {
           if (error) {
-            logger.error(error.message, {
+            logger.error(error, {
               module: 'routing/static/rules',
               tags  : [
                 log_tags.api_request,
-                log_tags.db
+                log_tags.os
               ]
             });
 
-            res.json(500, {
-              errors: [
-                {
-                  code : 'internal_server_error',
-                  title: 'Internal Server Error.'
-                }
-              ]
-            }); // Internal Server Error.
+            res.send(500); // Internal Server Error.
             return;
           }
 
-          var item_to_send = req.body.rules;
-
-          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/' + rule.priority;
-          item_to_send.id = rule._id;
-
-          res.location(item_to_send.href);
-
           /*
-           * Build JSON API response.
+           * Save changes to database.
            */
-          json_api_body.rules = item_to_send;
+          rule.save(function (error) {
+            if (error) {
+              logger.error(error.message, {
+                module: 'routing/static/rules',
+                tags  : [
+                  log_tags.api_request,
+                  log_tags.db
+                ]
+              });
 
-          res.json(200, json_api_body); // OK.
+              res.json(500, {
+                errors: [
+                  {
+                    code : 'internal_server_error',
+                    title: 'Internal Server Error.'
+                  }
+                ]
+              }); // Internal Server Error.
+              return;
+            }
+
+            var item_to_send = req.body.rules;
+
+            item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/' + rule.priority;
+
+            res.location(item_to_send.href);
+
+            /*
+             * Build JSON API response.
+             */
+            json_api_body.rules = item_to_send;
+
+            res.json(200, json_api_body); // OK.
+          });
         });
       });
     });

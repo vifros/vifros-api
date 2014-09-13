@@ -69,7 +69,6 @@ module.exports = function (req, res) {
       function (cb_parallel) {
         async.each(docs, function (item, cb_each) {
           var buffer = item.toObject();
-          buffer.id = item._id;
 
           delete buffer._id;
           delete buffer.__v;

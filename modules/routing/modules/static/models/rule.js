@@ -1,17 +1,25 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+
+var rule_types = require('iproute').rule.utils.types;
 var statics = require('./rule-statics');
 
 /*
  * Schema definition.
- *
  */
 var StaticRoutingRuleSchema = new Schema({
   // Read-only.
   type       : {
     type    : String,
-    required: true
+    required: true,
+    enum    : [
+      rule_types.unicast,
+      rule_types.blackhole,
+      rule_types.unreachable,
+      rule_types.prohibit,
+      rule_types.nat
+    ]
   },
   // Read-only.
   from       : String,
