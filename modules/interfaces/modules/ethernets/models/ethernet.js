@@ -11,13 +11,12 @@ var statics = require('./ethernet-statics');
 var EthernetSchema = new Schema({
   status     : {
     admin      : {
-      type    : String,
-      enum    : [
+      type   : String,
+      enum   : [
         link_statuses.UP,
         link_statuses.DOWN
       ],
-      default : link_statuses.UP,
-      required: true
+      default: link_statuses.UP
     },
     // Readonly.
     operational: {
@@ -40,7 +39,10 @@ var EthernetSchema = new Schema({
     type : String,
     match: /^([0-9a-f]{2}([:-]|$)){6}$/i
   },
-  mtu        : Number,
+  mtu        : {
+    type: Number,
+    min : 0
+  },
   description: String
 });
 

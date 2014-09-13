@@ -229,17 +229,16 @@ exports.setMonitor = function (cb) {
 exports.validate = function validate(object, cb) {
   var errors = [];
 
-  if (object.status) {
-    if (object.status.admin
-      && (object.status.admin.toLowerCase() != 'up'
-      && object.status.admin.toLowerCase() != 'down')) {
+  if (object.status
+    && object.status.admin
+    && (object.status.admin.toLowerCase() != 'up'
+    && object.status.admin.toLowerCase() != 'down')) {
 
-      errors.push({
-        code : log_codes.invalid_value.code,
-        path : 'status.admin',
-        title: log_codes.invalid_value.message
-      });
-    }
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'status.admin',
+      title: log_codes.invalid_value.message
+    });
   }
 
   if (object.tag

@@ -11,13 +11,12 @@ var statics = require('./vlan-statics');
 var VLANSchema = new Schema({
   status     : {
     admin      : {
-      type    : String,
-      enum    : [
+      type   : String,
+      enum   : [
         link_statuses.UP,
         link_statuses.DOWN
       ],
-      default : link_statuses.UP,
-      required: true
+      default: link_statuses.UP
     },
     // Readonly.
     operational: {
