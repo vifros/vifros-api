@@ -139,39 +139,3 @@ exports.buildQueryOptionsFromReq = function buildQueryOptionsFromReq(options) {
   }
   return query_options;
 };
-
-/**
- * Recursive function.
- * Used in `patchObject()` for build the object to be patched from a Model.
- *
- * @param {object}  source
- * @param {object}  destination
- */
-function buildObjectToPatch(source, destination) {
-  for (var i = 0, j = Object.keys(source).length;
-       i < j;
-       i++) {
-
-    var key = Object.keys(source)[i];
-
-    if (!destination.hasOwnProperty(key)
-      && key.split('.').length <= 1) {
-
-      destination[key] = null;
-    }
-
-    if (key.split('.').length > 1) {
-      var new_key = key.split('.')[0];
-
-      if (destination[new_key] == null) {
-        destination[new_key] = {};
-      }
-
-      // It has sub-documents, so process them.
-      var new_source = {};
-      new_source[key.split('.')[1]] = null;
-
-      buildObjectToPatch(new_source, destination[new_key]);
-    }
-  }
-}
