@@ -1,8 +1,6 @@
 - Document the API using custom UI using an API schema.
 	- produces/consumes
 
-- Give meaningful default values to all fields so API always returns uniform resources?
-
 - NAT
 	- source
 	- destination
