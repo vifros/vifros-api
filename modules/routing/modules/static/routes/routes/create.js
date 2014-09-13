@@ -26,7 +26,7 @@ module.exports = function (req, res, options) {
     links : {
       routes: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/{routes.id}'
     },
-    routes: []
+    routes: {}
   };
 
   var json_api_errors = {
@@ -44,9 +44,9 @@ module.exports = function (req, res, options) {
   if (typeof req.body.routes.type == 'undefined') {
     failed_required_fields.push('type');
   }
-  if (typeof req.body.routes.table == 'undefined') {
-    failed_required_fields.push('table');
-  }
+
+  req.body.routes.table = req.params.table;
+
   if (typeof req.body.routes.via == 'undefined') {
     failed_required_fields.push('via');
   }
@@ -69,10 +69,11 @@ module.exports = function (req, res, options) {
   }
 
   /*
-   * Check if the table exists.
+   * Check if there is already a route with the same to.
    */
-  StaticRoutingTable.findOne({
-    id: req.body.routes.table
+  StaticRoutingRoute.findOne({
+    to   : req.body.routes.to,
+    table: req.params.table
   }, function (error, doc) {
     if (error) {
       logger.error(error.message, {
@@ -93,31 +94,34 @@ module.exports = function (req, res, options) {
       return;
     }
 
-    if (!doc) {
-      res.json(404, {
-        errors: [
-          {
-            code : 'not_found',
-            field: 'table',
-            title: log_codes.related_resource_not_found.message.replace('%s', 'table')
-          }
-        ]
-      }); // Not found.
+    if (doc) {
+      /*
+       * There is already a route, so throw an error.
+       */
+      json_api_errors.errors.push({
+        code   : log_codes.already_present.code,
+        field  : 'to',
+        message: log_codes.already_present.message
+      });
+
+      json_api_errors.errors.push({
+        code   : log_codes.already_present.code,
+        field  : 'table',
+        message: log_codes.already_present.message
+      });
+
+      res.json(400, json_api_errors); // Bad Request.
       return;
     }
 
-    /*
-     * Check if there is already a route with the same to.
-     */
-    StaticRoutingRoute.findOne({
-      to   : req.body.routes.to,
-      table: req.params.table
-    }, function (error, doc) {
+    // Run the field validations.
+    StaticRoutingRoute.validate(req.body.routes, function (error, api_errors) {
       if (error) {
-        logger.error(error.message, {
+        logger.error(error, {
           module: 'routing/static/routes',
           tags  : [
-            log_tags.api_request
+            log_tags.api_request,
+            log_tags.db
           ]
         });
 
@@ -132,22 +136,14 @@ module.exports = function (req, res, options) {
         return;
       }
 
-      if (doc) {
-        /*
-         * There is already a route, so throw an error.
-         */
-        json_api_errors.errors.push({
-          code   : log_codes.already_present.code,
-          field  : 'to',
-          message: log_codes.already_present.message
-        });
-
-        res.json(400, json_api_errors); // Bad Request.
+      if (api_errors.length) {
+        res.json(400, {
+          errors: api_errors
+        }); // Bad Request.
         return;
       }
 
       var route = new StaticRoutingRoute(req.body.routes);
-
       ip_route.add(route, function (error) {
         if (error) {
           logger.error(error, {
@@ -194,6 +190,7 @@ module.exports = function (req, res, options) {
           }
 
           var item_to_send = req.body.routes;
+          delete item_to_send.table;
 
           item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/' + route._id;
           item_to_send.id = route._id;

@@ -139,7 +139,7 @@ describe('/api/routing/static/tables/600/routes', function () {
             var body = JSON.parse(res.text);
 
             body.should.have.property('errors');
-            body.errors.should.be.an.Array.of.length(4);
+            body.errors.should.be.an.Array.of.length(3);
           })
           .expect(400, done);
       });
@@ -164,7 +164,6 @@ describe('/api/routing/static/tables/600/routes', function () {
             routes: {
               to   : '70.70.70.0/24',
               type : 'unicast',
-              table: 254,
               via  : '127.0.0.1'
             }
           }))
@@ -183,7 +182,6 @@ describe('/api/routing/static/tables/600/routes', function () {
             body.routes.should.have.properties({
               to   : '70.70.70.0/24',
               type : 'unicast',
-              table: 254,
               via  : '127.0.0.1'
             });
             body.routes.should.have.properties([

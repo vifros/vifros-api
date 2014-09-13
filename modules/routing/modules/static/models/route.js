@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var address_scopes = require('iproute').address.utils.scopes;
+var route_types = require('iproute').route.utils.types;
+
 var statics = require('./route-statics');
 
 /*
@@ -14,11 +17,27 @@ var StaticRoutingRouteSchema = new Schema({
   },
   type       : {
     type    : String,
-    required: true
+    required: true,
+    enum    : [
+      route_types.unicast,
+      route_types.unreachable,
+      route_types.blackhole,
+      route_types.prohibit,
+      route_types.local,
+      route_types.broadcast,
+      route_types.throw,
+      route_types.nat,
+      route_types.anycast,
+      route_types.multicast
+    ]
   },
   tos        : String,
   dsfield    : String,
-  metric     : Number,
+  metric     : {
+    type: Number,
+    min : 0,
+    max : 4294967296 // 2 ^ 32
+  },
   preference : {
     type: Number,
     min : 0,
@@ -55,7 +74,16 @@ var StaticRoutingRouteSchema = new Schema({
       weight: Number
     }
   ],
-  scope      : String,
+  scope      : {
+    type: String,
+    enum: [
+      address_scopes.host,
+      address_scopes.link,
+      address_scopes.global,
+      address_scopes.nowhere,
+      address_scopes.site
+    ]
+  },
   protocol   : String,
   description: String
 });

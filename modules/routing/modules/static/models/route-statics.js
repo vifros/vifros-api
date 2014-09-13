@@ -100,6 +100,16 @@ exports.purgeFromOSandDB = function (options, cb) {
 exports.validate = function validate(object, cb) {
   var errors = [];
 
+  if (object.metric
+    && (object.metric < 0 || object.metric > 4294967296)) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'metric',
+      title: log_codes.invalid_value.message
+    });
+  }
+
   if (object.preference
     && (object.preference < 0 || object.preference > 4294967296)) {
 

@@ -11,7 +11,7 @@ module.exports = function (req, res) {
   }, function (error, doc) {
     if (error) {
       logger.error(error.message, {
-        module: 'routing/static/tables',
+        module: 'routing/static/tables/routes',
         tags  : [
           log_tags.api_request,
           log_tags.db
@@ -51,7 +51,7 @@ module.exports = function (req, res) {
     }
     catch (error) {
       logger.error(error.message, {
-        module: 'routing/static/tables',
+        module: 'routing/static/tables/routes',
         tags  : [
           log_tags.api_request
         ]

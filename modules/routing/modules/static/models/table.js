@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var statics = require('./table-statics');
+
 /*
  * Schema definition.
  */
@@ -21,5 +23,10 @@ var StaticRoutingTableSchema = new Schema({
   },
   description: String
 });
+
+/*
+ * Static definitions.
+ */
+StaticRoutingTableSchema.statics.validate = statics.validate;
 
 exports.StaticRoutingTable = mongoose.model('StaticRoutingTable', StaticRoutingTableSchema);

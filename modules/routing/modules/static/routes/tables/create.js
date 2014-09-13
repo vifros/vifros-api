@@ -114,15 +114,14 @@ module.exports = function (req, res) {
       return;
     }
 
-    var table = new StaticRoutingTable(req.body.tables);
-
-    routing_tables.add(table, function (error) {
+    // Run the field validations.
+    StaticRoutingTable.validate(req.body.tables, function (error, api_errors) {
       if (error) {
         logger.error(error, {
           module: 'routing/static/tables',
           tags  : [
             log_tags.api_request,
-            log_tags.os
+            log_tags.db
           ]
         });
 
@@ -137,16 +136,21 @@ module.exports = function (req, res) {
         return;
       }
 
-      /*
-       * Save changes to database.
-       */
-      table.save(function (error) {
+      if (api_errors.length) {
+        res.json(400, {
+          errors: api_errors
+        }); // Bad Request.
+        return;
+      }
+
+      var table = new StaticRoutingTable(req.body.tables);
+      routing_tables.add(table, function (error) {
         if (error) {
-          logger.error(error.message, {
+          logger.error(error, {
             module: 'routing/static/tables',
             tags  : [
               log_tags.api_request,
-              log_tags.db
+              log_tags.os
             ]
           });
 
@@ -161,18 +165,43 @@ module.exports = function (req, res) {
           return;
         }
 
-        var item_to_send = req.body.tables;
-
-        item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/' + table.id;
-
-        res.location(item_to_send.href);
-
         /*
-         * Build JSON API response.
+         * Save changes to database.
          */
-        json_api_body.tables = item_to_send;
+        table.save(function (error) {
+          if (error) {
+            logger.error(error.message, {
+              module: 'routing/static/tables',
+              tags  : [
+                log_tags.api_request,
+                log_tags.db
+              ]
+            });
 
-        res.json(200, json_api_body); // OK.
+            res.json(500, {
+              errors: [
+                {
+                  code : 'internal_server_error',
+                  title: 'Internal Server Error.'
+                }
+              ]
+            }); // Internal Server Error.
+            return;
+          }
+
+          var item_to_send = req.body.tables;
+
+          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/' + table.id;
+
+          res.location(item_to_send.href);
+
+          /*
+           * Build JSON API response.
+           */
+          json_api_body.tables = item_to_send;
+
+          res.json(200, json_api_body); // OK.
+        });
       });
     });
   });

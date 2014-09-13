@@ -46,6 +46,7 @@ module.exports = function (req, res, options) {
   }
 
   query_filter = lodash.merge(query_filter, filter);
+  query_options.select = '-table';
 
   StaticRoutingRoute.find(query_filter, {}, query_options, function (error, docs) {
     if (error) {

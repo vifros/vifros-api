@@ -16,7 +16,7 @@ describe('/api/routing/static', function () {
   });
 
   describe('when GET', function () {
-    it('should return a valid JSON-API response', function (done) {
+    it('should return a valid JSON-API response the respective level menu items', function (done) {
       api
         .get('/routing/static')
         .set('Accept', 'application/vnd.api+json')
@@ -30,6 +30,10 @@ describe('/api/routing/static', function () {
           // Body tests.
           body.should.have.property('links');
           body.links.should.not.be.empty;
+          body.links.should.have.properties([
+            'rules',
+            'tables'
+          ]);
         })
         .expect(200, done);
     });

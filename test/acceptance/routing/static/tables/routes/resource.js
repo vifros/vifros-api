@@ -76,7 +76,6 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
             routes: {
               to   : '80.80.80.0/24',
               type : 'unicast',
-              table: 601,
               via  : '127.0.0.1'
             }
           }))
@@ -129,13 +128,11 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
             body.routes.should.have.properties([
               'to',
               'type',
-              'table',
               'via'
             ]);
 
             body.routes.to.should.be.equal('80.80.80.0/24');
             body.routes.type.should.be.equal('unicast');
-            body.routes.table.should.be.equal(601);
             body.routes.via.should.be.equal('127.0.0.1');
           })
           .expect(200, done);
@@ -191,7 +188,6 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
             routes: {
               to   : '82.82.82.0/24',
               type : 'unicast',
-              table: 601,
               via  : '127.0.0.1'
             }
           }))
@@ -310,7 +306,6 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
             routes: {
               to   : '81.81.81.0/24',
               type : 'unicast',
-              table: 601,
               via  : '127.0.0.1'
             }
           }))
