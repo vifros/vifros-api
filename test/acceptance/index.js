@@ -33,8 +33,7 @@ describe('/api', function () {
           body.links.should.have.properties([
             'system',
             'interfaces',
-            'routing',
-            'services'
+            'routing'
           ]);
         })
         .expect(200, done);

@@ -6,8 +6,7 @@ module.exports = function (req, res) {
       logging : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/logging',
       tunables: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/tunables',
       settings: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/settings',
-      info    : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/info',
-      ipsets  : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/ipsets'
+      info    : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/info'
     }
   };
 

@@ -34,8 +34,7 @@ describe('/api/system', function () {
             'logging',
             'tunables',
             'settings',
-            'info',
-            'ipsets'
+            'info'
           ]);
         })
         .expect(200, done);

@@ -7,8 +7,7 @@ module.exports = function (req, res) {
     links: {
       system    : url_prefix + '/system',
       interfaces: url_prefix + '/interfaces',
-      routing   : url_prefix + '/routing',
-      services  : url_prefix + '/services'
+      routing   : url_prefix + '/routing'
     }
   };
 
