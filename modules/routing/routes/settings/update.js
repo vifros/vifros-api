@@ -47,7 +47,7 @@ function cb_update(setting, cb) {
 
   switch (setting.name) {
     case 'ip_forward_v4':
-      if (setting.value == '0') {
+      if (setting.value == 0) {
         ip_forward.v4.disable(function (error) {
           if (error) {
             cb(error);
@@ -59,7 +59,7 @@ function cb_update(setting, cb) {
         return;
       }
 
-      if (setting.value == '1') {
+      if (setting.value == 1) {
         ip_forward.v4.enable(function (error) {
           if (error) {
             cb(error);
@@ -75,7 +75,7 @@ function cb_update(setting, cb) {
       break;
 
     case 'ip_forward_v6':
-      if (setting.value == '0') {
+      if (setting.value == 0) {
         ip_forward.v6.disable(function (error) {
           if (error) {
             cb(error);
@@ -87,7 +87,7 @@ function cb_update(setting, cb) {
         return;
       }
 
-      if (setting.value == '1') {
+      if (setting.value == 1) {
         ip_forward.v6.enable(function (error) {
           if (error) {
             cb(error);
@@ -114,18 +114,14 @@ function cb_update(setting, cb) {
 function cb_validate(object, cb) {
   var errors = [];
 
-  if (object.name == 'ip_forward_v4'
-    || object.name == 'ip_forward_v6') {
+  if (typeof object.value != 'number'
+    || (object.value != 0 && object.value != 1)) {
 
-    if (object.value != 0
-      && object.value != 1) {
-
-      errors.push({
-        code : log_codes.invalid_value.code,
-        path : object.name,
-        title: log_codes.invalid_value.message
-      });
-    }
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'value',
+      title: log_codes.invalid_value.message
+    });
   }
 
   if (errors.length) {

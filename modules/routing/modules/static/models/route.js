@@ -10,15 +10,15 @@ var statics = require('./route-statics');
  * Schema definition.
  */
 var StaticRoutingRouteSchema = new Schema({
+  // The pair table:to have to be unique.
   // Read-only.
   to         : {
     type    : String,
     required: true
   },
   type       : {
-    type    : String,
-    required: true,
-    enum    : [
+    type   : String,
+    enum   : [
       route_types.unicast,
       route_types.unreachable,
       route_types.blackhole,
@@ -29,7 +29,8 @@ var StaticRoutingRouteSchema = new Schema({
       route_types.nat,
       route_types.anycast,
       route_types.multicast
-    ]
+    ],
+    default: route_types.unicast
   },
   tos        : String,
   dsfield    : String,

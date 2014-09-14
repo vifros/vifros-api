@@ -216,7 +216,7 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
             .set('Accept', 'application/vnd.api+json')
             .send(JSON.stringify({
               routes: {
-                to: 'some_to'
+                to: '8.8.8.8/24'
               }
             }))
             .expect(function (res) {

@@ -1,4 +1,5 @@
 var ip_route = require('iproute').route;
+var route_types = ip_route.utils.types;
 
 var logger = global.vifros.logger;
 var log_tags = logger.tags;
@@ -42,7 +43,7 @@ module.exports = function (req, res, options) {
     failed_required_fields.push('to');
   }
   if (typeof req.body.routes.type == 'undefined') {
-    failed_required_fields.push('type');
+    req.body.routes.type = route_types.unicast;
   }
 
   req.body.routes.table = req.params.table;
@@ -101,12 +102,6 @@ module.exports = function (req, res, options) {
       json_api_errors.errors.push({
         code   : log_codes.already_present.code,
         field  : 'to',
-        message: log_codes.already_present.message
-      });
-
-      json_api_errors.errors.push({
-        code   : log_codes.already_present.code,
-        field  : 'table',
         message: log_codes.already_present.message
       });
 

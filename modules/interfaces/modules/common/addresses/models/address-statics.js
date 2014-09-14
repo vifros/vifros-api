@@ -1,5 +1,5 @@
 var async = require('async');
-var Netmask = require('netmask').Netmask
+var Netmask = require('netmask').Netmask;
 
 var ip_address = require('iproute').address;
 var address_scopes = ip_address.utils.scopes;

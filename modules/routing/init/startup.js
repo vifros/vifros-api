@@ -23,7 +23,7 @@ module.exports = function (cb_init) {
           return;
         }
 
-        if (doc.value == '0') {
+        if (doc.value == 0) {
           ip_forward.v4.disable(function (error) {
             if (error) {
               cb_parallel(error);
@@ -35,7 +35,7 @@ module.exports = function (cb_init) {
           return;
         }
 
-        if (doc.value == '1') {
+        if (doc.value == 1) {
           ip_forward.v4.enable(function (error) {
             if (error) {
               cb_parallel(error);
@@ -60,7 +60,7 @@ module.exports = function (cb_init) {
           return;
         }
 
-        if (doc.value == '0') {
+        if (doc.value == 0) {
           ip_forward.v6.disable(function (error) {
             if (error) {
               cb_parallel(error);
@@ -72,7 +72,7 @@ module.exports = function (cb_init) {
           return;
         }
 
-        if (doc.value == '1') {
+        if (doc.value == 1) {
           ip_forward.v6.enable(function (error) {
             if (error) {
               cb_parallel(error);

@@ -139,7 +139,7 @@ describe('/api/routing/static/tables/600/routes', function () {
             var body = JSON.parse(res.text);
 
             body.should.have.property('errors');
-            body.errors.should.be.an.Array.of.length(3);
+            body.errors.should.be.an.Array.of.length(2);
           })
           .expect(400, done);
       });

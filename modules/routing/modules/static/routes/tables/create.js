@@ -97,6 +97,8 @@ module.exports = function (req, res) {
     if (doc) {
       /*
        * There is already a table, so throw an error.
+       * TODO: Research how to be more specific in returning the actual path
+       * that triggered the error since it can be one of them or both.
        */
       json_api_errors.errors.push({
         code : log_codes.already_present.code,

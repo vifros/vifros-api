@@ -1,6 +1,8 @@
 var async = require('async');
+var Netmask = require('netmask').Netmask;
 
 var ip_route = require('iproute').route;
+var route_types = ip_route.utils.types;
 
 var logger = global.vifros.logger;
 var log_tags = logger.tags;
@@ -100,6 +102,38 @@ exports.purgeFromOSandDB = function (options, cb) {
 exports.validate = function validate(object, cb) {
   var errors = [];
 
+  /*
+   * to.
+   */
+  if (object.to) {
+    try {
+      var netmask_to = new Netmask(object.to);
+    }
+    catch (e) {
+      errors.push({
+        code : log_codes.invalid_value.code,
+        path : 'to',
+        title: log_codes.invalid_value.message
+      });
+    }
+  }
+
+  /*
+   * type.
+   */
+  if (object.type
+    && !route_types.hasOwnProperty(object.type)) {
+
+    errors.push({
+      code : log_codes.invalid_value.code,
+      path : 'type',
+      title: log_codes.invalid_value.message
+    });
+  }
+
+  /*
+   * metric.
+   */
   if (object.metric
     && (object.metric < 0 || object.metric > 4294967296)) {
 
@@ -110,6 +144,9 @@ exports.validate = function validate(object, cb) {
     });
   }
 
+  /*
+   * preference.
+   */
   if (object.preference
     && (object.preference < 0 || object.preference > 4294967296)) {
 
@@ -120,6 +157,9 @@ exports.validate = function validate(object, cb) {
     });
   }
 
+  /*
+   * table.
+   */
   if (object.table
     && (object.table < 0 || object.table > 2147483648)) {
 

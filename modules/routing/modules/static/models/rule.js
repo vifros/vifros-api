@@ -10,7 +10,7 @@ var statics = require('./rule-statics');
  */
 var StaticRoutingRuleSchema = new Schema({
   // Read-only.
-  type       : {
+  type                 : {
     type    : String,
     required: true,
     enum    : [
@@ -22,21 +22,7 @@ var StaticRoutingRuleSchema = new Schema({
     ]
   },
   // Read-only.
-  from       : String,
-  // Read-only.
-  to         : String,
-  // Read-only.
-  iif        : String,
-  // Read-only.
-  oif        : String,
-  // Read-only.
-  tos        : String,
-  // Read-only.
-  dsfield    : String,
-  // Read-only.
-  fwmark     : String,
-  // Read-only.
-  priority   : {
+  priority             : {
     type    : Number,
     min     : 0,
     max     : 32767,
@@ -44,17 +30,35 @@ var StaticRoutingRuleSchema = new Schema({
     required: true
   },
   // Read-only.
-  table      : {
+  table                : {
     type    : Number,
     min     : 0,
     max     : 2147483648, // 2 ^ 31
     required: true
   },
   // Read-only.
-  realms     : String,
+  from                 : String,
   // Read-only.
-  nat        : String,
-  description: String
+  to                   : String,
+  // Read-only.
+  iif                  : String,
+  // Read-only.
+  oif                  : String,
+  // Read-only.
+  tos                  : String,
+  // Read-only.
+  dsfield              : String,
+  // Read-only.
+  fwmark               : String,
+  // Read-only.
+  suppress_prefixlength: Number,
+  // Read-only.
+  suppress_ifgroup     : String,
+  // Read-only.
+  realms               : String,
+  // Read-only.
+  nat                  : String,
+  description          : String
 });
 
 /*
