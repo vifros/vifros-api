@@ -1,3 +1,6 @@
+var exec = require('child_process').exec;
+var async = require('async');
+
 var logger = global.vifros.logger;
 var log_tags = logger.tags;
 
@@ -39,7 +42,12 @@ module.exports = function (req, res) {
       return;
     }
 
-    doc.remove(function (error) {
+    /*
+     * Resets first the original value.
+     */
+    doc.value.current = doc.value.original;
+
+    Tunable.createFromObjectToOS(doc, function (error) {
       if (error) {
         logger.error(error, {
           module: 'system/tunables',
@@ -60,7 +68,29 @@ module.exports = function (req, res) {
         return;
       }
 
-      res.send(204); // No Content.
+      doc.remove(function (error) {
+        if (error) {
+          logger.error(error, {
+            module: 'system/tunables',
+            tags  : [
+              log_tags.api_request,
+              log_tags.db
+            ]
+          });
+
+          res.json(500, {
+            errors: [
+              {
+                code : 'internal_server_error',
+                title: 'Internal Server Error.'
+              }
+            ]
+          }); // Internal Server Error.
+          return;
+        }
+
+        res.send(204); // No Content.
+      });
     });
   });
 };

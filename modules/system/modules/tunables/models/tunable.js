@@ -14,8 +14,15 @@ var TunableSchema = new Schema({
     unique  : true
   },
   value      : {
-    type    : String,
-    required: true
+    // Read-only.
+    original: {
+      type    : String,
+      required: true
+    },
+    current : {
+      type    : String,
+      required: true
+    }
   },
   description: String
 });
@@ -24,5 +31,6 @@ var TunableSchema = new Schema({
  * Static definitions.
  */
 TunableSchema.statics.createFromObjectToOS = statics.createFromObjectToOS;
+TunableSchema.statics.validate = statics.validate;
 
 exports.Tunable = mongoose.model('Tunable', TunableSchema);

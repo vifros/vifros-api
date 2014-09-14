@@ -69,6 +69,15 @@ module.exports = function (req, res) {
             title: log_codes.readonly_field.message
           });
         }
+        else if (property == 'value'
+          && req.body.tunables[property].hasOwnProperty('original')) {
+
+          json_api_errors.errors.push({
+            code : log_codes.readonly_field.code,
+            path : 'value.original',
+            title: log_codes.readonly_field.message
+          });
+        }
         else {
           valid_changed_options[property] = req.body.tunables[property];
         }
@@ -125,6 +134,11 @@ module.exports = function (req, res) {
       return;
     }
 
+    /*
+     * It doesn't need the validate method to be executed since the only valid
+     * changed properties will be the description or the value and those do not
+     * require validation.
+     */
     Tunable.createFromObjectToOS(doc, function (error) {
       if (error) {
         logger.error(error, {

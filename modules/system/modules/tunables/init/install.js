@@ -1,3 +1,4 @@
+var fs = require('fs');
 var async = require('async');
 
 var logger = global.vifros.logger;
@@ -18,22 +19,50 @@ module.exports = function (cb_init) {
    * Add package defaults to OS.
    */
   async.each(package_defaults.tunables, function (item, cb_each) {
-    Tunable.createFromObjectToOS(item, function (error) {
+    var tunable = new Tunable(item);
+
+    async.series([
+      /*
+       * Get the original value for the tunable so it can be reseted later.
+       */
+      function (cb_series) {
+        if (!tunable.value.original) {
+          fs.readFile('/proc/sys/' + tunable.path.replace(/\./g, '/'), {
+            encoding: 'utf8'
+          }, function (error, file_content) {
+            if (error) {
+              cb_series(error);
+              return;
+            }
+
+            tunable.value.original = file_content;
+            cb_series(null);
+          });
+          return;
+        }
+        cb_series(null);
+      }
+    ], function (error) {
       if (error) {
-        cb_each(error);
+        cb_each(null);
         return;
       }
 
-      var tunable = new Tunable(item);
-
-      // Save the object to database.
-      tunable.save(function (error) {
+      Tunable.createFromObjectToOS(item, function (error) {
         if (error) {
           cb_each(error);
           return;
         }
 
-        cb_each(null);
+        // Save the object to database.
+        tunable.save(function (error) {
+          if (error) {
+            cb_each(error);
+            return;
+          }
+
+          cb_each(null);
+        });
       });
     });
   }, function (error) {

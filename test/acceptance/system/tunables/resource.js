@@ -75,7 +75,7 @@ describe('/api/system/tunables/:tunable', function () {
               'value'
             ]);
             body.tunables.path.should.be.equal('net.ipv4.neigh.default.gc_thresh2');
-            body.tunables.value.should.be.a.String;
+            body.tunables.value.should.be.an.Object.and.not.an.Array;
           })
           .expect(200, done);
       });
@@ -151,7 +151,9 @@ describe('/api/system/tunables/:tunable', function () {
             .set('Accept', 'application/vnd.api+json')
             .send(JSON.stringify({
               tunables: {
-                value      : new_value,
+                value      : {
+                  current: new_value
+                },
                 description: 'a_description_' + now
               }
             })
@@ -174,7 +176,9 @@ describe('/api/system/tunables/:tunable', function () {
                   // Body tests.
                   body.should.have.property('tunables');
                   body.tunables.should.have.properties({
-                    value      : new_value,
+                    value      : {
+                      current: new_value
+                    },
                     description: 'a_description_' + now
                   });
                 })
@@ -206,7 +210,7 @@ describe('/api/system/tunables/:tunable', function () {
       });
     });
 
-    describe('and `path` is `net.ipv4.neigh.default.gc_thresh3` (a valid tunable)', function () {
+    describe('and `path` is `net.ipv4.neigh.default.gc_thresh1` (a valid tunable)', function () {
       after(function (done) {
         // Re-create the resource.
         api
@@ -215,8 +219,10 @@ describe('/api/system/tunables/:tunable', function () {
           .set('Content-Type', 'application/vnd.api+json')
           .send(JSON.stringify({
             tunables: {
-              path       : 'net.ipv4.neigh.default.gc_thresh3',
-              value      : '35034',
+              path       : 'net.ipv4.neigh.default.gc_thresh1',
+              value      : {
+                current: '9216'
+              },
               description: 'Is the maximum No. of ARP entries which can be kept in table.'
             }
           }))
@@ -225,7 +231,7 @@ describe('/api/system/tunables/:tunable', function () {
 
       it('should return a 204 response', function (done) {
         api
-          .delete('/system/tunables/net.ipv4.neigh.default.gc_thresh3')
+          .delete('/system/tunables/net.ipv4.neigh.default.gc_thresh1')
           .expect(204)
           .end(function (error) {
             if (error) {
@@ -235,7 +241,7 @@ describe('/api/system/tunables/:tunable', function () {
 
             // Checks if the resource was really deleted.
             api
-              .get('/system/tunables/net.ipv4.neigh.default.gc_thresh3')
+              .get('/system/tunables/net.ipv4.neigh.default.gc_thresh1')
               .set('Accept', 'application/vnd.api+json')
               .expect('Content-Type', 'application/vnd.api+json')
               .expect(function (res) {

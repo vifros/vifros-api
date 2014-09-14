@@ -131,7 +131,9 @@ describe('/api/system/tunables', function () {
           .send(JSON.stringify({
             tunables: {
               path : 'net.ipv4.neigh.default.gc_thresh1',
-              value: '9216'
+              value: {
+                current: '9216'
+              }
             }
           }))
           .expect('Content-Type', 'application/vnd.api+json')
@@ -161,7 +163,9 @@ describe('/api/system/tunables', function () {
           .send(JSON.stringify({
             tunables: {
               path : 'net.ipv4.conf.all.log_martians',
-              value: '1'
+              value: {
+                current: '1'
+              }
             }
           }))
           .expect('Content-Type', 'application/vnd.api+json')
@@ -177,9 +181,11 @@ describe('/api/system/tunables', function () {
             body.links.should.not.be.empty;
             body.should.have.property('tunables');
             body.tunables.should.have.properties({
-              path : 'net.ipv4.conf.all.log_martians',
-              value: '1'
+              path: 'net.ipv4.conf.all.log_martians'
             });
+            body.tunables.should.have.property('value');
+            body.tunables.value.should.have.property('current');
+            body.tunables.value.current.should.be.equal('1');
             body.tunables.should.have.properties([
               'href'
             ]);
