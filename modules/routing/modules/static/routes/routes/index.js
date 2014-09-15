@@ -23,7 +23,7 @@ module.exports = function (req, res, options) {
 
   var json_api_body = {
     links : {
-      routes: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/{routes.id}'
+      routes: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/{routes.to}'
     },
     routes: (options.single) ? {} : []
   };
@@ -101,7 +101,6 @@ module.exports = function (req, res, options) {
       function (cb_parallel) {
         async.each(docs, function (item, cb_each) {
           var buffer = item.toObject();
-          buffer.id = item._id;
 
           delete buffer._id;
           delete buffer.__v;

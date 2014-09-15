@@ -146,12 +146,10 @@ describe('/api/routing/static/tables/600/routes', function () {
     });
 
     describe('and trying to create a valid route', function () {
-      var route_id;
-
       after(function (done) {
         // Delete the resource.
         api
-          .delete('/routing/static/tables/600/routes/' + route_id)
+          .delete('/routing/static/tables/600/routes/70.70.70.0%2F24')
           .expect(204, done);
       });
 
@@ -162,9 +160,9 @@ describe('/api/routing/static/tables/600/routes', function () {
           .set('Content-Type', 'application/vnd.api+json')
           .send(JSON.stringify({
             routes: {
-              to   : '70.70.70.0/24',
-              type : 'unicast',
-              via  : '127.0.0.1'
+              to  : '70.70.70.0/24',
+              type: 'unicast',
+              via : '127.0.0.1'
             }
           }))
           .expect('Content-Type', 'application/vnd.api+json')
@@ -180,18 +178,14 @@ describe('/api/routing/static/tables/600/routes', function () {
             body.links.should.not.be.empty;
             body.should.have.property('routes');
             body.routes.should.have.properties({
-              to   : '70.70.70.0/24',
-              type : 'unicast',
-              via  : '127.0.0.1'
+              to  : '70.70.70.0/24',
+              type: 'unicast',
+              via : '127.0.0.1'
             });
             body.routes.should.have.properties([
-              'href',
-              'id'
+              'href'
             ]);
             body.routes.href.should.be.equal(res.header.location);
-
-            // For being able to delete the route after the test.
-            route_id = body.routes.id;
           })
           .expect(200, done);
       });

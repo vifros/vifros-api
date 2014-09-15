@@ -25,7 +25,7 @@ module.exports = function (req, res, options) {
 
   var json_api_body = {
     links : {
-      routes: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/{routes.id}'
+      routes: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/{routes.to}'
     },
     routes: {}
   };
@@ -74,7 +74,7 @@ module.exports = function (req, res, options) {
    */
   StaticRoutingRoute.findOne({
     to   : req.body.routes.to,
-    table: req.params.table
+    table: options.table
   }, function (error, doc) {
     if (error) {
       logger.error(error, {
@@ -187,8 +187,7 @@ module.exports = function (req, res, options) {
           var item_to_send = req.body.routes;
           delete item_to_send.table;
 
-          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/' + route._id;
-          item_to_send.id = route._id;
+          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/' + route.to;
 
           res.location(item_to_send.href);
 

@@ -34,11 +34,6 @@ var StaticRoutingRouteSchema = new Schema({
   },
   tos        : String,
   dsfield    : String,
-  metric     : {
-    type: Number,
-    min : 0,
-    max : 4294967296 // 2 ^ 32
-  },
   preference : {
     type: Number,
     min : 0,
@@ -66,6 +61,7 @@ var StaticRoutingRouteSchema = new Schema({
   cwnd       : Number,
   initcwnd   : Number,
   initrwnd   : Number,
+  quickack   : Boolean,
   advmss     : Number,
   reordering : Number,
   nexthop    : [
@@ -86,6 +82,7 @@ var StaticRoutingRouteSchema = new Schema({
     ]
   },
   protocol   : String,
+  onlink     : Boolean,
   description: String
 });
 

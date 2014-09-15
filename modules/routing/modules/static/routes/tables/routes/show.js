@@ -47,7 +47,7 @@ module.exports = function (req, res) {
        */
       routes_index(req, res, {
         filter  : {
-          _id: req.params.route
+          to: req.params.route
         },
         base_url: '/tables/' + req.params.table,
         single  : true

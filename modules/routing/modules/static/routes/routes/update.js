@@ -22,7 +22,10 @@ module.exports = function (req, res) {
     errors: []
   };
 
-  StaticRoutingRoute.findById(req.params.route, function (error, doc) {
+  StaticRoutingRoute.findOne({
+    to   : req.params.route,
+    table: req.params.table
+  }, function (error, doc) {
     if (error) {
       logger.error(error, {
         module: 'routing/static/routes',

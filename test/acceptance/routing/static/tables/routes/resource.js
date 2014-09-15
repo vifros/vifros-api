@@ -33,7 +33,7 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
     describe('and `:route` is anything', function () {
       it('should return methods GET,DELETE,PUT', function (done) {
         api
-          .options('/routing/static/tables/601/routes/53c8ef6557d7c12312e82c96')
+          .options('/routing/static/tables/601/routes/91.91.91.0')
           .expect('Allow', 'GET,DELETE,PUT')
           .expect(200, done);
       });
@@ -41,10 +41,10 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
   });
 
   describe('when GET', function () {
-    describe('and `:route` is `unknown` (an invalid key)', function () {
+    describe('and `:route` is `91.91.91.0` (an invalid key)', function () {
       it('should return a 404 error', function (done) {
         api
-          .get('/routing/static/tables/601/routes/53c8ef6557d7c12312z82c96')
+          .get('/routing/static/tables/601/routes/91.91.91.0')
           .set('Accept', 'application/vnd.api+json')
           .expect('Content-Type', 'application/vnd.api+json')
           .expect(function (res) {
@@ -64,8 +64,6 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
     });
 
     describe('and `:route` is a valid route', function () {
-      var route_id;
-
       before(function (done) {
         // Create the resource.
         api
@@ -74,16 +72,13 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
           .set('Content-Type', 'application/vnd.api+json')
           .send(JSON.stringify({
             routes: {
-              to   : '80.80.80.0/24',
-              type : 'unicast',
-              via  : '127.0.0.1'
+              to  : '80.80.80.0/24',
+              type: 'unicast',
+              via : '127.0.0.1'
             }
           }))
           .expect(function (res) {
             var body = JSON.parse(res.text);
-
-            // For being able to delete the route after the test.
-            route_id = body.routes.id;
           })
           .expect(200, done);
       });
@@ -92,13 +87,13 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
       after(function (done) {
         // Delete the resource.
         api
-          .delete('/routing/static/tables/601/routes/' + route_id)
+          .delete('/routing/static/tables/601/routes/80.80.80.0%2F24')
           .expect(204, done);
       });
 
       it('should return a valid JSON-API response', function (done) {
         api
-          .get('/routing/static/tables/601/routes/' + route_id)
+          .get('/routing/static/tables/601/routes/80.80.80.0%2F24')
           .set('Accept', 'application/vnd.api+json')
           .expect('Content-Type', 'application/vnd.api+json')
           .expect(function (res) {
@@ -116,7 +111,7 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
 
       it('should return a valid `routes` resource response', function (done) {
         api
-          .get('/routing/static/tables/601/routes/' + route_id)
+          .get('/routing/static/tables/601/routes/80.80.80.0%2F24')
           .set('Accept', 'application/vnd.api+json')
           .expect('Content-Type', 'application/vnd.api+json')
           .expect(function (res) {
@@ -144,7 +139,7 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
     describe('and `Content-Type` is `application/json` (an invalid Content-Type)', function () {
       it('should return a 415 error', function (done) {
         api
-          .put('/routing/static/tables/601/routes/53c8ef6557d7c12312z82c96')
+          .put('/routing/static/tables/601/routes/91.91.91.0')
           .set('Accept', 'application/vnd.api+json')
           .set('Content-Type', 'application/json')
           .expect('Content-Type', 'application/vnd.api+json')
@@ -152,10 +147,10 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
       });
     });
 
-    describe('and `:route` is `unknown` (an invalid key)', function () {
+    describe('and `:route` is `91.91.91.0` (an invalid key)', function () {
       it('should return a 404 error', function (done) {
         api
-          .put('/routing/static/tables/601/routes/53c8ef6557d7c12312z82c9z')
+          .put('/routing/static/tables/601/routes/91.91.91.0')
           .set('Content-Type', 'application/vnd.api+json')
           .set('Accept', 'application/vnd.api+json')
           .send('{}')
@@ -176,8 +171,6 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
     });
 
     describe('and `:route` is a valid key', function () {
-      var route_id;
-      
       beforeEach(function (done) {
         // Create the resource.
         api
@@ -186,16 +179,13 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
           .set('Content-Type', 'application/vnd.api+json')
           .send(JSON.stringify({
             routes: {
-              to   : '82.82.82.0/24',
-              type : 'unicast',
-              via  : '127.0.0.1'
+              to  : '82.82.82.0/24',
+              type: 'unicast',
+              via : '127.0.0.1'
             }
           }))
           .expect(function (res) {
             var body = JSON.parse(res.text);
-
-            // For being able to delete the route after the test.
-            route_id = body.routes.id;
           })
           .expect(200, done);
       });
@@ -204,14 +194,14 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
       afterEach(function (done) {
         // Delete the resource.
         api
-          .delete('/routing/static/tables/601/routes/' + route_id)
+          .delete('/routing/static/tables/601/routes/82.82.82.0%2F24')
           .expect(204, done);
       });
 
       describe('and tried to modify the read-only values', function () {
         it('should return a 400 error and an error collection stating the errors', function (done) {
           api
-            .put('/routing/static/tables/601/routes/' + route_id)
+            .put('/routing/static/tables/601/routes/82.82.82.0%2F24')
             .set('Content-Type', 'application/vnd.api+json')
             .set('Accept', 'application/vnd.api+json')
             .send(JSON.stringify({
@@ -235,7 +225,7 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
 
           // Updates the values.
           api
-            .put('/routing/static/tables/601/routes/' + route_id)
+            .put('/routing/static/tables/601/routes/82.82.82.0%2F24')
             .set('Content-Type', 'application/vnd.api+json')
             .set('Accept', 'application/vnd.api+json')
             .send(JSON.stringify({
@@ -253,7 +243,7 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
 
               // Check the modified values.
               api
-                .get('/routing/static/tables/601/routes/' + route_id)
+                .get('/routing/static/tables/601/routes/82.82.82.0%2F24')
                 .set('Accept', 'application/vnd.api+json')
                 .expect('Content-Type', 'application/vnd.api+json')
                 .expect(function (res) {
@@ -276,7 +266,7 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
     describe('and `:route` is `unknown` (an invalid key)', function () {
       it('should return a 404 error', function (done) {
         api
-          .delete('/routing/static/tables/601/routes/53c8ef6557d7c12312e82c9x')
+          .delete('/routing/static/tables/601/routes/91.91.91.0')
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
@@ -294,8 +284,6 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
     });
 
     describe('and `route` is a valid route', function () {
-      var route_id;
-
       before(function (done) {
         // Create the resource.
         api
@@ -304,23 +292,20 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
           .set('Content-Type', 'application/vnd.api+json')
           .send(JSON.stringify({
             routes: {
-              to   : '81.81.81.0/24',
-              type : 'unicast',
-              via  : '127.0.0.1'
+              to  : '81.81.81.0/24',
+              type: 'unicast',
+              via : '127.0.0.1'
             }
           }))
           .expect(function (res) {
             var body = JSON.parse(res.text);
-
-            // For being able to delete the route after the test.
-            route_id = body.routes.id;
           })
           .expect(200, done);
       });
 
       it('should return a 204 response', function (done) {
         api
-          .delete('/routing/static/tables/601/routes/' + route_id)
+          .delete('/routing/static/tables/601/routes/81.81.81.0%2F24')
           .expect(204)
           .end(function (error) {
             if (error) {
@@ -330,7 +315,7 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
 
             // Checks if the resource was really deleted.
             api
-              .get('/routing/static/tables/601/routes/' + route_id)
+              .get('/routing/static/tables/601/routes/81.81.81.0%2F24')
               .set('Accept', 'application/vnd.api+json')
               .expect('Content-Type', 'application/vnd.api+json')
               .expect(function (res) {

@@ -7,7 +7,8 @@ module.exports = function (req, res) {
 
   StaticRoutingRoute.purgeFromOSandDB({
     filter: {
-      _id: req.params.route
+      to   : req.params.route,
+      table: req.params.table
     }
   }, function (error, ret) {
     if (error) {

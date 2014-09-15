@@ -46,6 +46,7 @@ module.exports = function (req, res) {
        * Delegate the responsibility to send the response to this method.
        */
       routes_create(req, res, {
+        table   : req.params.table,
         base_url: '/tables/' + req.params.table
       });
     }
