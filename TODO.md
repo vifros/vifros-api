@@ -3,7 +3,7 @@
 
 - Add options to select from HTTP or HTTPS. Set HTTPS as the default.
 
-- Add acceptance tests. Make them dynamic base on the API schema?
+- Add more comprehensive tests to the basic acceptance ones.
 
 - Logging: For logging purposes only log the entire error message instead and return
  more meaningful error messages or keep the current 500 way?

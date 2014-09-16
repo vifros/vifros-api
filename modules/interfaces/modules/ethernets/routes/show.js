@@ -6,13 +6,7 @@ var logger = global.vifros.logger;
 var log_tags = logger.tags;
 
 module.exports = function (req, res) {
-  var json_api_body = {
-    links    : {
-      ethernets            : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/ethernets/{ethernets.name}',
-      'ethernets.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/ethernets/{ethernets.name}/addresses'
-    },
-    ethernets: {}
-  };
+  var json_api_body = {};
 
   Ethernet.findOne({
     name: req.params.ethernet
@@ -57,6 +51,9 @@ module.exports = function (req, res) {
     delete buffer._id;
     delete buffer.__v;
 
+    json_api_body.links = {
+      'ethernets.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/ethernets/' + doc.name + '/addresses'
+    };
     json_api_body.ethernets = buffer;
 
     res.json(200, json_api_body); // OK.

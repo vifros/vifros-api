@@ -12,7 +12,7 @@ var jsonapi = require('../../../../../../utils/jsonapi');
 module.exports = function (req, res) {
   var json_api_body = {
     links: {
-      logs: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/logging/logs' + '/' + '{logs.id}'
+      logs: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/logging/logs/{logs.id}'
     },
     logs : []
   };

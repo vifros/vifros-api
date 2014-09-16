@@ -8,9 +8,6 @@ var StaticRoutingTable = require('../../models/table').StaticRoutingTable;
 
 module.exports = function (req, res) {
   var json_api_body = {
-    links: {
-      rules: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/{rules.priority}'
-    },
     rules: {}
   };
 

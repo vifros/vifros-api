@@ -19,12 +19,13 @@ module.exports = function (req, res, options) {
     is_public_call = true;
   }
 
-  var json_api_body = {
-    links   : {
+  var json_api_body = {};
+  if (!options.single) {
+    json_api_body.links = {
       settings: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + options.base_url + '/settings/{settings.name}'
-    },
-    settings: (options.single) ? {} : []
-  };
+    };
+  }
+  json_api_body.settings = (options.single) ? {} : [];
 
   var query_filter = jsonapi.buildQueryFilterFromReq({
     req          : req,

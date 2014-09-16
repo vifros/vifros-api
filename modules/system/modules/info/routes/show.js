@@ -9,10 +9,7 @@ var log_tags = logger.tags;
 
 module.exports = function (req, res) {
   var json_api_body = {
-    links: {
-      info: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/info/{info.name}'
-    },
-    info : {}
+    info: {}
   };
 
   var buffer = {

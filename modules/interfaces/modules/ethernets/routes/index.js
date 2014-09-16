@@ -12,8 +12,7 @@ var jsonapi = require('../../../../../utils/jsonapi');
 module.exports = function (req, res) {
   var json_api_body = {
     links    : {
-      ethernets            : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/ethernets/{ethernets.name}',
-      'ethernets.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/ethernets/{ethernets.name}/addresses'
+      ethernets: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/ethernets/{ethernets.name}'
     },
     ethernets: []
   };

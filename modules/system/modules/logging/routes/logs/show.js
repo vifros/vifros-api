@@ -7,10 +7,7 @@ var Log = require('../../models/log').Log;
 
 module.exports = function (req, res) {
   var json_api_body = {
-    links: {
-      logs: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/logging/logs' + '/' + '{logs.id}'
-    },
-    logs : {}
+    logs: {}
   };
 
   Log.findById(req.params.log, function (error, doc) {

@@ -12,8 +12,7 @@ var jsonapi = require('../../../../../utils/jsonapi');
 module.exports = function (req, res) {
   var json_api_body = {
     links    : {
-      loopbacks            : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/loopbacks/{loopbacks.name}',
-      'loopbacks.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/loopbacks/{loopbacks.name}/addresses'
+      loopbacks: req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/loopbacks/{loopbacks.name}'
     },
     loopbacks: []
   };
@@ -70,7 +69,6 @@ module.exports = function (req, res) {
       function (cb_parallel) {
         async.each(docs, function (item, cb_each) {
           var buffer_loopback = item.toObject();
-          buffer_loopback.id = item._id;
 
           delete buffer_loopback._id;
           delete buffer_loopback.__v;

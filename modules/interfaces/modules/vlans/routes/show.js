@@ -6,13 +6,7 @@ var logger = global.vifros.logger;
 var log_tags = logger.tags;
 
 module.exports = function (req, res) {
-  var json_api_body = {
-    links: {
-      vlans            : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/vlans/{vlans.interface}.{vlans.tag}',
-      'vlans.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/vlans/{vlans.interface}.{vlans.tag}/addresses'
-    },
-    vlans: {}
-  };
+  var json_api_body = {};
 
   var vlan_interface = req.params.vlan.split('.')[0];
   var vlan_tag = req.params.vlan.split('.')[1];
@@ -73,6 +67,9 @@ module.exports = function (req, res) {
     delete buffer._id;
     delete buffer.__v;
 
+    json_api_body.links = {
+      'vlans.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/vlans/' + doc.interface + '.' + doc.tag + '/addresses'
+    };
     json_api_body.vlans = buffer;
 
     res.json(200, json_api_body); // OK.

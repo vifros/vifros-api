@@ -6,13 +6,7 @@ var logger = global.vifros.logger;
 var log_tags = logger.tags;
 
 module.exports = function (req, res) {
-  var json_api_body = {
-    links    : {
-      loopbacks            : req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/loopbacks/{loopbacks.name}',
-      'loopbacks.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/loopbacks/{loopbacks.name}/addresses'
-    },
-    loopbacks: {}
-  };
+  var json_api_body = {};
 
   Loopback.findOne({
     name: req.params.loopback
@@ -53,11 +47,13 @@ module.exports = function (req, res) {
      * Build JSON API response.
      */
     var buffer = doc.toObject();
-    buffer.id = doc._id;
 
     delete buffer._id;
     delete buffer.__v;
 
+    json_api_body.links = {
+      'loopbacks.addresses': req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/loopbacks/' + doc.name + '/addresses'
+    };
     json_api_body.loopbacks = buffer;
 
     res.json(200, json_api_body); // OK.
