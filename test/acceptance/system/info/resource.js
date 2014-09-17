@@ -51,10 +51,6 @@ describe('/api/system/info/:name', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -67,7 +63,6 @@ describe('/api/system/info/:name', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('info');
             body.should.have.property('info');
             body.info.should.be.an.Object.and.not.an.Array;
             body.info.should.have.properties([
@@ -86,24 +81,6 @@ describe('/api/system/info/:name', function () {
     });
 
     describe('and `:name` is `os`', function () {
-      it('should return a valid JSON-API response', function (done) {
-        api
-          .get('/system/info/os')
-          .set('Accept', 'application/vnd.api+json')
-          .expect('Content-Type', 'application/vnd.api+json')
-          .expect(function (res) {
-            var body = JSON.parse(res.text);
-
-            // Header tests.
-            res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
-          })
-          .expect(200, done);
-      });
-
       it('should return a valid `info/os` resource response', function (done) {
         api
           .get('/system/info/os')
@@ -112,7 +89,6 @@ describe('/api/system/info/:name', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('info');
             body.should.have.property('info');
             body.info.should.be.an.Object.and.not.an.Array;
             body.info.should.have.properties([
@@ -135,24 +111,6 @@ describe('/api/system/info/:name', function () {
     });
 
     describe('and `:name` is `memory`', function () {
-      it('should return a valid JSON-API response', function (done) {
-        api
-          .get('/system/info/memory')
-          .set('Accept', 'application/vnd.api+json')
-          .expect('Content-Type', 'application/vnd.api+json')
-          .expect(function (res) {
-            var body = JSON.parse(res.text);
-
-            // Header tests.
-            res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
-          })
-          .expect(200, done);
-      });
-
       it('should return a valid `info/memory` resource response', function (done) {
         api
           .get('/system/info/memory')
@@ -161,7 +119,6 @@ describe('/api/system/info/:name', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('info');
             body.should.have.property('info');
             body.info.should.be.an.Object.and.not.an.Array;
             body.info.should.have.properties([
@@ -180,24 +137,6 @@ describe('/api/system/info/:name', function () {
     });
 
     describe('and `:name` is `load`', function () {
-      it('should return a valid JSON-API response', function (done) {
-        api
-          .get('/system/info/load')
-          .set('Accept', 'application/vnd.api+json')
-          .expect('Content-Type', 'application/vnd.api+json')
-          .expect(function (res) {
-            var body = JSON.parse(res.text);
-
-            // Header tests.
-            res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
-          })
-          .expect(200, done);
-      });
-
       it('should return a valid `info/load` resource response', function (done) {
         api
           .get('/system/info/load')
@@ -206,7 +145,6 @@ describe('/api/system/info/:name', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('info');
             body.should.have.property('info');
             body.info.should.be.an.Object.and.not.an.Array;
             body.info.should.have.properties([
@@ -220,24 +158,6 @@ describe('/api/system/info/:name', function () {
     });
 
     describe('and `:name` is `cpus`', function () {
-      it('should return a valid JSON-API response', function (done) {
-        api
-          .get('/system/info/cpus')
-          .set('Accept', 'application/vnd.api+json')
-          .expect('Content-Type', 'application/vnd.api+json')
-          .expect(function (res) {
-            var body = JSON.parse(res.text);
-
-            // Header tests.
-            res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
-          })
-          .expect(200, done);
-      });
-
       it('should return a valid `info/cpus` resource response', function (done) {
         api
           .get('/system/info/cpus')
@@ -246,7 +166,6 @@ describe('/api/system/info/:name', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('info');
             body.should.have.property('info');
             body.info.should.be.an.Object.and.not.an.Array;
             body.info.should.have.properties([
@@ -260,24 +179,6 @@ describe('/api/system/info/:name', function () {
     });
 
     describe('and `:name` is `swap`', function () {
-      it('should return a valid JSON-API response', function (done) {
-        api
-          .get('/system/info/swap')
-          .set('Accept', 'application/vnd.api+json')
-          .expect('Content-Type', 'application/vnd.api+json')
-          .expect(function (res) {
-            var body = JSON.parse(res.text);
-
-            // Header tests.
-            res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
-          })
-          .expect(200, done);
-      });
-
       it('should return a valid `info/swap` resource response', function (done) {
         api
           .get('/system/info/swap')
@@ -286,7 +187,6 @@ describe('/api/system/info/:name', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('info');
             body.should.have.property('info');
             body.info.should.be.an.Object.and.not.an.Array;
             body.info.should.have.properties([
@@ -305,24 +205,6 @@ describe('/api/system/info/:name', function () {
     });
 
     describe('and `:name` is `disks`', function () {
-      it('should return a valid JSON-API response', function (done) {
-        api
-          .get('/system/info/disks')
-          .set('Accept', 'application/vnd.api+json')
-          .expect('Content-Type', 'application/vnd.api+json')
-          .expect(function (res) {
-            var body = JSON.parse(res.text);
-
-            // Header tests.
-            res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
-          })
-          .expect(200, done);
-      });
-
       it('should return a valid `info/disks` resource response', function (done) {
         api
           .get('/system/info/disks')
@@ -331,7 +213,6 @@ describe('/api/system/info/:name', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('info');
             body.should.have.property('info');
             body.info.should.be.an.Object.and.not.an.Array;
             body.info.should.have.properties([

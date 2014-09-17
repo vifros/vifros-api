@@ -73,10 +73,6 @@ describe('/api/interfaces/loopbacks/lo/addresses/:address', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -89,7 +85,6 @@ describe('/api/interfaces/loopbacks/lo/addresses/:address', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('addresses');
             body.should.have.property('addresses');
             body.addresses.should.be.an.Object.and.not.an.Array;
             body.addresses.should.have.properties([

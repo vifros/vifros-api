@@ -51,10 +51,6 @@ describe('/api/routing/settings/:setting', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -67,7 +63,6 @@ describe('/api/routing/settings/:setting', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('settings');
             body.should.have.property('settings');
             body.settings.should.be.an.Object.and.not.an.Array;
             body.settings.should.have.properties([
@@ -82,24 +77,6 @@ describe('/api/routing/settings/:setting', function () {
     });
 
     describe('and `:setting` is `ip_forward_v6`', function () {
-      it('should return a valid JSON-API response', function (done) {
-        api
-          .get('/routing/settings/ip_forward_v6')
-          .set('Accept', 'application/vnd.api+json')
-          .expect('Content-Type', 'application/vnd.api+json')
-          .expect(function (res) {
-            var body = JSON.parse(res.text);
-
-            // Header tests.
-            res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
-          })
-          .expect(200, done);
-      });
-
       it('should return a valid `settings/ip_forward_v6` resource response', function (done) {
         api
           .get('/routing/settings/ip_forward_v6')
@@ -108,7 +85,6 @@ describe('/api/routing/settings/:setting', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('settings');
             body.should.have.property('settings');
             body.settings.should.be.an.Object.and.not.an.Array;
             body.settings.should.have.properties([

@@ -67,7 +67,7 @@ describe('/api/interfaces/loopbacks/:loopback', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('loopbacks');
+            body.links.should.have.property('loopbacks.addresses');
             body.should.have.property('loopbacks');
             body.loopbacks.should.be.an.Object.and.not.an.Array;
             body.loopbacks.should.have.properties([

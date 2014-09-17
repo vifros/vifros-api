@@ -90,7 +90,7 @@ describe('/api/routing/static/:table', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('tables');
+            body.links.should.have.property('tables.routes');
             body.should.have.property('tables');
             body.tables.should.be.an.Object.and.not.an.Array;
             body.tables.should.have.properties([

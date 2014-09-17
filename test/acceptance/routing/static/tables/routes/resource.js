@@ -101,10 +101,6 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -117,7 +113,6 @@ describe('/api/routing/static/tables/601/routes/:route', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('routes');
             body.should.have.property('routes');
             body.routes.should.be.an.Object.and.not.an.Array;
             body.routes.should.have.properties([

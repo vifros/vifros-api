@@ -53,10 +53,6 @@ describe('/api/system/logging/settings/:setting', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -69,7 +65,6 @@ describe('/api/system/logging/settings/:setting', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('settings');
             body.should.have.property('settings');
             body.settings.should.be.an.Object.and.not.an.Array;
             body.settings.should.have.properties([
@@ -84,24 +79,6 @@ describe('/api/system/logging/settings/:setting', function () {
     });
 
     describe('and `:setting` is `transport_file`', function () {
-      it('should return a valid JSON-API response', function (done) {
-        api
-          .get('/system/logging/settings/transport_file')
-          .set('Accept', 'application/vnd.api+json')
-          .expect('Content-Type', 'application/vnd.api+json')
-          .expect(function (res) {
-            var body = JSON.parse(res.text);
-
-            // Header tests.
-            res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
-          })
-          .expect(200, done);
-      });
-
       it('should return a valid `settings/transport_file` resource response', function (done) {
         api
           .get('/system/logging/settings/transport_file')
@@ -110,7 +87,6 @@ describe('/api/system/logging/settings/:setting', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('settings');
             body.should.have.property('settings');
             body.settings.should.be.an.Object.and.not.an.Array;
             body.settings.should.have.properties([
@@ -125,24 +101,6 @@ describe('/api/system/logging/settings/:setting', function () {
     });
 
     describe('and `:setting` is `transport_mongodb`', function () {
-      it('should return a valid JSON-API response', function (done) {
-        api
-          .get('/system/logging/settings/transport_mongodb')
-          .set('Accept', 'application/vnd.api+json')
-          .expect('Content-Type', 'application/vnd.api+json')
-          .expect(function (res) {
-            var body = JSON.parse(res.text);
-
-            // Header tests.
-            res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
-          })
-          .expect(200, done);
-      });
-
       it('should return a valid `settings/transport_mongodb` resource response', function (done) {
         api
           .get('/system/logging/settings/transport_mongodb')
@@ -151,7 +109,6 @@ describe('/api/system/logging/settings/:setting', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('settings');
             body.should.have.property('settings');
             body.settings.should.be.an.Object.and.not.an.Array;
             body.settings.should.have.properties([

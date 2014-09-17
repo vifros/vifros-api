@@ -67,7 +67,7 @@ describe('/api/interfaces/ethernets/:ethernet', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('ethernets');
+            body.links.should.have.property('ethernets.addresses');
             body.should.have.property('ethernets');
             body.ethernets.should.be.an.Object.and.not.an.Array;
             body.ethernets.should.have.properties([

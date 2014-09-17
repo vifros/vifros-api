@@ -90,7 +90,7 @@ describe('/api/interfaces/vlans/:vlan', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('vlans');
+            body.links.should.have.property('vlans.addresses');
             body.should.have.property('vlans');
             body.vlans.should.be.an.Object.and.not.an.Array;
             body.vlans.should.have.properties([

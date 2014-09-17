@@ -75,10 +75,6 @@ describe('/api/routing/static/:rule', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -91,7 +87,6 @@ describe('/api/routing/static/:rule', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('rules');
             body.should.have.property('rules');
             body.rules.should.be.an.Object.and.not.an.Array;
             body.rules.should.have.properties([

@@ -51,10 +51,6 @@ describe('/api/system/settings/:setting', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -67,7 +63,6 @@ describe('/api/system/settings/:setting', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('settings');
             body.should.have.property('settings');
             body.settings.should.be.an.Object.and.not.an.Array;
             body.settings.should.have.properties([
@@ -92,10 +87,6 @@ describe('/api/system/settings/:setting', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -108,7 +99,6 @@ describe('/api/system/settings/:setting', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('settings');
             body.should.have.property('settings');
             body.settings.should.be.an.Object.and.not.an.Array;
             body.settings.should.have.properties([
@@ -133,10 +123,6 @@ describe('/api/system/settings/:setting', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -149,7 +135,6 @@ describe('/api/system/settings/:setting', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('settings');
             body.should.have.property('settings');
             body.settings.should.be.an.Object.and.not.an.Array;
             body.settings.should.have.properties([

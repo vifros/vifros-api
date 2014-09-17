@@ -51,10 +51,6 @@ describe('/api/system/tunables/:tunable', function () {
 
             // Header tests.
             res.header.link.should.exist;
-
-            // Body tests.
-            body.should.have.property('links');
-            body.links.should.not.be.empty;
           })
           .expect(200, done);
       });
@@ -67,7 +63,6 @@ describe('/api/system/tunables/:tunable', function () {
           .expect(function (res) {
             var body = JSON.parse(res.text);
 
-            body.links.should.have.property('tunables');
             body.should.have.property('tunables');
             body.tunables.should.be.an.Object.and.not.an.Array;
             body.tunables.should.have.properties([
