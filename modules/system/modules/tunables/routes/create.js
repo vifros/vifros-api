@@ -225,7 +225,7 @@ module.exports = function (req, res, options) {
             delete item_to_send._id;
             delete item_to_send.__v;
 
-            item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/tunables/' + tunable.path;
+            item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/system/tunables/' + encodeURIComponent(tunable.path);
 
             res.location(item_to_send.href);
 

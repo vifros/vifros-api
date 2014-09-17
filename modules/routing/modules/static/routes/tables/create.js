@@ -193,7 +193,7 @@ module.exports = function (req, res) {
 
           var item_to_send = req.body.tables;
 
-          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/' + table.id;
+          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/tables/' + encodeURIComponent(table.id);
 
           res.location(item_to_send.href);
 

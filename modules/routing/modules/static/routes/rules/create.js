@@ -172,7 +172,7 @@ module.exports = function (req, res) {
 
           var item_to_send = req.body.rules;
 
-          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/' + rule.priority;
+          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static/rules/' + encodeURIComponent(rule.priority);
 
           res.location(item_to_send.href);
 

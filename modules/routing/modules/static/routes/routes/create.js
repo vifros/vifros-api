@@ -187,7 +187,7 @@ module.exports = function (req, res, options) {
           var item_to_send = req.body.routes;
           delete item_to_send.table;
 
-          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/' + route.to;
+          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/routing/static' + options.base_url + '/routes/' + encodeURIComponent(route.to);
 
           res.location(item_to_send.href);
 

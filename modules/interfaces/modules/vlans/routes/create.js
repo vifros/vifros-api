@@ -273,7 +273,7 @@ module.exports = function (req, res) {
           /*
            * Clean unneeded alias.
            */
-          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/vlans/' + vlan.interface + '.' + vlan.tag;
+          item_to_send.href = req.protocol + '://' + req.get('Host') + config.get('api:prefix') + '/interfaces/vlans/' + vlan.interface + '.' + encodeURIComponent(vlan.tag);
 
           res.location(item_to_send.href);
 
