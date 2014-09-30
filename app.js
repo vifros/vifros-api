@@ -105,6 +105,9 @@ require('./init')(app, function cbOnAppInit(error) {
         log_tags.init
       ]
     });
+
+    // Init the REPL.
+    require('./repl-server')();
   });
 });
 
