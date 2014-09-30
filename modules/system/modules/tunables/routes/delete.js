@@ -1,4 +1,3 @@
-var exec = require('child_process').exec;
 var async = require('async');
 
 var logger = global.vifros.logger;

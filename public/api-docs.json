@@ -1,0 +1,1809 @@
+{
+  "title"      : "vifros API root.",
+  "description": "An hypermedia RESTful API to manage a vifros instance.",
+
+  "methods": {
+    "GET": {
+      "title": "Show root level menu."
+    }
+  },
+
+  "children": {
+    "interfaces": {
+      "title": "Interfaces related functionality.",
+
+      "definitions": {
+        "ethernets": {
+          "title": "A collection of interfaces.",
+          "type" : "array",
+          "items": {
+            "$ref": "#/children/interfaces/definitions/ethernet"
+          }
+        },
+        "ethernet" : {
+          "title"     : "A single interface.",
+          "type"      : "object",
+          "properties": {
+            "status"     : {
+              "title": "Status.",
+              "type" : "object",
+
+              "properties": {
+                "admin"      : {
+                  "title"  : "The status desired by the user for this interface to have.<br />Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='Ready to pass packets (if admin status is changed to up, then operational status should change to up if the interface is ready to transmit and receive network traffic).'>UP</abbr></li><li><abbr title='If admin status is down, then operational status should be down.'>DOWN</abbr></li></ul>",
+                  "type"   : "string",
+                  "enum"   : [
+                    "UP",
+                    "DOWN"
+                  ],
+                  "default": "UP"
+                },
+                "operational": {
+                  "title"   : "The real status this interface has.<br />Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='Ready to pass packets (if admin status is changed to up, then operational status should change to up if the interface is ready to transmit and receive network traffic).'>UP</abbr></li><li><abbr title='If admin status is down, then operational status should be down.'>DOWN</abbr></li><li><abbr title='Status can not be determined for some reason.'>UNKNOWN</abbr></li><li><abbr title='Some component is missing, typically hardware.'>NOTPRESENT</abbr></li></ul>",
+                  "type"    : "string",
+                  "readonly": true,
+                  "enum"    : [
+                    "UP",
+                    "DOWN",
+                    "UNKNOWN",
+                    "NOTPRESENT"
+                  ]
+                }
+              }
+            },
+            "name"       : {
+              "title"   : "The interface identifier.",
+              "type"    : "string",
+              "required": true,
+              "unique"  : true,
+              "readonly": true
+            },
+            "mac"        : {
+              "title"  : "<abbr title='Medium Access Control'>MAC</abbr>. The physical address for this interface.",
+              "type"   : "string",
+              "pattern": "^([0-9a-f]{2}([:-]|$)){6}$"
+            },
+            "mtu"        : {
+              "title": "<abbr title='Maximum Transfer Unit'>MTU</abbr>. The maximum transfer unit this interface supports.",
+              "type" : "number"
+            },
+            "description": {
+              "type" : "string",
+              "title": "Description."
+            }
+          }
+        },
+        "addresses": {
+          "title": "A collection of IP addresses.",
+          "type" : "array",
+          "items": {
+            "$ref": "#/children/interfaces/definitions/address"
+          }
+        },
+        "address"  : {
+          "title"     : "A single IP address.",
+          "type"      : "object",
+          "properties": {
+            "address"    : {
+              "title"   : "The address of the interface. The format of the address depends on the protocol. It is a dotted quad for IP and a sequence of hexadecimal halfwords separated by colons for IPv6. The address may be followed by a slash and a decimal number which encodes the network prefix length.",
+              "type"    : "string",
+              "required": true,
+              "unique"  : true,
+              "readonly": true
+            },
+            "peer"       : {
+              "title"   : "The address of the remote endpoint for pointopoint interfaces. The address may be followed by a slash and a decimal number, encoding the network prefix length. If a peer address is specified, the local address cannot have a prefix length. The network prefix is associated with the peer rather than with the local address.",
+              "type"    : "string",
+              "readonly": true
+            },
+            "broadcast"  : {
+              "title"   : "The broadcast address on the interface. It is possible to use the special symbols <code>+</code> and <code>-</code> instead of the broadcast address. In this case, the broadcast address is derived by setting/resetting the host bits of the interface prefix.<br /><br /><div class='alert alert-danger docs-no-margin-bottom'><strong>Warning:</strong>&nbsp;This field is not set unless explicitly requested.</div>",
+              "type"    : "string",
+              "readonly": true
+            },
+            "scope"      : {
+              "title"   : "The scope of the area where this address is valid.<br />Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='The address is valid only inside this host.'>host</abbr></abbr></li><li><abbr title='The address is link local, i.e. it is valid only on this device.'>link</abbr></li><li><abbr title='The address is globally valid.'>global</abbr></li><li>nowhere</li><li><abbr title='(IPv6 only) The address is site local, i.e. it is valid inside this site.'>site</abbr></li></ul>",
+              "type"    : "string",
+              "enum"    : [
+                "host",
+                "link",
+                "global",
+                "nowhere",
+                "site"
+              ],
+              "readonly": true
+            },
+            "description": {
+              "type" : "string",
+              "title": "Description."
+            }
+          }
+        },
+        "vlans"    : {
+          "title": "A collection of VLANs.",
+          "type" : "array",
+          "items": {
+            "$ref": "#/children/interfaces/definitions/vlan"
+          }
+        },
+        "vlan"     : {
+          "title"     : "A single VLAN.",
+          "type"      : "object",
+          "properties": {
+            "status"     : {
+              "title": "Status.",
+              "type" : "object",
+
+              "properties": {
+                "admin"      : {
+                  "title"  : "The status desired by the user for this interface to have.<br />Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='Ready to pass packets (if admin status is changed to up, then operational status should change to up if the interface is ready to transmit and receive network traffic).'>UP</abbr></li><li><abbr title='If admin status is down, then operational status should be down.'>DOWN</abbr></li></ul>",
+                  "type"   : "string",
+                  "enum"   : [
+                    "UP",
+                    "DOWN"
+                  ],
+                  "default": "UP"
+                },
+                "operational": {
+                  "title"   : "The real status this interface has.<br />Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='Ready to pass packets (if admin status is changed to up, then operational status should change to up if the interface is ready to transmit and receive network traffic).'>UP</abbr></li><li><abbr title='If admin status is down, then operational status should be down.'>DOWN</abbr></li><li><abbr title='Status can not be determined for some reason.'>UNKNOWN</abbr></li><li><abbr title='Some component is missing, typically hardware.'>NOTPRESENT</abbr></li><li><abbr title='Down due to state of lower layer interface.'>LOWERLAYERDOWN</abbr></li></ul>",
+                  "type"    : "string",
+                  "readonly": true,
+                  "enum"    : [
+                    "UP",
+                    "DOWN",
+                    "UNKNOWN",
+                    "NOTPRESENT",
+                    "LOWERLAYERDOWN"
+                  ]
+                }
+              }
+            },
+            "interface"  : {
+              "title"   : "The parent interface this VLAN belongs to.",
+              "type"    : "string",
+              "required": true,
+              "readonly": true
+            },
+            "tag"        : {
+              "title"   : "The VLAN tag identifier.",
+              "type"    : "number",
+              "minimum" : 0,
+              "maximum" : 4095,
+              "required": true,
+              "unique"  : true,
+              "readonly": true
+            },
+            "description": {
+              "type" : "string",
+              "title": "Description."
+            }
+          }
+        }
+      },
+
+      "methods": {
+        "GET": {
+          "title": "Show interfaces level menu."
+        }
+      },
+
+      "children": {
+        "ethernets": {
+          "title": "Ethernets information.",
+
+          "methods": {
+            "GET": {
+              "title": "Show an ethernets collection.",
+
+              "response": {
+                "$ref": "#/children/interfaces/definitions/ethernets"
+              }
+            }
+          },
+
+          "children": {
+            ":name": {
+              "title": "Ethernet.",
+
+              "methods": {
+                "GET"   : {
+                  "title": "Show an ethernet.",
+
+                  "response": {
+                    "$ref": "#/children/interfaces/definitions/ethernet"
+                  }
+                },
+                "PUT"   : {
+                  "title": "Updates an ethernet properties.",
+
+                  "request": {
+                    "$ref": "#/children/interfaces/definitions/ethernet"
+                  }
+                },
+                "DELETE": {
+                  "title"      : "Delete an ethernet.",
+                  "description": "Only ethernet interfaces with its operational status equal to <strong>NOTPRESENT</strong> can be deleted. Thus, this operation will turn invalid otherwise."
+                }
+              },
+
+              "children": {
+                "addresses": {
+                  "title": "Addresses.",
+
+                  "methods": {
+                    "GET" : {
+                      "title": "Show an addresses collection.",
+
+                      "response": {
+                        "$ref": "#/children/interfaces/definitions/addresses"
+                      }
+                    },
+                    "POST": {
+                      "title": "Creates a new address.",
+
+                      "request": {
+                        "$ref": "#/children/interfaces/definitions/address"
+                      },
+
+                      "response": {
+                        "$ref": "#/children/interfaces/definitions/address"
+                      }
+                    }
+                  },
+
+                  "children": {
+                    ":address": {
+                      "title": "Address.",
+
+                      "methods": {
+                        "GET"   : {
+                          "title": "Show an address.",
+
+                          "response": {
+                            "$ref": "#/children/interfaces/definitions/address"
+                          }
+                        },
+                        "PUT"   : {
+                          "title": "Updates an address properties.",
+
+                          "request": {
+                            "$ref": "#/children/interfaces/definitions/address"
+                          }
+                        },
+                        "DELETE": {
+                          "title": "Delete an address."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "loopbacks": {
+          "title": "Loopbacks information.",
+
+          "methods": {
+            "GET": {
+              "title": "Show a loopbacks collection.",
+
+              "response": {
+                "$ref": "#/children/interfaces/definitions/ethernets"
+              }
+            }
+          },
+
+          "children": {
+            ":name": {
+              "title": "Loopback.",
+
+              "methods": {
+                "GET"   : {
+                  "title": "Show a loopback.",
+
+                  "response": {
+                    "$ref": "#/children/interfaces/definitions/ethernet"
+                  }
+                },
+                "PUT"   : {
+                  "title": "Updates a loopback properties.",
+
+                  "request": {
+                    "$ref": "#/children/interfaces/definitions/ethernet"
+                  }
+                },
+                "DELETE": {
+                  "title"      : "Delete a loopback.",
+                  "description": "Deletes a loopback interface only if its operational status is <strong>NOTPRESENT</strong>. Thus, this operation is invalid otherwise."
+                }
+              },
+
+              "children": {
+                "addresses": {
+                  "title": "Addresses.",
+
+                  "methods": {
+                    "GET" : {
+                      "title": "Show an addresses collection.",
+
+                      "response": {
+                        "$ref": "#/children/interfaces/definitions/addresses"
+                      }
+                    },
+                    "POST": {
+                      "title": "Creates a new address.",
+
+                      "request": {
+                        "$ref": "#/children/interfaces/definitions/address"
+                      },
+
+                      "response": {
+                        "$ref": "#/children/interfaces/definitions/address"
+                      }
+                    }
+                  },
+
+                  "children": {
+                    ":address": {
+                      "title": "Address.",
+
+                      "methods": {
+                        "GET"   : {
+                          "title": "Show an address.",
+
+                          "response": {
+                            "$ref": "#/children/interfaces/definitions/address"
+                          }
+                        },
+                        "PUT"   : {
+                          "title": "Updates an address properties.",
+
+                          "request": {
+                            "$ref": "#/children/interfaces/definitions/address"
+                          }
+                        },
+                        "DELETE": {
+                          "title": "Delete an address."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "vlans": {
+          "title": "VLANs information.",
+
+          "methods": {
+            "GET" : {
+              "title": "Show a VLAN collection.",
+
+              "response": {
+                "$ref": "#/children/interfaces/definitions/vlans"
+              }
+            },
+            "POST": {
+              "title": "Show a VLAN collection.",
+
+              "request" : {
+                "$ref": "#/children/interfaces/definitions/vlan"
+              },
+              "response": {
+                "$ref": "#/children/interfaces/definitions/vlan"
+              }
+            }
+          },
+
+          "children": {
+            ":interface.:tag": {
+              "title": "VLAN.",
+
+              "methods": {
+                "GET"   : {
+                  "title": "Show a VLAN.",
+
+                  "response": {
+                    "$ref": "#/children/interfaces/definitions/vlan"
+                  }
+                },
+                "PUT"   : {
+                  "title": "Updates a VLAN properties.",
+
+                  "request": {
+                    "$ref": "#/children/interfaces/definitions/vlan"
+                  }
+                },
+                "DELETE": {
+                  "title": "Delete a VLAN."
+                }
+              },
+
+              "children": {
+                "addresses": {
+                  "title": "Addresses.",
+
+                  "methods": {
+                    "GET" : {
+                      "title": "Show an addresses collection.",
+
+                      "response": {
+                        "$ref": "#/children/interfaces/definitions/addresses"
+                      }
+                    },
+                    "POST": {
+                      "title": "Creates a new address.",
+
+                      "request": {
+                        "$ref": "#/children/interfaces/definitions/address"
+                      },
+
+                      "response": {
+                        "$ref": "#/children/interfaces/definitions/address"
+                      }
+                    }
+                  },
+
+                  "children": {
+                    ":address": {
+                      "title": "Address.",
+
+                      "methods": {
+                        "GET"   : {
+                          "title": "Show an address.",
+
+                          "response": {
+                            "$ref": "#/children/interfaces/definitions/address"
+                          }
+                        },
+                        "PUT"   : {
+                          "title": "Updates an address properties.",
+
+                          "request": {
+                            "$ref": "#/children/interfaces/definitions/address"
+                          }
+                        },
+                        "DELETE": {
+                          "title": "Delete an address."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "system": {
+      "title": "System related functionality.",
+
+      "methods": {
+        "GET": {
+          "title": "Show system level menu."
+        }
+      },
+
+      "children": {
+        "info": {
+          "title": "System specific information.",
+
+          "definitions": {
+            "infos": {
+              "title": "A collection of info objects.",
+              "type" : "array",
+              "items": {
+                "$ref": "#/children/system/children/info/definitions/info"
+              }
+            },
+            "info" : {
+              "title"     : "An info object.",
+              "type"      : "object",
+              "properties": {
+                "name" : {
+                  "title"   : "Name of the requested info object.",
+                  "type"    : "string",
+                  "required": true,
+                  "readonly": true,
+                  "unique"  : true,
+                  "enum"    : [
+                    "time",
+                    "os",
+                    "memory",
+                    "load",
+                    "swap",
+                    "disks",
+                    "cpus"
+                  ]
+                },
+                "value": {
+                  "title"   : "Value of the requested info object. This value type depends on the <code>name</code> property.",
+                  "type"    : "mixed",
+                  "required": true
+                }
+              }
+            }
+          },
+
+          "methods": {
+            "GET": {
+              "title": "Show specific information about the system.",
+
+              "response": {
+                "$ref": "#/children/system/children/info/definitions/infos"
+              }
+            }
+          },
+
+          "children": {
+            ":name": {
+              "title": "Specific section of system information.",
+
+              "methods": {
+                "GET": {
+                  "title": "Show specific section of system information.",
+
+                  "response": {
+                    "$ref": "#/children/system/children/info/definitions/info"
+                  }
+                }
+              },
+
+              "instances": {
+                "time"  : {
+                  "title"     : "Information about system times.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type": "object",
+
+                      "properties": {
+                        "up"     : {
+                          "title": "The system uptime in seconds.",
+                          "type" : "number"
+                        },
+                        "current": {
+                          "title": "The current system time in milliseconds.",
+                          "type" : "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "os"    : {
+                  "title"     : "OS related information.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type": "object",
+
+                      "properties": {
+                        "type"    : {
+                          "title": "The OS name.",
+                          "type" : "string"
+                        },
+                        "arch"    : {
+                          "title": "The OS CPU architecture.",
+                          "type" : "string"
+                        },
+                        "release" : {
+                          "title": "The OS release.",
+                          "type" : "string"
+                        },
+                        "platform": {
+                          "title": "The OS platform.",
+                          "type" : "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "memory": {
+                  "title"     : "Memory related information.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type": "object",
+
+                      "properties": {
+                        "installed": {
+                          "title": "Total amount of system memory in bytes.",
+                          "type" : "number"
+                        },
+                        "usage"    : {
+                          "title": "The memory utilization in percent.",
+                          "type" : "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "load"  : {
+                  "title"      : "An array containing the 1, 5, and 15 minute system load averages.",
+                  "description": "The load average is a measure of system activity, calculated by the operating system and expressed as a fractional number. As a rule of thumb, the load average should ideally be less than the number of logical CPUs in the system.",
+                  "type"       : "object",
+                  "properties" : {
+                    "value": {
+                      "type": "array",
+
+                      "items": [
+                        {
+                          "title": "1min load average.",
+                          "type" : "number"
+                        },
+                        {
+                          "title": "5min load average.",
+                          "type" : "number"
+                        },
+                        {
+                          "title": "15min load average.",
+                          "type" : "number"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "swap"  : {
+                  "title"     : "SWAP related information.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type": "object",
+
+                      "properties": {
+                        "installed": {
+                          "title": "Total amount of SWAP memory in bytes.",
+                          "type" : "number"
+                        },
+                        "usage"    : {
+                          "title": "The SWAP utilization in percent.",
+                          "type" : "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "disks" : {
+                  "title"     : "Information about the disks available in the system.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+
+                      "items": {
+                        "type": "object",
+
+                        "properties": {
+                          "installed": {
+                            "title": "Total amount of disk space in bytes.",
+                            "type" : "number"
+                          },
+                          "usage"    : {
+                            "title": "The space utilization in bytes.",
+                            "type" : "number"
+                          },
+                          "device"   : {
+                            "title": "The device identification for the partition.",
+                            "type" : "string"
+                          },
+                          "path"     : {
+                            "title": "The mounting path for the device.",
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "cpus"  : {
+                  "title"     : "An array of objects containing information about each CPU/core installed.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+
+                      "items": {
+                        "type": "object",
+
+                        "properties": {
+                          "model": {
+                            "title": "The CPU model.",
+                            "type" : "string"
+                          },
+                          "speed": {
+                            "title": "The CPU speed.",
+                            "type" : "string"
+                          },
+                          "usage": {
+                            "title": "The CPU utilization in percent.",
+                            "type" : "number"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "settings": {
+          "title": "System specific settings.",
+
+          "definitions": {
+            "settings": {
+              "title": "A collection of settings objects.",
+              "type" : "array",
+              "items": {
+                "$ref": "#/children/system/children/settings/definitions/setting"
+              }
+            },
+            "setting" : {
+              "title"     : "A setting object.",
+              "type"      : "object",
+              "properties": {
+                "name"       : {
+                  "title"   : "Name of the requested setting object.",
+                  "type"    : "string",
+                  "required": true,
+                  "readonly": true,
+                  "unique"  : true,
+                  "enum"    : [
+                    "hostname",
+                    "domain",
+                    "nameservers"
+                  ]
+                },
+                "value"      : {
+                  "title"   : "Value of the requested setting object. This value type depends on the <code>name</code> property.",
+                  "type"    : "mixed",
+                  "required": true
+                },
+                "description": {
+                  "title": "Description for this setting object.",
+                  "type" : "string"
+                }
+              }
+            }
+          },
+
+          "methods": {
+            "GET": {
+              "title": "Show system specific settings.",
+
+              "response": {
+                "$ref": "#/children/system/children/settings/definitions/settings"
+              }
+            }
+          },
+
+          "children": {
+            ":name": {
+              "title": "Specific system setting name.",
+
+              "methods": {
+                "GET": {
+                  "title": "Show a specific system setting.",
+
+                  "response": {
+                    "$ref": "#/children/system/children/settings/definitions/setting"
+                  }
+                },
+                "PUT": {
+                  "title": "Updates a system setting.",
+
+                  "request": {
+                    "$ref": "#/children/system/children/settings/definitions/setting"
+                  }
+                }
+              },
+
+              "instances": {
+                "hostname"   : {
+                  "title"     : "The hostname of the operating system.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type" : "string",
+                      "title": "The hostname of the operating system."
+                    }
+                  }
+                },
+                "domain"     : {
+                  "title"     : "The domain of the operating system. It must be a valid FQDN.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type" : "string",
+                      "title": "The domain of the operating system. It must be a valid FQDN."
+                    }
+                  }
+                },
+                "nameservers": {
+                  "title"     : "The nameservers of the operating system. They must be valid IP addresses.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+
+                      "items": [
+                        {
+                          "title": "Primary nameserver.",
+                          "type" : "string"
+                        },
+                        {
+                          "title": "Secondary nameserver.",
+                          "type" : "string"
+                        },
+                        {
+                          "title": "Tertiary nameserver.",
+                          "type" : "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "tunables": {
+          "title": "System tuning settings.",
+
+          "definitions": {
+            "tunables": {
+              "title": "A collection of tunable objects.",
+              "type" : "array",
+              "items": {
+                "$ref": "#/children/system/children/tunables/definitions/tunable"
+              }
+            },
+            "tunable" : {
+              "title"     : "A single tunable object.",
+              "type"      : "object",
+              "properties": {
+                "path"       : {
+                  "title"   : "The file path to the <kbd>/proc/sys/</kbd> setting that is wanted to be tuned.",
+                  "type"    : "string",
+                  "required": true,
+                  "unique"  : true,
+                  "readonly": true
+                },
+                "value"      : {
+                  "title": "The value to be set in the file descriptor.",
+                  "type" : "object",
+
+                  "properties": {
+                    "original": {
+                      "title"   : "The original value found in the system before it got replaced with the new value. This is so if later the tunable is deleted then it can be reseted.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "current" : {
+                      "title"   : "The current value for the file descriptor.",
+                      "type"    : "string",
+                      "readonly": true,
+                      "required": true
+                    }
+                  }
+                },
+                "description": {
+                  "type" : "string",
+                  "title": "Description."
+                }
+              }
+            }
+          },
+
+          "methods": {
+            "GET" : {
+              "title": "Show system tuning settings.",
+
+              "response": {
+                "$ref": "#/children/system/children/tunables/definitions/tunables"
+              }
+            },
+            "POST": {
+              "title"      : "Creates a new tunable.",
+              "description": "When creating a new tunable, the previous value found in the system for the tunable will be saved internally so if the tunable gets deleted, its original value can be recovered and setted.",
+
+              "request": {
+                "$ref": "#/children/system/children/tunables/definitions/tunable"
+              },
+
+              "response": {
+                "$ref": "#/children/system/children/tunables/definitions/tunable"
+              }
+            }
+          },
+
+          "children": {
+            ":path": {
+              "title": "Specific system tunable.",
+
+              "methods": {
+                "GET"   : {
+                  "title": "Show a specific system tunable.",
+
+                  "response": {
+                    "$ref": "#/children/system/children/tunables/definitions/tunable"
+                  }
+                },
+                "PUT"   : {
+                  "title": "Updates a tunable setting.",
+
+                  "request": {
+                    "$ref": "#/children/system/children/tunables/definitions/tunable"
+                  }
+                },
+                "DELETE": {
+                  "title"      : "Delete a tunable.",
+                  "description": "If a tunable is deleted, then its original value will be resetted to maintain the system integrity."
+                }
+              }
+            }
+          }
+        },
+
+        "logging": {
+          "title": "System logging settings.",
+
+          "methods": {
+            "GET": {
+              "title": "Show system logging menu."
+            }
+          },
+
+          "children": {
+            "logs": {
+              "title": "System logs.",
+
+              "definitions": {
+                "logs": {
+                  "title": "A collection of logs objects.",
+                  "type" : "array",
+                  "items": {
+                    "$ref": "#/children/system/children/logging/children/logs/definitions/log"
+                  }
+                },
+                "log" : {
+                  "title"     : "A log object.",
+                  "type"      : "object",
+                  "properties": {
+                    "id"       : {
+                      "title"   : "An unique identifier for a particular log.",
+                      "type"    : "string",
+                      "unique"  : true,
+                      "readonly": true
+                    },
+                    "module"   : {
+                      "title"   : "Module that this log belongs to.",
+                      "type"    : "string",
+                      "required": true
+                    },
+                    "tags"     : {
+                      "type" : "array",
+                      "items": {
+                        "title": "Categorize the logs to ease the search.",
+                        "type" : "string"
+                      }
+                    },
+                    "timestamp": {
+                      "title"   : "Time when it was generated.",
+                      "type"    : "string",
+                      "required": true
+                    },
+                    "level"    : {
+                      "title"   : "Severity.",
+                      "type"    : "string",
+                      "enum"    : [
+                        "info",
+                        "warn",
+                        "error"
+                      ],
+                      "required": true
+                    },
+                    "message"  : {
+                      "title"   : "A description for the error.",
+                      "type"    : "string",
+                      "required": true
+                    }
+                  }
+                }
+              },
+
+              "methods": {
+                "GET": {
+                  "title": "Show system logs.",
+
+                  "response": {
+                    "$ref": "#/children/system/children/logging/children/logs/definitions/logs"
+                  }
+                }
+              },
+
+              "children": {
+                ":id": {
+                  "title": "Specific log.",
+
+                  "methods": {
+                    "GET"   : {
+                      "title": "Show a specific log.",
+
+                      "response": {
+                        "$ref": "#/children/system/children/logging/children/logs/definitions/log"
+                      }
+                    },
+                    "DELETE": {
+                      "title": "Delete a log."
+                    }
+                  }
+                }
+              }
+            },
+
+            "settings": {
+              "title": "Logging specific settings.",
+
+              "definitions": {
+                "settings": {
+                  "title": "A collection of settings objects.",
+                  "type" : "array",
+                  "items": {
+                    "$ref": "#/children/system/children/logging/children/settings/definitions/setting"
+                  }
+                },
+                "setting" : {
+                  "title"     : "A setting object.",
+                  "type"      : "object",
+                  "properties": {
+                    "name"       : {
+                      "title"   : "Name of the requested setting object.",
+                      "type"    : "string",
+                      "required": true,
+                      "readonly": true,
+                      "unique"  : true,
+                      "enum"    : [
+                        "transport_console",
+                        "transport_file",
+                        "transport_mongodb"
+                      ]
+                    },
+                    "value"      : {
+                      "title"   : "Value of the requested setting object. This value type depends on the <code>name</code> property.",
+                      "type"    : "mixed",
+                      "required": true
+                    },
+                    "description": {
+                      "title": "Description for this setting object.",
+                      "type" : "string"
+                    }
+                  }
+                }
+              },
+
+              "methods": {
+                "GET": {
+                  "title": "Show logging specific settings.",
+
+                  "response": {
+                    "$ref": "#/children/system/children/logging/children/settings/definitions/settings"
+                  }
+                }
+              },
+
+              "children": {
+                ":name": {
+                  "title": "Specific logging setting name.",
+
+                  "methods": {
+                    "GET": {
+                      "title": "Show a specific logging setting.",
+
+                      "response": {
+                        "$ref": "#/children/system/children/logging/children/settings/definitions/setting"
+                      }
+                    },
+                    "PUT": {
+                      "title": "Updates a logging setting.",
+
+                      "request": {
+                        "$ref": "#/children/system/children/logging/children/settings/definitions/setting"
+                      }
+                    }
+                  },
+
+                  "instances": {
+                    "transport_console": {
+                      "title": "Settings for the console transport.",
+                      "type" : "object",
+
+                      "properties": {
+                        "value": {
+                          "type": "object",
+
+                          "properties": {
+                            "enabled"  : {
+                              "title"  : "Whether the transport is enabled or not.",
+                              "type"   : "boolean",
+                              "default": true
+                            },
+                            "colorize" : {
+                              "title"  : "Whether the logs should be colorized in the output or not.",
+                              "type"   : "boolean",
+                              "default": true
+                            },
+                            "timestamp": {
+                              "title"  : "Whether a timestamp should be added to the logs when they are generated.",
+                              "type"   : "boolean",
+                              "default": false
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "transport_file"   : {
+                      "title": "Settings for the file transport.",
+                      "type" : "object",
+
+                      "properties": {
+                        "value": {
+                          "type": "object",
+
+                          "properties": {
+                            "enabled"  : {
+                              "title"  : "Whether the transport is enabled or not.",
+                              "type"   : "boolean",
+                              "default": true
+                            },
+                            "colorize" : {
+                              "title"  : "Whether the logs should be colorized in the output or not.",
+                              "type"   : "boolean",
+                              "default": true
+                            },
+                            "timestamp": {
+                              "title"  : "Whether a timestamp should be added to the logs when they are generated.",
+                              "type"   : "boolean",
+                              "default": true
+                            },
+                            "filename" : {
+                              "title"  : "The file path where the logs should be saved to.",
+                              "type"   : "string",
+                              "default": "/var/log/vifros.log"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "transport_mongodb": {
+                      "title": "Settings for the mongodb transport.",
+                      "type" : "object",
+
+                      "properties": {
+                        "value": {
+                          "type": "object",
+
+                          "properties": {
+                            "enabled": {
+                              "title"  : "Whether the transport is enabled or not.",
+                              "type"   : "boolean",
+                              "default": true
+                            },
+                            "db"     : {
+                              "title"  : "The database name where the logs should be saved to.",
+                              "type"   : "string",
+                              "default": "vifros"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "routing": {
+      "title": "Routing related functionality.",
+
+      "methods": {
+        "GET": {
+          "title": "Show routing level menu."
+        }
+      },
+
+      "children": {
+        "settings": {
+          "title": "Routing specific settings.",
+
+          "definitions": {
+            "settings": {
+              "title": "A collection of settings objects.",
+              "type" : "array",
+              "items": {
+                "$ref": "#/children/routing/children/settings/definitions/setting"
+              }
+            },
+            "setting" : {
+              "title"     : "A setting object.",
+              "type"      : "object",
+              "properties": {
+                "name"       : {
+                  "title"   : "Name of the requested setting object.",
+                  "type"    : "string",
+                  "required": true,
+                  "readonly": true,
+                  "unique"  : true,
+                  "enum"    : [
+                    "ip_forward_v4",
+                    "ip_forward_v6"
+                  ]
+                },
+                "value"      : {
+                  "title"   : "Value of the requested setting object. This value type depends on the <code>name</code> property.",
+                  "type"    : "mixed",
+                  "required": true
+                },
+                "description": {
+                  "title": "Description for this setting object.",
+                  "type" : "string"
+                }
+              }
+            }
+          },
+
+          "methods": {
+            "GET": {
+              "title": "Show routing specific settings.",
+
+              "response": {
+                "$ref": "#/children/routing/children/settings/definitions/settings"
+              }
+            }
+          },
+
+          "children": {
+            ":name": {
+              "title": "Specific routing setting name.",
+
+              "methods": {
+                "GET": {
+                  "title": "Show a specific routing setting.",
+
+                  "response": {
+                    "$ref": "#/children/routing/children/settings/definitions/setting"
+                  }
+                },
+                "PUT": {
+                  "title": "Updates a routing setting.",
+
+                  "request": {
+                    "$ref": "#/children/routing/children/settings/definitions/setting"
+                  }
+                }
+              },
+
+              "instances": {
+                "ip_forward_v4": {
+                  "title"     : "IPv4 packet forwarding status.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type"   : "number",
+                      "title"  : "IPv4 Packet Forwarding status.<br />Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='Disable the packet forwarding.'>0</abbr></li><li><abbr title='Enable the packet forwarding.'>1</abbr></li></ul>",
+                      "enum"   : [
+                        0,
+                        1
+                      ],
+                      "default": 0
+                    }
+                  }
+                },
+                "ip_forward_v6": {
+                  "title"     : "IPv6 packet forwarding status.",
+                  "type"      : "object",
+                  "properties": {
+                    "value": {
+                      "type"   : "number",
+                      "title"  : "IPv6 Packet Forwarding status.<br />Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='Disable the packet forwarding.'>0</abbr></li><li><abbr title='Enable the packet forwarding.'>1</abbr></li></ul>",
+                      "enum"   : [
+                        0,
+                        1
+                      ],
+                      "default": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "static": {
+          "title": "Static routing specific functionality.",
+
+          "methods": {
+            "GET": {
+              "title": "Show static routing menu."
+            }
+          },
+
+          "children": {
+            "tables": {
+              "title": "Routing tables.",
+
+              "definitions": {
+                "tables": {
+                  "title": "A collection of tables objects.",
+                  "type" : "array",
+                  "items": {
+                    "$ref": "#/children/routing/children/static/children/tables/definitions/table"
+                  }
+                },
+                "table" : {
+                  "title"     : "A table object.",
+                  "type"      : "object",
+                  "properties": {
+                    "name"       : {
+                      "title"   : "Name of the requested table object.",
+                      "type"    : "string",
+                      "required": true,
+                      "readonly": true,
+                      "unique"  : true
+                    },
+                    "id"         : {
+                      "title"   : "Identifier of the requested table object.",
+                      "type"    : "number",
+                      "required": true,
+                      "readonly": true,
+                      "unique"  : true,
+                      "minimum" : 0,
+                      "maximum" : 2147483648
+                    },
+                    "description": {
+                      "title": "Description for this table object.",
+                      "type" : "string"
+                    }
+                  }
+                }
+              },
+
+              "methods": {
+                "GET" : {
+                  "title": "Show a tables collection.",
+
+                  "response": {
+                    "$ref": "#/children/routing/children/static/children/tables/definitions/tables"
+                  }
+                },
+                "POST": {
+                  "title": "Creates a new table.",
+
+                  "request": {
+                    "$ref": "#/children/routing/children/static/children/tables/definitions/table"
+                  },
+
+                  "response": {
+                    "$ref": "#/children/routing/children/static/children/tables/definitions/table"
+                  }
+                }
+              },
+
+              "children": {
+                ":id": {
+                  "title": "Specific table.",
+
+                  "methods": {
+                    "GET"   : {
+                      "title": "Show a specific table.",
+
+                      "response": {
+                        "$ref": "#/children/routing/children/static/children/tables/definitions/table"
+                      }
+                    },
+                    "PUT"   : {
+                      "title": "Updates a table properties.",
+
+                      "request": {
+                        "$ref": "#/children/routing/children/static/children/tables/definitions/table"
+                      }
+                    },
+                    "DELETE": {
+                      "title": "Delete a table.<br /><br /><div class='alert alert-danger docs-no-margin-bottom'><strong>Warning:</strong>&nbsp;All rules that points out to the table and all the contained routes will be deleted as well.</div>"
+                    }
+                  },
+
+                  "children": {
+                    "routes": {
+                      "title": "Routing routes.",
+
+                      "definitions": {
+                        "routes": {
+                          "title": "A collection of routes objects.",
+                          "type" : "array",
+                          "items": {
+                            "$ref": "#/children/routing/children/static/children/tables/children/:id/children/routes/definitions/route"
+                          }
+                        },
+                        "route" : {
+                          "title"     : "A route object.",
+                          "type"      : "object",
+                          "properties": {
+                            "to"         : {
+                              "title"   : "The destination prefix of the route. The format of the address depends on the protocol. It is a dotted quad for IP and a sequence of hexadecimal halfwords separated by colons for IPv6. The address may be followed by a slash and a decimal number which encodes the network prefix length.",
+                              "type"    : "string",
+                              "required": true,
+                              "readonly": true,
+                              "unique"  : true
+                            },
+                            "type"       : {
+                              "title"  : "Route type.<br />Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='The route entry describes real paths to the destinations covered by the route prefix.'>unicast</abbr></li><li><abbr title='These destinations are unreachable. Packets are discarded and the ICMP message host unreachable is generated. The local senders get an EHOSTUNREACH error.'>unreachable</abbr></li><li><abbr title='These destinations are unreachable. Packets are discarded silently. The local senders get an EINVAL error.'>blackhole</abbr></li><li><abbr title='These destinations are unreachable. Packets are discarded and the ICMP message communication administratively prohibited is generated. The local senders get an EACCES error.'>prohibit</abbr></li><li><abbr title='The destinations are assigned to this host. The packets are looped back and delivered locally.'>local</abbr></li><li><abbr title='The destinations are broadcast addresses. The packets are sent as link broadcasts.'>broadcast</abbr></li><li><abbr title='A special control route used together with policy rules. If such a route is selected, lookup in this table is terminated pretending that no route was found. Without policy routing it is equivalent to the absence of the route in the routing table. The packets are dropped and the ICMP message net unreachable is generated. The local senders get an ENETUNREACH error.'>throw</abbr></li><li><abbr title='A special NAT route. Destinations covered by the prefix are considered to be dummy (or external) addresses which require translation to real (or internal) ones before forwarding. The addresses to translate to are selected with the attribute via.'>nat</abbr></li><li><abbr title='(not implemented) The destinations are anycast addresses assigned to this host. They are mainly equivalent to local with one difference: such addresses are invalid when used as the source address of any packet.'>anycast</abbr></li><li><abbr title='A special type used for multicast routing. It is not present in normal routing tables.'>multicast</abbr></li></ul>",
+                              "type"   : "string",
+                              "enum"   : [
+                                "unicast",
+                                "unreachable",
+                                "blackhole",
+                                "prohibit",
+                                "local",
+                                "broadcast",
+                                "throw",
+                                "nat",
+                                "anycast",
+                                "multicast"
+                              ],
+                              "default": "unicast"
+                            },
+                            "tos"        : {
+                              "title": "The Type Of Service (TOS) key. This key has no associated mask and the longest match is understood as: First, compare the TOS of the route and of the packet. If they are not equal, then the packet may still match a route with a zero TOS. TOS is either an 8 bit hexadecimal number or an identifier from /etc/iproute2/rt dsfield.",
+                              "type" : "string"
+                            },
+                            "dsfield"    : {
+                              "title": "The Type Of Service (TOS) key. This key has no associated mask and the longest match is understood as: First, compare the TOS of the route and of the packet. If they are not equal, then the packet may still match a route with a zero TOS. TOS is either an 8 bit hexadecimal number or an identifier from /etc/iproute2/rt dsfield.",
+                              "type" : "string"
+                            },
+                            "preference" : {
+                              "title"  : "The preference value of the route. NUMBER is an arbitrary 32bit number.",
+                              "type"   : "number",
+                              "minimum": 0,
+                              "maximum": 4294967296
+                            },
+                            "dev"        : {
+                              "title": "The output device name.",
+                              "type" : "string"
+                            },
+                            "via"        : {
+                              "title"   : "The sense of this field depends on the route type. For normal unicast routes it is either the true nexthop router or, if it is a direct route installed in BSD compatibility mode, it can be a local address of the interface. For NAT routes it is the first address of the block of translated IP destinations.",
+                              "type"    : "string",
+                              "required": true
+                            },
+                            "src"        : {
+                              "title": "The source address to prefer when sending to the destinations covered by the route prefix.",
+                              "type" : "string"
+                            },
+                            "realm"      : {
+                              "title": "The realm to which this route is assigned. REALMID may be a number or a string from the file /etc/iproute2/rt_realms.",
+                              "type" : "string"
+                            },
+                            "mtu"        : {
+                              "title": "The MTU along the path to the destination. If the modifier lock is not used, the MTU may be updated by the kernel due to Path MTU Discovery. If the modifier lock is used, no path MTU discovery will be tried, all packets will be sent without the DF bit in IPv4 case or fragmented to MTU for IPv6.",
+                              "type" : "string"
+                            },
+                            "window"     : {
+                              "title": "The maximal window for TCP to advertise to these destinations, measured in bytes. It limits maximal data bursts that our TCP peers are allowed to send to us.",
+                              "type" : "number"
+                            },
+                            "rtt"        : {
+                              "title": "The initial <abbr title='Round Trip Time'>RTT</abbr> estimate. If no suffix is specified the units are raw values passed directly to the routing code to maintain compatibility with previous releases. Otherwise if a suffix of s, sec or secs is used to specify seconds and ms, msec or msecs to specify milliseconds.",
+                              "type" : "string"
+                            },
+                            "rttvar"     : {
+                              "title": "The initial RTT variance estimate.",
+                              "type" : "string"
+                            },
+                            "rto_min"    : {
+                              "title": "The minimum TCP Retransmission TimeOut to use when communicating with this destination. Values are specified as with rtt above.",
+                              "type" : "string"
+                            },
+                            "ssthresh"   : {
+                              "title": "An estimate for the initial slow start threshold.",
+                              "type" : "number"
+                            },
+                            "cwnd"       : {
+                              "title": "The clamp for congestion window. It is ignored if the lock flag is not used.",
+                              "type" : "number"
+                            },
+                            "initcwnd"   : {
+                              "title": "The initial congestion window size for connections to this destination. Actual window size is this value multiplied by the MSS (\"Maximal Segment Size\") for same connection. The default is zero, meaning to use the values specified in RFC2414.",
+                              "type" : "number"
+                            },
+                            "initrwnd"   : {
+                              "title": "The initial receive window size for connections to this destination. Actual window size is this value multiplied by the MSS of the connection. The default value is zero, meaning to use Slow Start value.",
+                              "type" : "number"
+                            },
+                            "quickack"   : {
+                              "title": "Enable or disable quick ack for connections to this destination.",
+                              "type" : "boolean"
+                            },
+                            "advmss"     : {
+                              "title": "The MSS ('Maximal Segment Size') to advertise to these destinations when establishing TCP connections. If it is not given, Linux uses a default value calculated from the first hop device MTU. (If the path to these destination is asymmetric, this guess may be wrong.)",
+                              "type" : "number"
+                            },
+                            "reordering" : {
+                              "title": "Maximal reordering on the path to this destination. If it is not given, Linux uses the value selected with sysctl variable net/ipv4/tcp_reordering.",
+                              "type" : "string"
+                            },
+                            "nexthop"    : {
+                              "title": "The nexthop of a multipath route.",
+                              "type" : "array",
+
+                              "items": {
+                                "type": "object",
+
+                                "properties": {
+                                  "via"   : {
+                                    "title": "The nexthop router.",
+                                    "type" : "string"
+                                  },
+                                  "dev"   : {
+                                    "title": "The output device.",
+                                    "type" : "string"
+                                  },
+                                  "weight": {
+                                    "title": "Is a weight for this element of a multipath route reflecting its relative bandwidth or quality.",
+                                    "type" : "number"
+                                  }
+                                }
+                              }
+                            },
+                            "scope"      : {
+                              "title": "The scope of the destinations covered by the route prefix. Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='the address is valid only inside this host.'>host</abbr></abbr></li><li><abbr title='The address is link local, i.e. it is valid only on this device.'>link</abbr></li><li><abbr title='The address is globally valid.'>global</abbr></li><li>nowhere</li><li><abbr title='(IPv6 only) the address is site local, i.e. it is valid inside this site.'>site</abbr></li></ul>",
+                              "type" : "string",
+                              "enum" : [
+                                "host",
+                                "link",
+                                "global",
+                                "nowhere",
+                                "site"
+                              ]
+                            },
+                            "protocol"   : {
+                              "title": "The routing protocol identifier of this route.",
+                              "type" : "string"
+                            },
+                            "onlink"     : {
+                              "title": "Pretend that the nexthop is directly attached to this link, even if it does not match any interface prefix.<br /><br /><div class='alert alert-danger docs-no-margin-bottom'><strong>Warning:</strong>&nbsp;Use this option in conjunction with <code>nexthop</code>. If <code>nexthop</code> is not set, it will result in an invalid operation.</div>",
+                              "type" : "boolean"
+                            },
+                            "description": {
+                              "title": "Description for this route object.",
+                              "type" : "string"
+                            }
+                          }
+                        }
+                      },
+
+                      "methods": {
+                        "GET" : {
+                          "title": "Show a routes collection.",
+
+                          "response": {
+                            "$ref": "#/children/routing/children/static/children/tables/children/:id/children/routes/definitions/routes"
+                          }
+                        },
+                        "POST": {
+                          "title": "Creates a new route.",
+
+                          "request": {
+                            "$ref": "#/children/routing/children/static/children/tables/children/:id/children/routes/definitions/route"
+                          },
+
+                          "response": {
+                            "$ref": "#/children/routing/children/static/children/tables/children/:id/children/routes/definitions/route"
+                          }
+                        }
+                      },
+
+                      "children": {
+                        ":to": {
+                          "title": "Specific route.",
+
+                          "methods": {
+                            "GET"   : {
+                              "title": "Show a specific route.",
+
+                              "response": {
+                                "$ref": "#/children/routing/children/static/children/tables/children/:id/children/routes/definitions/route"
+                              }
+                            },
+                            "PUT"   : {
+                              "title": "Updates a route properties.",
+
+                              "request": {
+                                "$ref": "#/children/routing/children/static/children/tables/children/:id/children/routes/definitions/route"
+                              }
+                            },
+                            "DELETE": {
+                              "title": "Delete a route."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+
+            "rules": {
+              "title": "Routing rules.",
+
+              "definitions": {
+                "rules": {
+                  "title": "A collection of rules objects.",
+                  "type" : "array",
+                  "items": {
+                    "$ref": "#/children/routing/children/static/children/rules/definitions/rule"
+                  }
+                },
+                "rule" : {
+                  "title"     : "A rule object.",
+                  "type"      : "object",
+                  "properties": {
+                    "type"                 : {
+                      "title"   : "The type of this rule.<br />Possible values are:<br /><ul class='docs-no-margin-bottom'><li><abbr title='The rule prescribes to return the route found in the routing table referenced by the rule.'>unicast</abbr></abbr></li><li><abbr title='The rule prescribes to silently drop the packet.'>blackhole</abbr></abbr></li><li><abbr title='The rule prescribes to generate a \"Network is unreachable\" error.'>unreachable</abbr></abbr></li><li><abbr title='The rule prescribes to generate \"Communication is administratively prohibited\" error.'>prohibit</abbr></abbr></li><li><abbr title='The rule prescribes to translate the source address of the IP packet into some other value.'>nat</abbr></abbr></li></ul>",
+                      "type"    : "string",
+                      "required": true,
+                      "readonly": true,
+                      "enum"    : [
+                        "unicast",
+                        "blackhole",
+                        "unreachable",
+                        "prohibit",
+                        "nat"
+                      ]
+                    },
+                    "priority"             : {
+                      "title"   : "The priority of this rule. The priority increases as the number decreases.",
+                      "type"    : "number",
+                      "unique"  : true,
+                      "required": true,
+                      "readonly": true,
+                      "minimum" : 0,
+                      "maximum" : 32767
+                    },
+                    "table"                : {
+                      "title"   : "The routing table identifier to lookup if the rule selector matches.",
+                      "type"    : "number",
+                      "readonly": true,
+                      "required": true,
+                      "minimum" : 0,
+                      "maximum" : 2147483648
+                    },
+                    "from"                 : {
+                      "title"   : "Select the source prefix to match. The format of the address depends on the protocol. It is a dotted quad for IP and a sequence of hexadecimal halfwords separated by colons for IPv6. The address may be followed by a slash and a decimal number which encodes the network prefix length.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "to"                   : {
+                      "title"   : "Select the destination prefix to match. The format of the address depends on the protocol. It is a dotted quad for IP and a sequence of hexadecimal halfwords separated by colons for IPv6. The address may be followed by a slash and a decimal number which encodes the network prefix length.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "iif"                  : {
+                      "title"   : "Select the incoming device to match. If the interface is loopback, the rule only matches packets originating from this host. This means that you may create separate routing tables for forwarded and local packets and, hence, completely segregate them.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "oif"                  : {
+                      "title"   : "Select the outgoing device to match. The outgoing interface is only available for packets originating from local sockets that are bound to a device.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "tos"                  : {
+                      "title"   : "Select the TOS value to match.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "dsfield"              : {
+                      "title"   : "Select the TOS value to match.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "fwmark"               : {
+                      "title"   : "Select the fwmark value to match.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "suppress_prefixlength": {
+                      "title"   : "Reject routing decisions that have a prefix length of NUMBER or less.",
+                      "type"    : "number",
+                      "readonly": true
+                    },
+                    "suppress_ifgroup"     : {
+                      "title"   : "Reject routing decisions that use a device belonging to the interface group GROUP.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "realms"               : {
+                      "title"   : "Realms to select if the rule matched and the routing table lookup succeeded. Realm TO is only used if the route did not select any realm.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "nat"                  : {
+                      "title"   : "The base of the IP address block to translate (for source addresses). The ADDRESS may be either the start of the block of NAT addresses (selected by NAT routes) or a local host address.",
+                      "type"    : "string",
+                      "readonly": true
+                    },
+                    "description"          : {
+                      "title": "Description for this rule object.",
+                      "type" : "string"
+                    }
+                  }
+                }
+              },
+
+              "methods": {
+                "GET" : {
+                  "title": "Show a rules collection.",
+
+                  "response": {
+                    "$ref": "#/children/routing/children/static/children/rules/definitions/rules"
+                  }
+                },
+                "POST": {
+                  "title": "Creates a new rule.",
+
+                  "request": {
+                    "$ref": "#/children/routing/children/static/children/rules/definitions/rule"
+                  },
+
+                  "response": {
+                    "$ref": "#/children/routing/children/static/children/rules/definitions/rule"
+                  }
+                }
+              },
+
+              "children": {
+                ":priority": {
+                  "title": "Specific rule.",
+
+                  "methods": {
+                    "GET"   : {
+                      "title": "Show a specific rule.",
+
+                      "response": {
+                        "$ref": "#/children/routing/children/static/children/rules/definitions/rule"
+                      }
+                    },
+                    "PUT"   : {
+                      "title": "Updates a rule properties.",
+
+                      "request": {
+                        "$ref": "#/children/routing/children/static/children/rules/definitions/rule"
+                      }
+                    },
+                    "DELETE": {
+                      "title": "Delete a rule."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
