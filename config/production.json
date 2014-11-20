@@ -27,7 +27,7 @@
         "enabled": true,
 
         "colorize" : true,
-        "filename" : "/var/log/vifros.log",
+        "filename" : "/var/log/vifros/vifros.log",
         "timestamp": true
       },
       "mongodb": {
